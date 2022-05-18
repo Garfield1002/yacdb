@@ -17,7 +17,7 @@ struct data
 struct key_value
 {
   int key;
-  struct data value;
+  struct data *value;
 };
 
 
@@ -38,9 +38,9 @@ btree
 yabcreate(void);
 
 void
-yabinsert(btree tree,struct key_valu key_val);
+yabinsert(btree tree,struct key_value key_val);
 
-struct data
+struct data*
 yabsearch(btree tree, int key);
 
 void

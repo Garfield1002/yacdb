@@ -8,7 +8,7 @@ btree bcreate(void){
   return t;
 }
 
-struct data yabsearch(btree t, int searched_key) {
+struct data *yabsearch(btree t, int searched_key) {
   //We have to find out if the searched_key is among the keys of the current node. If not, we have to find the only 'sub-tree' that can contain the key.
   //As the keys are sorted, we can use dichotomical search instead of classic search
 
@@ -33,17 +33,24 @@ struct data yabsearch(btree t, int searched_key) {
   //At this point, min and max are the virtual indexes (because min can be equal to -1 and max equal to nb_keys) of the two keys between which the searched key is.
   
   if (t->is_leaf){
-    struct data empty;
-    return empty;
+    return 0;
   }
 
   int child_idx = max;
   return yabsearch(t->children[child_idx], searched_key);
   
 }
-
+/*
+void yabinsert(btree t, struct key_value key_val){
+  //we start from the root, we check if we came to a leaf
+  struct node *curr_node = t;
+  while (curr_node->is_leaf == false) {
+     
+  }  
+}
+*/
 int main(){
   btree ttest = bcreate();
-  struct data tdata = yabsearch(ttest, 33);
+  struct data *tdata = yabsearch(ttest, 33);
 }
 
