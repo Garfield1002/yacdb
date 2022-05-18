@@ -1,2 +1,3 @@
-ui/_build/
+server-side/_build/
 .vscode/
+client-side/client

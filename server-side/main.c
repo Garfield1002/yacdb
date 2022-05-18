@@ -1,5 +1,6 @@
-#include "parser.h"
-#include "parser_dump.h"
+#include "parser/include/main_parser.h"
+#include "../utils/utils.h"
+#include <string.h>
 
 int main(int argc, const char **argv)
 {
