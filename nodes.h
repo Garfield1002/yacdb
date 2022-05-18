@@ -22,8 +22,6 @@ struct key_value
 
 
 
-
-
 struct node
 {
   bool is_leaf;
@@ -40,7 +38,7 @@ btree
 yabcreate(void);
 
 void
-yabinsert(btree tree,int key);
+yabinsert(btree tree,struct key_valu key_val);
 
 struct data
 yabsearch(btree tree, int key);
