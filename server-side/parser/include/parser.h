@@ -9,7 +9,6 @@
 #include "instruction.h"
 
 // Max lenght of a user line
-#define LINE_SIZE 100
 
 struct dataTypeData
 {

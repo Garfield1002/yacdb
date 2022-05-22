@@ -33,6 +33,8 @@ Before any information-bearing page of the database is modified, the original un
 | 16     | 4    | File change counter.                                                                     |
 | 20     | 4    | Size of the database file in pages. The "in-header database size".                       |
 | 24     | 4    | Default page cache size.                                                                 |
+| 28     | 4    | Number of free blocks.                                                                   |
+| 32     | 4    | First free block                                                                         |
 
 ### Magic Header string
 
@@ -59,6 +61,14 @@ The 4-byte big-endian integer at offset 20 into the header stores the size of th
 ### Suggested cache size
 
 The 4-byte big-endian signed integer at offset 24 is the suggested cache size in pages for the database file.
+
+### Number of free blocks
+
+The 4-byte big-endian signed integer at offset 28 is the current number of free blocks in the database.
+
+### First free block
+
+The 4-byte big-endian signed integer at offset 32 is the address of the first free blocks in the database.
 
 ## Rollback Journal
 
@@ -103,3 +113,7 @@ Freelist leaf pages contain no information.
 TODO
 
 The number of freelist pages is stored as a 4-byte big-endian integer in the database header at an offset of 36 from the beginning of the file. The database header also stores the page number of the first freelist trunk page as a 4-byte big-endian integer at an offset of 32 from the beginning of the file.
+
+## The free list
+
+Unlike in SQlite, the free list is organized as a linked list.
