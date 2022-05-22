@@ -3,10 +3,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 /*typedef enum {Node_branch, Node_leaf} NodeType;*/
 
 
-#define ORDER 10
+#define ORDER 5
 
 struct data
 {
@@ -19,6 +21,7 @@ struct key_value
   int key;
   struct data *value;
 };
+
 
 
 
@@ -37,7 +40,7 @@ typedef struct node *btree;
 btree
 yabcreate(void);
 
-void
+btree
 yabinsert(btree tree,struct key_value key_val);
 
 struct data*
