@@ -1,11 +1,5 @@
 #include "include/parser_mallocs_frees.h"
 
-void freenull(void *p)
-{
-    free(p);
-    p = NULL;
-}
-
 charray *charray_init()
 {
     charray *array = malloc(sizeof(charray));
@@ -17,10 +11,10 @@ void free_charray(charray *arrayToFree)
 {
     for (int i = 0; i < arrayToFree->size; ++i)
     {
-        freenull(arrayToFree->arr[i]);
+        free(arrayToFree->arr[i]);
     }
-    freenull(arrayToFree->arr);
-    freenull(arrayToFree);
+    free(arrayToFree->arr);
+    free(arrayToFree);
 }
 
 void free_instrarray(InstrArray *arrayToFree)
@@ -29,8 +23,8 @@ void free_instrarray(InstrArray *arrayToFree)
     {
         free_instr(arrayToFree->arr + i);
     }
-    freenull(arrayToFree->arr);
-    freenull(arrayToFree);
+    free(arrayToFree->arr);
+    free(arrayToFree);
 }
 
 void free_instr(instr *instr)
@@ -45,6 +39,9 @@ void free_instr(instr *instr)
         break;
     case add:
         free_addinstr((struct AddInstr *)instr);
+        break;
+    case unknownInstrType:
+        free(instr);
         break;
     }
 }
@@ -63,14 +60,14 @@ struct SelInstr *selinstr_init()
 
 void free_selinstr(struct SelInstr *selinstr)
 {
-    freenull(selinstr->table);
+    free(selinstr->table);
     free_charray(selinstr->columns);
     if (selinstr->hasCond)
     {
-        freenull(selinstr->cond.col);
-        freenull(selinstr->cond.val);
+        free(selinstr->cond.col);
+        free(selinstr->cond.val);
     }
-    freenull(selinstr);
+    free(selinstr);
 }
 
 struct CrtInstr *crtinstr_init()
@@ -85,10 +82,10 @@ struct CrtInstr *crtinstr_init()
 
 void free_crtinstr(struct CrtInstr *crtinstr)
 {
-    freenull(crtinstr->table);
+    free(crtinstr->table);
     free_charray(crtinstr->columns);
     free_charray(crtinstr->types);
-    freenull(crtinstr);
+    free(crtinstr);
 }
 
 struct AddInstr *addinstr_init()
@@ -103,8 +100,14 @@ struct AddInstr *addinstr_init()
 
 void free_addinstr(struct AddInstr *addinstr)
 {
-    freenull(addinstr->table);
+    free(addinstr->table);
     free_charray(addinstr->columns);
     free_charray(addinstr->values);
-    freenull(addinstr);
+    free(addinstr);
+}
+
+instr* unknowninstr_init(){
+    instr* instr = malloc(sizeof(instr));
+    instr->type = unknownInstrType;
+    return instr;
 }

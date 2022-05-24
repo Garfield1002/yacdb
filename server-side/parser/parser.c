@@ -199,7 +199,7 @@ instrType parse_instrtype(char **data)
             return (instrType)i;
         }
     }
-    fprintf(stderr, "No instrType found in \'%s\'", *data);
+    fprintf(stderr, "No instrType found in \'%s\'\n", *data);
     return unknownInstrType;
 }
 
@@ -480,7 +480,7 @@ instr *parse_instr(char *start)
     char *data = start;
     remove_spaces(&data);
     // printf("%s\n", data);
-    instr *instr;
+    instr *instr = NULL;
     instrType type = parse_instrtype(&data);
     switch (type)
     {
@@ -493,17 +493,9 @@ instr *parse_instr(char *start)
     case add:
         instr = parse_addinstr(&data);
         break;
+    case unknownInstrType:
     default:
-        instr->type = unknownInstrType;
-        parse_expected_keyword(&data, from);
-        parse_expected_keyword(&data, where);
-        parse_expected_keyword(&data, set);
-        printf("%s\n", data);
-        break;
-    }
-    if (instr == NULL)
-    {
-        printf("Error during parsing\n");
+        instr = unknowninstr_init();
     }
     printf("   <instr parse/>\n");
     return instr;

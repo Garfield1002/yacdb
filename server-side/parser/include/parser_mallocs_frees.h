@@ -11,6 +11,8 @@ void free_charray(charray *);
 InstrArray *instrarray_init(int);
 void free_instrarray(InstrArray *);
 
+instr* unknowninstr_init();
+
 struct SelInstr *selinstr_init();
 void free_selinstr(struct SelInstr *);
 

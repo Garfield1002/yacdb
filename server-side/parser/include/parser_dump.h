@@ -5,12 +5,13 @@
 #include "instruction.h"
 
 // Dump instr on streen
-void dump_instr(instr *);
-void dump_selinstr(struct SelInstr *);
-void dump_crtinstr(struct CrtInstr *);
-void dump_addinstr(struct AddInstr *);
+void dump_instr(FILE*, instr *);
+
+void dump_selinstr(FILE*, struct SelInstr *);
+void dump_crtinstr(FILE*, struct CrtInstr *);
+void dump_addinstr(FILE*, struct AddInstr *);
 
 // Dump charray on screen
-void dump_charray(charray *);
+void dump_charray(FILE*, charray *);
 
 #endif
