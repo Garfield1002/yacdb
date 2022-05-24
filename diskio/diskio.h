@@ -1,30 +1,38 @@
 #pragma once
 #include <stdio.h>
+#include <stdbool.h>
 #include "../schema/record.h"
+#include "dbfio.h"
 
 #define ORDER 10
 
-enum node_type
+struct linked_overflow
 {
-    NODE_TYPE_TABLE_LEAF,
-    NODE_TYPE_TABLE_INTERIOR,
-    NODE_TYPE_INDEX_LEAF,
-    NODE_TYPE_INDEX_INTERIOR
+    Page page;
+    struct linked_overflow *next;
 };
 
 struct key_value
 {
     int key;
-    struct record *values[];
+    void *value;
+    size_t size;
+
+    struct linked_overflow *overflow;
 };
 
 struct node
 {
-    char type;
-    int nb_keys;
-    struct key_value key_val[ORDER - 1];
+    enum page_type type;
+    size_t nb_keys;
+    struct key_value *key_vals[ORDER - 1];
     size_t child_addrs[ORDER];
 };
+
+/**
+ * @brief The database
+ */
+struct yacdb db;
 
 /**
  * @brief Verifies if the node is a leaf
@@ -33,17 +41,24 @@ bool is_leaf(struct node *node);
 
 /**
  * @brief Reads a node from disk at a given address
+ *
+ * @param addr The page number of the node
+ *
+ * @return The node, will return NULL if an error occurred
  */
+// TODO: Finish this
 struct node *read_node(size_t addr);
 
 /**
  * @brief Writes a node to disk (or cache) at a given address. If an error occurs returns -1
  */
+// TODO: Implement
 int write_node(struct node *node, size_t addr);
 
 /**
  * @brief Removes a node from disk at a given address. If an error occurs returns -1
  */
+// TODO: Finish this
 int remove_node(size_t addr);
 
 /**

@@ -56,7 +56,7 @@ void *read_at(struct yacdb *db, size_t offset, size_t size)
  */
 void *read_k_cell(struct yacdb *db, struct btree_page *page, int k, size_t size)
 {
-    if (k < 0 || k >= page->btree_h->number_cells)
+    if (k < 0 || k >= page->btree_h->nb_cells)
         return -1;
 
     // Retrieve the offset of the key
