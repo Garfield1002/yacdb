@@ -15,9 +15,19 @@ const char *keywordToString[] = {
     "set",
     "tbl"};
 
-void dump_instr(FILE* f, instr *instr)
+void dump_instrarray(FILE *f, InstrArray *instrarray)
 {
-    fprintf(f, "   <instr print>\n");
+    for (int i = 0; i < instrarray->size; ++i)
+    {
+        fprintf(f, "\n");
+        dump_instr(f, instrarray->arr[i]);
+    }
+    fprintf(f, "\n");
+}
+
+void dump_instr(FILE *f, instr *instr)
+{
+    // fprintf(f, "   <instr print>\n");
     switch (instr->type)
     {
     case sel:
@@ -30,20 +40,21 @@ void dump_instr(FILE* f, instr *instr)
         dump_addinstr(f, (struct AddInstr *)instr);
         break;
     default:
-        fprintf(f, "type: unknown\nThis instruction has an unknown type, cannor dump :%d:\n", instr->type);
+        fprintf(f, "ERROR: Unable to parse this instruction\n");
         break;
     }
-    fprintf(f, "   <instr print/>\n");
+    // fprintf(f, "   <instr print/>\n");
 }
 
-void dump_selinstr(FILE* f, struct SelInstr *instr)
+void dump_selinstr(FILE *f, struct SelInstr *instr)
 {
     fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
     dump_charray(f, instr->columns);
-    fprintf(f, "not cond yet\n");
+    if (instr->has_cond)
+        dump_condition(f, instr->cond);
 }
 
-void dump_crtinstr(FILE* f, struct CrtInstr *instr)
+void dump_crtinstr(FILE *f, struct CrtInstr *instr)
 {
     fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
     dump_charray(f, instr->columns);
@@ -51,7 +62,7 @@ void dump_crtinstr(FILE* f, struct CrtInstr *instr)
     dump_charray(f, instr->types);
 }
 
-void dump_addinstr(FILE* f, struct AddInstr *instr)
+void dump_addinstr(FILE *f, struct AddInstr *instr)
 {
     fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
     dump_charray(f, instr->columns);
@@ -59,7 +70,7 @@ void dump_addinstr(FILE* f, struct AddInstr *instr)
     dump_charray(f, instr->values);
 }
 
-void dump_charray(FILE* f, charray *a)
+void dump_charray(FILE *f, charray *a)
 {
     fprintf(f, "%d [", a->size);
     if (a->size > 0)
@@ -71,4 +82,9 @@ void dump_charray(FILE* f, charray *a)
         fprintf(f, "%s", a->arr[a->size - 1]);
     }
     fprintf(f, "]\n");
+}
+
+void dump_condition(FILE *f, struct condition *cond)
+{
+    fprintf(f, "condition: %s=%s\n", cond->col, cond->val);
 }

@@ -12,7 +12,7 @@ int main(int argc, const char **argv)
     printf("sel IDENT_col, ... from IDENT_table\n");
     printf("add IDENT_col=VAL, .. in IDENT_table\n\n");
     printf("type q or exit to quit the console\n\n");
-    instr *i;
+    InstrArray *i;
 
     char l[LINE_SIZE];
     while (1)
@@ -31,11 +31,11 @@ int main(int argc, const char **argv)
             return 0;
         }
 
-        i = parse_instr(l);
+        i = parse_user_input(l);
         if (i)
         {
-            dump_instr(stdout, i);
-            free_instr(i);
+            dump_instrarray(stdout, i);
+            free_instrarray(i);
             i = NULL;
         }
     }

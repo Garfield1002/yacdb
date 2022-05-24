@@ -129,15 +129,15 @@ void process_communication(int thread_socket)
     pipe(fds); // In via fds[1], out via fds[0]
     FILE* f = fdopen(fds[1], "w"); // file for easy response management
 
-    instr *instr = parse_instr(line);
-    if (instr)
+    InstrArray *instrarray = parse_user_input(line);
+    if (instrarray)
     {
-      dump_instr(f, instr);
+      dump_instrarray(f, instrarray);
       /*
         YACDB management here
       */
-      free_instr(instr);
-      instr = NULL;
+      free_instrarray(instrarray);
+      instrarray = NULL;
     }
     else
     {
@@ -161,7 +161,6 @@ void process_communication(int thread_socket)
     write(thread_socket, answer, REPLY_SIZE);
     close(fds[0]);
     close(fds[1]);
-    // }
   }
   /*end hide*/
 }

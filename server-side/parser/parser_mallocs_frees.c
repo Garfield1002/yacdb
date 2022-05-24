@@ -17,18 +17,21 @@ void free_charray(charray *arrayToFree)
     free(arrayToFree);
 }
 
-void free_instrarray(InstrArray *arrayToFree)
+void free_instrarray(InstrArray *instrarray)
 {
-    for (int i = 0; i < arrayToFree->size; ++i)
+    for (int i = 0; i < instrarray->size; ++i)
     {
-        free_instr(arrayToFree->arr + i);
+        free_instr(instrarray->arr[i]);
     }
-    free(arrayToFree->arr);
-    free(arrayToFree);
+    free(instrarray->arr);
+    free(instrarray);
 }
 
 void free_instr(instr *instr)
 {
+    if(!instr){
+        return;
+    }
     switch (instr->type)
     {
     case sel:
@@ -52,9 +55,8 @@ struct SelInstr *selinstr_init()
     selinstr->type = sel;
     selinstr->table = NULL;
     selinstr->columns = charray_init();
-    selinstr->hasCond = 0;
-    selinstr->cond.col = NULL;
-    selinstr->cond.val = NULL;
+    selinstr->has_cond = 0;
+    selinstr->cond = NULL;
     return selinstr;
 }
 
@@ -62,10 +64,9 @@ void free_selinstr(struct SelInstr *selinstr)
 {
     free(selinstr->table);
     free_charray(selinstr->columns);
-    if (selinstr->hasCond)
+    if (selinstr->has_cond)
     {
-        free(selinstr->cond.col);
-        free(selinstr->cond.val);
+        free_condition(selinstr->cond);
     }
     free(selinstr);
 }
@@ -106,8 +107,26 @@ void free_addinstr(struct AddInstr *addinstr)
     free(addinstr);
 }
 
-instr* unknowninstr_init(){
-    instr* instr = malloc(sizeof(instr));
+instr *unknowninstr_init()
+{
+    instr *instr = malloc(sizeof(instr));
     instr->type = unknownInstrType;
     return instr;
+}
+
+struct condition *condition_init()
+{
+    struct condition *cond = malloc(sizeof(struct condition));
+    cond->col = 0;
+    cond->val = 0;
+    return cond;
+}
+
+void free_condition(struct condition *cond)
+{
+    free(cond->val);
+    cond->val = NULL;
+    free(cond->col);
+    cond->col = NULL;
+    free(cond);
 }

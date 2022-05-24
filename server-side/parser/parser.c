@@ -8,83 +8,18 @@
         return 0;            \
     }
 
-#define ISOK(a, cond) a += (cond) == 0;
+#define SAFE_CALL(a, cond) a += (cond) == 0;
 
 // Return true if char c can be used as a letter in a token
-int isAlphaOk(char c)
+int is_alphanum(char c)
 {
     //------- lower case a-z --------- upper case A-Z --------- digit 0-9 ---------- dot . --
-    return (c >= 97 && c <= 122) || (c >= 65 && c <= 90) || (c >= 48 && c <= 57) || c == 46;
+    return (c >= 97 && c <= 122) || (c >= 65 && c <= 90) || (c >= 48 && c <= 57) /*|| c == 46*/;
 }
 
-int isNumeric(char c)
+int is_int(char c)
 {
     return (c >= 48 && c <= 57);
-}
-
-// Count the number of tokenArr needed to store the instruction
-int tokenArrCounter(char *data)
-{
-    if (!data) // If no datas
-        return 0;
-
-    char *p = data;
-    int count = 0;
-    char alphaStreak = 0;
-    char startWithAlpha = 0;
-    char endWithAlpha = 0;
-    char bracketOpened = 0;
-    char hasEqual = 0;
-    char last = *data;
-    for (; *p; ++p)
-    {
-        if (isAlphaOk(*p))
-        {
-            last = *p;
-            if (!alphaStreak) // First letter after some spaces
-            {
-                alphaStreak = 1; // plus one tokenArr if started with an okChar
-            }
-        }
-        else
-        {
-            if (alphaStreak && !bracketOpened)
-            {
-                count++;
-            }
-            alphaStreak = 0;
-            if (*p == ' ')
-            {
-                continue;
-            }
-            last = *p;
-            if (*p == '(')
-            {
-                bracketOpened = 1;
-            }
-            else if (*p == ')')
-            {
-                count = count + 1 + hasEqual;
-                bracketOpened = 0;
-                hasEqual = 0;
-            }
-            else if (*p == ',')
-            {
-                count -= !bracketOpened * (1 + hasEqual);
-                hasEqual = 0;
-            }
-            else if (*p == '=')
-            {
-                hasEqual = 1;
-            }
-            else
-            {
-                fprintf(stderr, "Unauthorized token \'%c\' near \"%s\"", *p, p);
-                return -1;
-            }
-        }
-    }
-    return count + (last != ')');
 }
 
 int count_comma_list(char *data)
@@ -114,7 +49,7 @@ int count_comma_list(char *data)
         {
             inQuote = 1;
         }
-        else if (isAlphaOk(*p))
+        else if (is_alphanum(*p))
         {
             if (last == ' ' && !equal) // If we find a word after a space, and no equal
             {
@@ -203,21 +138,6 @@ instrType parse_instrtype(char **data)
     return unknownInstrType;
 }
 
-// Parse a instruction keyword, see enum instrType
-instrType parseKeyword(char **data)
-{
-    // for (int i = 0; i < NB_type; ++i)
-    // {
-    //     if (!strncmp(*data, parsingTypeData[i].inString, parsingTypeData[i].size))
-    //     {
-    //         *data += parsingTypeData[i].size;
-    //         return parsingTypeData[i].type;
-    //     }
-    // }
-    // remove_spaces(data);
-    // return unknownType;
-}
-
 int parse_expected_keyword(char **data, keyword expected)
 {
     struct keywordData parsingKeywordData[] = {
@@ -247,7 +167,7 @@ int parse_expected_keyword(char **data, keyword expected)
 char *parse_ident(char **data)
 {
     char *start = *data;
-    while (isAlphaOk(**data))
+    while (is_alphanum(**data))
     {
         (*data)++;
     }
@@ -284,7 +204,7 @@ char *parse_value(char **data)
         }
         if (**data != '\"')
         {
-            fprintf(stderr, "Quote open but not closed near %s\n", start);
+            fprintf(stderr, "Quote open but not closed near \'%s\'\n", start);
             *data = start;
             return NULL;
         }
@@ -296,13 +216,13 @@ char *parse_value(char **data)
     }
     else // is an int
     {
-        while (isNumeric(**data))
+        while (is_int(**data))
         {
             (*data)++;
         }
         if (*data == start)
         {
-            fprintf(stderr, "No value found in %s\n", *data);
+            fprintf(stderr, "No value found in \'%s\'\n", *data);
             return NULL;
         }
         int size = (*data - start) / sizeof(char);
@@ -316,11 +236,11 @@ char *parse_value(char **data)
 }
 
 // Remove heading spaces from the char*
-void remove_spaces(char **currentData)
+void remove_spaces(char **data)
 {
-    while (**currentData == ' ' || **currentData == '\t')
+    while (**data == ' ' || **data == '\t' || **data == '\n')
     {
-        (*currentData)++;
+        (*data)++;
     }
 }
 
@@ -350,16 +270,30 @@ int parse_equalsign(char **data)
     }
     else
     {
-        fprintf(stderr, "No \'=\' present !");
+        fprintf(stderr, "No \'=\' present !\n");
         return 0;
     }
+}
+
+struct condition *parse_condition(char **data)
+{
+    struct condition *cond = condition_init();
+    int nok = 0;
+    SAFE_CALL(nok, cond->col = parse_ident(data))
+    SAFE_CALL(nok, parse_equalsign(data))
+    SAFE_CALL(nok, cond->val = parse_value(data))
+    if (nok)
+    {
+        free_condition(cond);
+        return 0;
+    }
+    return cond;
 }
 
 int parse_comma_list(char **data, charray *array)
 {
     int sz = count_comma_list(*data);
     array->size = sz;
-    printf(" comma_list_count:%d:\n", sz);
     if (!sz)
         return 0;
 
@@ -370,7 +304,6 @@ int parse_comma_list(char **data, charray *array)
         RETURN_IF_NULL(parse_comma(data))
         RETURN_IF_NULL(array->arr[i] = parse_ident(data))
     }
-    printf(" end_comma_list\n");
     return 1;
 }
 
@@ -433,9 +366,22 @@ instr *parse_selinstr(char **data)
 {
     struct SelInstr *selinstr = selinstr_init();
     int nok = 0;
-    ISOK(nok, parse_comma_list(data, selinstr->columns))
-    ISOK(nok, parse_expected_keyword(data, from))
-    ISOK(nok, selinstr->table = parse_ident(data))
+    if (**data == '*') // Either '*' or column list
+    {
+        selinstr->columns = charray_init(); // An empty column list means '*'
+        (*data)++;
+        remove_spaces(data);
+    }
+    else
+        SAFE_CALL(nok, parse_comma_list(data, selinstr->columns))
+    SAFE_CALL(nok, parse_expected_keyword(data, from))
+    SAFE_CALL(nok, selinstr->table = parse_ident(data))
+    if (**data != '\0') // not the end of the instrution : there is a where statement
+    {
+        SAFE_CALL(nok, parse_expected_keyword(data, where))
+        SAFE_CALL(nok, selinstr->cond = parse_condition(data))
+        selinstr->has_cond = (selinstr->cond != NULL);
+    }
     if (nok)
     {
         free_instr((instr *)selinstr);
@@ -448,9 +394,9 @@ instr *parse_crtinstr(char **data)
 {
     struct CrtInstr *crtinstr = crtinstr_init();
     int nok = 0;
-    ISOK(nok, crtinstr->table = parse_ident(data))
-    ISOK(nok, parse_expected_keyword(data, with))
-    ISOK(nok, parse_columndef_list(data, crtinstr->columns, crtinstr->types))
+    SAFE_CALL(nok, crtinstr->table = parse_ident(data))
+    SAFE_CALL(nok, parse_expected_keyword(data, with))
+    SAFE_CALL(nok, parse_columndef_list(data, crtinstr->columns, crtinstr->types))
     if (nok)
     {
         free_instr((instr *)crtinstr);
@@ -463,9 +409,9 @@ instr *parse_addinstr(char **data)
 {
     struct AddInstr *crtinstr = addinstr_init();
     int nok = 0;
-    ISOK(nok, parse_addvalue_list(data, crtinstr->columns, crtinstr->values))
-    ISOK(nok, parse_expected_keyword(data, in))
-    ISOK(nok, crtinstr->table = parse_ident(data))
+    SAFE_CALL(nok, parse_addvalue_list(data, crtinstr->columns, crtinstr->values))
+    SAFE_CALL(nok, parse_expected_keyword(data, in))
+    SAFE_CALL(nok, crtinstr->table = parse_ident(data))
     if (nok)
     {
         free_instr((instr *)crtinstr);
@@ -476,7 +422,7 @@ instr *parse_addinstr(char **data)
 
 instr *parse_instr(char *start)
 {
-    printf("   <instr parse>\n");
+    // printf("   <instr parse>\n");
     char *data = start;
     remove_spaces(&data);
     // printf("%s\n", data);
@@ -497,26 +443,31 @@ instr *parse_instr(char *start)
     default:
         instr = unknowninstr_init();
     }
-    printf("   <instr parse/>\n");
+    // printf("   <instr parse/>\n");
     return instr;
 }
 
 InstrArray *parse_user_input(char *data)
 {
     InstrArray *instrarray = malloc(sizeof(InstrArray));
-    instrarray->size = 0;
-    const char s[2] = ";";
-    char *token;
+    char *temp = data;
+    int sz = 0;
+    for (; *temp != '\0'; temp++)
+        if (*temp == ';')
+            sz++;
+    instrarray->size = sz;
+    instrarray->arr = calloc(sz, sizeof(instr *));
+    char *token = data;
+    char *semicolon = data;
 
-    /* get the first token */
-    token = strtok(data, s);
-
-    /* walk through other tokens */
-    while (token != NULL)
+    for (int i = 0; i < sz; ++i)
     {
-        printf("-%s-\n", token);
-        instrarray->arr = parse_instr(token); // does not work
-        instrarray->size++;
-        token = strtok(NULL, s);
+        for (; *semicolon != ';'; semicolon++)
+            ;
+        *semicolon = '\0';
+        // printf("-%s-\n", token);
+        instrarray->arr[i] = parse_instr(token);
+        token = ++semicolon;
     }
+    return instrarray;
 }

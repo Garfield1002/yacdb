@@ -51,7 +51,8 @@ int parse_expected_keyword(char **, keyword);
 int count_comma_list(char *);
 // Parse a comma separated list and stores it in the charray parameter
 int parse_comma_list(char **, charray *);
-
+// Parse a select where statement
+struct condition *parse_condition(char **);
 // Parse an instruction and return it
 instr *parse_instr(char *);
 // Parse a SelInstr and return it
