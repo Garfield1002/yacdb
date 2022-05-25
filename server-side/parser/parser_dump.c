@@ -15,61 +15,76 @@ const char *keywordToString[] = {
     "set",
     "tbl"};
 
-void dump_instr(instr *instr)
+void dump_instrarray(FILE *f, InstrArray *instrarray)
 {
+    for (int i = 0; i < instrarray->size; ++i)
+    {
+        fprintf(f, "\n");
+        dump_instr(f, instrarray->arr[i]);
+    }
+    fprintf(f, "\n");
+}
 
-    printf("   <instr print>\n");
+void dump_instr(FILE *f, instr *instr)
+{
+    // fprintf(f, "   <instr print>\n");
     switch (instr->type)
     {
     case sel:
-        dump_selinstr((struct SelInstr *)instr);
+        dump_selinstr(f, (struct SelInstr *)instr);
         break;
     case crt:
-        dump_crtinstr((struct CrtInstr *)instr);
+        dump_crtinstr(f, (struct CrtInstr *)instr);
         break;
     case add:
-        dump_addinstr((struct AddInstr *)instr);
+        dump_addinstr(f, (struct AddInstr *)instr);
         break;
     default:
-        printf("type: unknown\nThis instruction has an unknown type, cannor dump :%d:\n", instr->type);
+        fprintf(f, "ERROR: Unable to parse this instruction\n");
         break;
     }
-    printf("   <instr print/>\n");
+    // fprintf(f, "   <instr print/>\n");
 }
 
-void dump_selinstr(struct SelInstr *instr)
+void dump_selinstr(FILE *f, struct SelInstr *instr)
 {
-    printf("type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
-    dump_charray(instr->columns);
-    printf("not cond yet\n");
+    fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
+    dump_charray(f, instr->columns);
+    if (instr->has_cond)
+        dump_condition(f, instr->cond);
 }
 
-void dump_crtinstr(struct CrtInstr *instr)
+void dump_crtinstr(FILE *f, struct CrtInstr *instr)
 {
-    printf("type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
-    dump_charray(instr->columns);
-    printf("types: ");
-    dump_charray(instr->types);
+    fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
+    dump_charray(f, instr->columns);
+    fprintf(f, "types: ");
+    dump_charray(f, instr->types);
 }
 
-void dump_addinstr(struct AddInstr *instr)
+void dump_addinstr(FILE *f, struct AddInstr *instr)
 {
-    printf("type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
-    dump_charray(instr->columns);
-    printf("values: ");
-    dump_charray(instr->values);
+    fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
+    dump_charray(f, instr->columns);
+    fprintf(f, "values: ");
+    dump_charray(f, instr->values);
 }
 
-void dump_charray(charray *a)
+void dump_charray(FILE *f, charray *a)
 {
-    printf("%d [", a->size);
+    fprintf(f, "%d [", a->size);
     if (a->size > 0)
     {
         for (int i = 0; i < a->size - 1; ++i)
         {
-            printf("%s,", a->arr[i]);
+            fprintf(f, "%s,", a->arr[i]);
         }
-        printf("%s", a->arr[a->size - 1]);
+        fprintf(f, "%s", a->arr[a->size - 1]);
     }
-    printf("]\n");
+    fprintf(f, "]\n");
+}
+
+void dump_condition(FILE *f, struct condition *cond)
+{
+    fprintf(f, "condition: %s=%s\n", cond->col, cond->val);
 }

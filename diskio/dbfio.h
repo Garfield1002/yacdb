@@ -28,20 +28,18 @@ struct yacdb
     // int cache_count;
 };
 
-enum btree_page_type
+enum page_type
 {
-    INTERIOR_INDEX_PAGE = 2,
-    INTERIOR_TABLE_PAGE = 5,
-    LEAF_INDX_PAGE = 10,
-    LEAF_TABLE_PAGE = 13
+    NODE_TYPE_TABLE_LEAF = 13,
+    NODE_TYPE_TABLE_INTERIOR = 5,
+    NODE_TYPE_INDEX_LEAF = 10,
+    NODE_TYPE_INDEX_INTERIOR = 2
 };
 
 struct btree_header
 {
-    unsigned char page_type;
-    unsigned short start_free_block;
-    unsigned short number_cells;
-    unsigned short start_content_area;
+    enum page_type page_type;
+    unsigned short nb_cells;
     unsigned int right_pointer;
 };
 
@@ -65,8 +63,8 @@ struct ti_cell
 
 struct tl_cell_header
 {
-    unsigned int size;
     unsigned int key;
+    unsigned int size;
     Page overflow;
 };
 
@@ -80,5 +78,12 @@ struct btree_page
 {
     struct yacdb *yacdb;
     struct btree_header *btree_h;
+
+    void **cells_h;
+
     Page page;
+
+    void *data;
+
+    unsigned short *offsets;
 };
