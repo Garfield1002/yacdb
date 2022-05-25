@@ -12,7 +12,9 @@
 
 struct data
 {
-  char *truc;
+  char *prenom;
+  char *nom;
+  int age;
 };
 
 
@@ -48,5 +50,5 @@ yabsearch(btree tree, int key);
 
 btree
 yabdelete(btree tree, int key);
-
-
+void
+node_to_string(struct node* nod);

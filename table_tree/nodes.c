@@ -1,6 +1,6 @@
 #include "nodes.h"
 
-btree bcreate(void){
+btree yabcreate(void){
   btree t;
   t = malloc(sizeof(*t));
   t->is_leaf = true;
@@ -14,8 +14,8 @@ btree bcreate_start(struct key_value key_v) {
   t->is_leaf = false;
   t->nb_keys = 1;
   t->key_val[0] = key_v;
-  btree c1 = bcreate();
-  btree c2 = bcreate();
+  btree c1 = yabcreate();
+  btree c2 = yabcreate();
   t->children[0] = c1;
   t->children[1] = c2;
   return t;
@@ -98,6 +98,10 @@ struct node *splitChild(struct node *old_parent, int idx_child_to_split, int sea
     new_left_node->nb_keys ++;
     new_left_node->key_val[i] = correct_child->key_val[i];
     new_left_node->children[i] = correct_child->children[i];
+    if (!(new_left_node->is_leaf)){
+      printf("ADD on left node; child number %d\n", i);
+      node_to_string(new_left_node->children[i]);
+    }
     tmp=i;
   }
   //Not forget to add the rightmost child
@@ -121,13 +125,13 @@ struct node *splitChild(struct node *old_parent, int idx_child_to_split, int sea
   printf("--------------------\n");
 
   //Not forget to add the rightmost child
-  new_left_node->children[tmp2-mid_idx-1] = correct_child->children[tmp2];
+  new_right_node->children[tmp2-mid_idx-1] = correct_child->children[tmp2];
   
   struct key_value old_pairs[ORDER-1];
   struct node *old_children[ORDER];
   memcpy(&old_pairs, &(old_parent->key_val), sizeof(old_parent->key_val));
   memcpy(&old_children, &(old_parent->children), sizeof(old_parent->children));
-
+  
   old_parent->key_val[idx_child_to_split] = pair_to_up;
   old_parent->children[idx_child_to_split] = new_left_node;
   old_parent->children[idx_child_to_split+1] = new_right_node;
@@ -142,6 +146,15 @@ struct node *splitChild(struct node *old_parent, int idx_child_to_split, int sea
   for (int ch=0;ch<=old_parent->nb_keys;ch++){
 
     node_to_string(old_parent->children[ch]);
+    if (!(old_parent->children[ch]->is_leaf)){
+    for (int ch2=0;ch2 <old_parent->children[ch]->nb_keys;ch2++){
+      printf("child number %d\n",ch2);
+      struct node *chil = old_parent->children[ch];
+      node_to_string(chil->children[ch2]);
+      node_to_string(new_left_node->children[ch2]);
+    }
+    }
+    printf("%d\n",old_parent->children[ch]->nb_keys);
   }
   printf("--------------------\n");
 
@@ -261,22 +274,6 @@ btree yabinsert(btree t, struct key_value key_val){
   printf("Node after insert\n");
   node_to_string(curr_node);
   return t;
-/*
-  if (curr_node->nb_keys >=ORDER-1){
-    curr_node->is_leaf = false;
-    struct node* new_children[ORDER];
-    for (int pair=0;pair<curr_node->nb_keys;pair++){
-      printf("La nouvelle clé vaut %d\n", curr_node->key_val[pair].key);
-      struct node *temp_node = bcreate();
-      yabinsert(temp_node,curr_node->key_val[pair]);
-      new_children[pair]=temp_node;
-    }
-    struct node *temp_node = bcreate();
-    printf("%d\n", curr_node->nb_keys);
-    new_children[curr_node->nb_keys]=temp_node;
-    memcpy(&(curr_node->children),&new_children,sizeof(new_children));
-  }
-*/    
 }
 
 btree yabdelete(btree t, int key){
@@ -289,7 +286,7 @@ btree yabdelete(btree t, int key){
       int cur_idx = (max+min)/2;
 //      printf("idx vaut %d ; max vaut %d ; min vaut %d ; nb_keys vaut %d \n",cur_idx,max,min,t->nb_keys);
       int cur_key = t->key_val[cur_idx].key;
-      if(cur_key <= key){
+      if(cur_key < key){
         min = cur_idx;
       }
       else{
@@ -326,53 +323,4 @@ btree yabdelete(btree t, int key){
 }
 
 
-int main(){
-
-  struct data tdata2 = {"ok"};
-  struct key_value kracine = {69,&tdata2};
-
-  btree ttest = bcreate();
-  struct key_value k1 = {100,&tdata2};
-  struct key_value k2 = {200,&tdata2};
-  struct key_value k3 = {300,&tdata2};
-  struct key_value k4 = {400,&tdata2};
-  struct key_value k5 = {210,&tdata2};
-  struct key_value k6 = {220,&tdata2};
-  struct key_value k7 = {230,&tdata2};
-  struct key_value k8 = {240,&tdata2};
-  struct key_value k9 = {250,&tdata2};
-  struct key_value k10 = {260,&tdata2};
-  struct key_value k11 = {270,&tdata2};
-  struct key_value k12 = {280,&tdata2};
-  struct key_value k13 = {290,&tdata2};
-  ttest = yabinsert(ttest, k1);
-  ttest = yabinsert(ttest, k2);
-  ttest = yabinsert(ttest, k3);
-  ttest = yabinsert(ttest, k4);
-  ttest = yabinsert(ttest, k5);
-  ttest = yabinsert(ttest, k6);
-  ttest = yabinsert(ttest, k7);
-  ttest = yabinsert(ttest, k8);
-  ttest = yabinsert(ttest, k9);
-  ttest = yabinsert(ttest, k10);
-  ttest = yabinsert(ttest, k11);
-  ttest = yabinsert(ttest, k12);
-  ttest = yabinsert(ttest, k13);
-
-  node_to_string(ttest);
-  for(int child=0;child<ttest->nb_keys+1;child++){
-    printf("le i vaut %d\n", child);
-    node_to_string(ttest->children[child]);
-/*    for (int child2=0;child2<ttest->children[child]->nb_keys;child2++){
-      node_to_string(ttest->children[child]->children[child2]);
-      }
-*/  }
-
-  ttest = yabdelete(ttest,230);
-  node_to_string(ttest);
-  for(int child=0;child<ttest->nb_keys+1;child++){
-    printf("le i vaut %d\n", child);
-    node_to_string(ttest->children[child]);
-  }
-}
 
