@@ -25,7 +25,7 @@ int main(int argc, const char **argv)
             continue;
         }
         l[strlen(l) - 1] = '\0'; // remove trailing \n
-        printf("<- %s-%ld\n", l, strlen(l));
+        // printf("<- %s-%ld\n", l, strlen(l));
         if (!strcmp(l, "q") || !strcmp(l, "exit"))
         {
             return 0;

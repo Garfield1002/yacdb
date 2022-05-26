@@ -29,9 +29,8 @@ void free_instrarray(InstrArray *instrarray)
 
 void free_instr(instr *instr)
 {
-    if(!instr){
+    if(!instr)
         return;
-    }
     switch (instr->type)
     {
     case sel:

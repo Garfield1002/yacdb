@@ -443,6 +443,8 @@ instr *parse_instr(char *start)
     default:
         instr = unknowninstr_init();
     }
+    if(!instr)
+        instr = unknowninstr_init();
     // printf("   <instr parse/>\n");
     return instr;
 }
