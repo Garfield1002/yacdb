@@ -317,6 +317,7 @@ int read_cells(struct node *node, struct btree_page *page)
 
     default:
         printf("ERR read_cells: Unknown node type\n");
+        printf("ERR read_cells: %d\n", page->btree_h->page_type);
         return -1;
     }
 }
@@ -338,6 +339,7 @@ struct node *read_node(size_t addr)
 
     page.btree_h = (struct btree_header *)page.data;
 
+    node->parent_addr = page.btree_h->parent_addr;
     node->type = page.btree_h->page_type;
     node->nb_keys = page.btree_h->nb_cells;
 
@@ -376,8 +378,31 @@ struct node *read_node(size_t addr)
 
         break;
 
+    case NODE_TYPE_TABLE_INTERIOR:
+        node->child_addrs[node->nb_keys] = page.btree_h->right_pointer;
+
+        for (size_t i = 0; i < page.btree_h->nb_cells; i++)
+        {
+            struct tl_cell_header *tlh = (struct tl_cell_header *)cell_ptr;
+            node->key_vals[i] = (struct key_value *)malloc(sizeof(struct key_value));
+
+            node->key_vals[i]->key = tlh->key;
+            node->key_vals[i]->size = 0;
+            node->key_vals[i]->value = NULL;
+
+            cell_ptr = (char *)cell_ptr + sizeof(struct tl_cell_header);
+            node->child_addrs[i] = *(Page *)cell_ptr;
+
+            cell_ptr = (char *)cell_ptr + tlh->size;
+
+            assert((char *)cell_ptr - (char *)page.data < db.header->page_size);
+        }
+        break;
+
     default:
         printf("ERR read_node: Unknown node type\n");
+        printf("%zu\n", page.btree_h->page_type);
+        printf("addr: %zu\n", addr);
         return NULL;
     }
 
@@ -653,6 +678,7 @@ int write_tl_node(struct node *node, size_t addr)
 
     void *rpage = malloc(page_size);
 
+    ((struct btree_header *)rpage)->parent_addr = node->parent_addr;
     ((struct btree_header *)rpage)->page_type = NODE_TYPE_TABLE_LEAF;
     ((struct btree_header *)rpage)->nb_cells = node->nb_keys;
     ((struct btree_header *)rpage)->right_pointer = 0;
@@ -707,10 +733,74 @@ int write_tl_node(struct node *node, size_t addr)
     return 0;
 }
 
+int write_ti_node(struct node *node, size_t addr)
+{
+    // calculate the size of the page
+    size_t min_size = sizeof(struct btree_header)                      // the header
+                      + sizeof(struct tl_cell_header) * node->nb_keys; // the key values
+
+    size_t page_size = db.header->page_size;
+
+    if (addr == 0)
+    {
+        page_size -= sizeof(struct yacdb_header);
+    }
+
+    if (min_size > db.header->page_size)
+    {
+        printf("ERR write_tl_node: Node is too big\n");
+        return -1;
+    }
+
+    size_t available_size = page_size - min_size;
+
+    void *rpage = malloc(page_size);
+
+    ((struct btree_header *)rpage)->parent_addr = node->parent_addr;
+    ((struct btree_header *)rpage)->page_type = node->type;
+    ((struct btree_header *)rpage)->nb_cells = node->nb_keys;
+    ((struct btree_header *)rpage)->right_pointer = node->child_addrs[node->nb_keys];
+
+    // char* is used to do pointer arithmetic
+    void *cell_ptr = (char *)rpage + sizeof(struct btree_header);
+
+    for (size_t i = 0; i < node->nb_keys; i++)
+    {
+        struct tl_cell_header *cell = (struct tl_cell_header *)cell_ptr;
+
+        cell->key = node->key_vals[i]->key;
+        cell->size = sizeof(Page);
+
+        available_size -= cell->size;
+
+        cell_ptr = (char *)cell_ptr + sizeof(struct tl_cell_header);
+
+        Page *page_ptr = (Page *)cell_ptr;
+
+        *page_ptr = node->child_addrs[i];
+
+        printf("%zu ", node->child_addrs[i]);
+
+        cell_ptr = (char *)cell_ptr + sizeof(Page);
+    }
+
+    if (write_page(addr, rpage) == -1)
+    {
+        printf("ERR write_tl_node: Failed to write page\n");
+        return -1;
+    }
+
+    free(rpage);
+
+    return 0;
+}
+
 int write_node(struct node *node, size_t addr)
 {
     switch (node->type)
     {
+    case NODE_TYPE_TABLE_INTERIOR:
+        return write_ti_node(node, addr);
     case NODE_TYPE_TABLE_LEAF:
         return write_tl_node(node, addr);
     default:

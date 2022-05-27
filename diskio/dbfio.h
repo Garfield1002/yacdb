@@ -43,9 +43,10 @@ enum page_type
 
 struct btree_header
 {
+    Page parent_addr;
     enum page_type page_type;
     unsigned short nb_cells;
-    unsigned int right_pointer;
+    Page right_pointer;
 };
 
 struct overflow_header

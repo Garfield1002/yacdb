@@ -4,7 +4,7 @@
 #include "../schema/record.h"
 #include "dbfio.h"
 
-#define ORDER 5
+#define ORDER 4
 
 typedef unsigned long Key;
 
@@ -26,10 +26,12 @@ struct key_value
 
 struct node
 {
+    Page parent_addr;
+
     enum page_type type;
     size_t nb_keys;
-    struct key_value *key_vals[ORDER - 1];
-    size_t child_addrs[ORDER];
+    struct key_value *key_vals[ORDER + 1]; // +1 for when handling splits
+    Page child_addrs[ORDER + 2];
 };
 
 /**
