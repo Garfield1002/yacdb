@@ -7,14 +7,14 @@
 #include <string.h>
 /*typedef enum {Node_branch, Node_leaf} NodeType;*/
 
-
 #define ORDER 5
 
 struct data
 {
-  char *truc;
+  char *prenom;
+  char *nom;
+  int age;
 };
-
 
 struct key_value
 {
@@ -22,31 +22,22 @@ struct key_value
   struct data *value;
 };
 
-
-
-
 struct node
 {
   bool is_leaf;
   int nb_keys;
-  struct key_value key_val[ORDER-1];
+  struct key_value key_val[ORDER - 1];
   struct node *children[ORDER];
 };
 
 typedef struct node *btree;
 
+btree yabcreate(void);
 
+btree yabinsert(btree tree, struct key_value key_val);
 
-btree
-yabcreate(void);
-
-btree
-yabinsert(btree tree,struct key_value key_val);
-
-struct data*
+struct data *
 yabsearch(btree tree, int key);
 
-btree
-yabdelete(btree tree, int key);
-
-
+btree yabdelete(btree tree, int key);
+void node_to_string(struct node *nod);

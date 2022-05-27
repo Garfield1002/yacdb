@@ -1,0 +1,9 @@
+crt table with id=int,nom=string;
+add id=1,name="Jack" in table;
+add id=2,name="Sharu" in table;
+add id=3,name="Mateo" in table;
+
+sel name from table;
+sel id,name from table where name="Jack";
+sel name from table where id=0;
+

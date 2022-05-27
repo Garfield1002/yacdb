@@ -55,8 +55,8 @@ struct SelInstr
     instrType type;
     char *table;
     charray *columns; // empty = * = all cols
-    int hasCond;
-    struct condition cond;
+    int has_cond;
+    struct condition *cond;
 };
 
 struct CrtInstr
@@ -78,7 +78,7 @@ struct AddInstr
 // One line entered by the user, can be several instruction splited by ';'
 typedef struct InstrArray
 {
-    instr *arr;
+    instr **arr;
     int size;
 } InstrArray;
 

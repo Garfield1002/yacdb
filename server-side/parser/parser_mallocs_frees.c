@@ -1,11 +1,5 @@
 #include "include/parser_mallocs_frees.h"
 
-void freenull(void *p)
-{
-    free(p);
-    p = NULL;
-}
-
 charray *charray_init()
 {
     charray *array = malloc(sizeof(charray));
@@ -17,24 +11,26 @@ void free_charray(charray *arrayToFree)
 {
     for (int i = 0; i < arrayToFree->size; ++i)
     {
-        freenull(arrayToFree->arr[i]);
+        free(arrayToFree->arr[i]);
     }
-    freenull(arrayToFree->arr);
-    freenull(arrayToFree);
+    free(arrayToFree->arr);
+    free(arrayToFree);
 }
 
-void free_instrarray(InstrArray *arrayToFree)
+void free_instrarray(InstrArray *instrarray)
 {
-    for (int i = 0; i < arrayToFree->size; ++i)
+    for (int i = 0; i < instrarray->size; ++i)
     {
-        free_instr(arrayToFree->arr + i);
+        free_instr(instrarray->arr[i]);
     }
-    freenull(arrayToFree->arr);
-    freenull(arrayToFree);
+    free(instrarray->arr);
+    free(instrarray);
 }
 
 void free_instr(instr *instr)
 {
+    if (!instr)
+        return;
     switch (instr->type)
     {
     case sel:
@@ -46,6 +42,9 @@ void free_instr(instr *instr)
     case add:
         free_addinstr((struct AddInstr *)instr);
         break;
+    case unknownInstrType:
+        free(instr);
+        break;
     }
 }
 
@@ -55,22 +54,20 @@ struct SelInstr *selinstr_init()
     selinstr->type = sel;
     selinstr->table = NULL;
     selinstr->columns = charray_init();
-    selinstr->hasCond = 0;
-    selinstr->cond.col = NULL;
-    selinstr->cond.val = NULL;
+    selinstr->has_cond = 0;
+    selinstr->cond = NULL;
     return selinstr;
 }
 
 void free_selinstr(struct SelInstr *selinstr)
 {
-    freenull(selinstr->table);
+    free(selinstr->table);
     free_charray(selinstr->columns);
-    if (selinstr->hasCond)
+    if (selinstr->has_cond)
     {
-        freenull(selinstr->cond.col);
-        freenull(selinstr->cond.val);
+        free_condition(selinstr->cond);
     }
-    freenull(selinstr);
+    free(selinstr);
 }
 
 struct CrtInstr *crtinstr_init()
@@ -85,10 +82,10 @@ struct CrtInstr *crtinstr_init()
 
 void free_crtinstr(struct CrtInstr *crtinstr)
 {
-    freenull(crtinstr->table);
+    free(crtinstr->table);
     free_charray(crtinstr->columns);
     free_charray(crtinstr->types);
-    freenull(crtinstr);
+    free(crtinstr);
 }
 
 struct AddInstr *addinstr_init()
@@ -103,8 +100,32 @@ struct AddInstr *addinstr_init()
 
 void free_addinstr(struct AddInstr *addinstr)
 {
-    freenull(addinstr->table);
+    free(addinstr->table);
     free_charray(addinstr->columns);
     free_charray(addinstr->values);
-    freenull(addinstr);
+    free(addinstr);
+}
+
+instr *unknowninstr_init()
+{
+    instr *instr = malloc(sizeof(instr));
+    instr->type = unknownInstrType;
+    return instr;
+}
+
+struct condition *condition_init()
+{
+    struct condition *cond = malloc(sizeof(struct condition));
+    cond->col = 0;
+    cond->val = 0;
+    return cond;
+}
+
+void free_condition(struct condition *cond)
+{
+    free(cond->val);
+    cond->val = NULL;
+    free(cond->col);
+    cond->col = NULL;
+    free(cond);
 }

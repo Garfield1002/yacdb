@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <signal.h>
 
 #include <string.h>
 #include "../utils/utils.h"
@@ -15,11 +16,21 @@
 
 int nb_threads = 0;
 sem_t semaphore;
+int socket_desc;
+
+void sigintHandler(int sig_num)
+{
+
+  sem_destroy(&semaphore);
+  close(socket_desc);
+
+  printf("\nSERVER SHUTDOWN\n");
+  exit(0);
+}
 
 // Configuration de la socket réseau, retourne le file descriptor de la socket
 int configure_socket()
 {
-  int socket_desc;
   /*begin hide*/
   struct sockaddr_in server;
 
@@ -31,7 +42,7 @@ int configure_socket()
 
   // Configuration des informations concernant sur la socket
   server.sin_family = AF_INET;
-  server.sin_addr.s_addr = INADDR_ANY;
+  server.sin_addr.s_addr = htonl(0x7f000001);
   server.sin_port = htons(SERVER_PORT);
 
   // Association de la socket a un port et adresse
@@ -63,7 +74,7 @@ void exit_thread(int socket_desc)
 
 // Passage des commandes à la base de données par un pipe
 // Renvoi des réponses au client par la socket réseau
-void process_communication(int socket_desc)
+void process_communication(int thread_socket)
 {
   /*begin hide*/
   char **args;
@@ -74,87 +85,80 @@ void process_communication(int socket_desc)
   // rfds contient les descripteurs à surveiller
   fd_set rfds;
   FD_ZERO(&rfds);
-  FD_SET(socket_desc, &rfds);
+  FD_SET(thread_socket, &rfds);
 
   // on configure le timeout à 60s
   struct timeval timeout;
-  timeout.tv_sec = 60;
-  timeout.tv_usec = 0;
-
 
   while (1)
   {
-    // Attend jusqu'à 60s qu'il y ait un message dans la socket
-    ready = select(socket_desc + 1, &rfds, NULL, NULL, &timeout);
+    timeout.tv_sec = 5;
+    timeout.tv_usec = 0;
+    // Wait until socket ready, with timeout
+    ready = select(thread_socket + 1, &rfds, NULL, NULL, &timeout);
     if (ready == -1)
     {
       perror("select()");
-      exit_thread(socket_desc);
+      exit_thread(thread_socket);
     }
     else if (ready == 0)
     {
       puts("Client timeout");
-      exit_thread(socket_desc);
+      exit_thread(thread_socket);
     }
 
     // Lecture dans la socket
     memset(line, 0, LINE_SIZE);
-    ready = read(socket_desc, line, LINE_SIZE);
-    if (DEBUG)
-      printf("server: Commande reçue: %s\n\n", line);
+    ready = read(thread_socket, line, LINE_SIZE);
+
+    DEBUG_PRINT("server: Commande reçue: --%s--\n\n", line);
 
     if (ready < 0 || strlen(line) == 0)
     {
       // Déconnexion
-      exit_thread(socket_desc);
+      exit_thread(thread_socket);
     }
 
-    // pipe(fds);
-    // On incrémente le sémaphore
+    // Taking the semaphore
     if (sem_wait(&semaphore) < 0)
       exit_msg("Attente du sémaphore: ", 1);
-    if (DEBUG)
-      puts("server: prise du sémaphore");
-    // sleep(10);
-    // pid_t pid = fork();
-    // if (pid == -1) exit_msg("Fork: ", 1);
+    DEBUG_PRINT("server: prise du sémaphore");
 
-    // if (pid == 0) {
-    // Processus fils
+    pipe(fds);                     // In via fds[1], out via fds[0]
+    FILE *f = fdopen(fds[1], "w"); // file for easy response management
 
-    // Connection du pipe à stdout
-    // dup2(fds[1], STDOUT_FILENO);
-    // close(fds[0]);
-    // close(fds[1]);
+    InstrArray *instrarray = parse_user_input(line);
+    if (instrarray)
+    {
+      dump_instrarray(f, instrarray);
+      /*
+        YACDB management here
+      */
+      free_instrarray(instrarray);
+      instrarray = NULL;
+    }
+    else
+    {
+      // Should be impossible to reach
+      fprintf(f, "ERR: parsing failed");
+    }
 
+    fclose(f);
 
-    // execv(parser_bin, args);
-    // } else {
-    // Processus père
-
-    // Connection du pipe à stdin
-    // close(fds[1]);
-    // wait(NULL);
-
-    instr *instr = parse_instr(line);
-    if (instr)
-      dump_instr(instr);
-
-    // On rend le sémaphore
+    // Free the semaphore
     if (sem_post(&semaphore) < 0)
       exit_msg("Retour du sémaphore: ", 1);
-    if (DEBUG)
-      puts("server: libération du sémaphore");
+    DEBUG_PRINT("server: libération du sémaphore");
 
-    // Lecture du processus bdd
+    // Reading answer from pipe
     memset(answer, 0, REPLY_SIZE);
     read(fds[0], answer, REPLY_SIZE);
-    if (DEBUG)
-      printf("server: Réponse reçue: \n%s\n", answer);
-    // Passage des messages à la socket
-    write(socket_desc, answer, REPLY_SIZE);
+    DEBUG_PRINT("server: Réponse reçue: \n%s\n", answer);
+
+    // Writing answer to client
+    write(thread_socket, answer, REPLY_SIZE);
     close(fds[0]);
-    // }
+    close(fds[1]);
   }
   /*end hide*/
 }
@@ -169,7 +173,7 @@ void *process_communication_thread(void *arg)
 
 int main(int argc, char **argv)
 {
-  int socket_desc;
+  signal(SIGINT, sigintHandler); // close socket on interrupt
   int new_socket;
   /*begin hide*/
   int c;
