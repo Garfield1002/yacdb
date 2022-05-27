@@ -32,12 +32,24 @@ struct node
 
 typedef struct node *btree;
 
-btree yabcreate(void);
+typedef struct dataarray {
+  struct data **data;
+  int size;
+} dataarray;
 
-btree yabinsert(btree tree, struct key_value key_val);
+btree
+yabcreate(void);
 
-struct data *
+int
+yabinsert(btree tree,struct key_value key_val);
+
+struct data*
 yabsearch(btree tree, int key);
 
-btree yabdelete(btree tree, int key);
-void node_to_string(struct node *nod);
+void
+yabgetall(btree tree, dataarray *allfound);
+
+int
+yabdelete(btree tree, int key);
+void
+node_to_string(struct node* nod);
