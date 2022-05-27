@@ -3,13 +3,18 @@
 
 typedef size_t Page;
 
+#define YACDB_FILE_NAME "yac.db"
+#define YACDB_SIGNATURE "YACDB format"
+#define YACDB_PAGE_SIZE 512
+#define YACDB_DEFAULT_CACHE_SIZE 10
+
 struct yacdb_header
 {
     char signature[13];
     unsigned short page_size;
-    char reserved_space_byte;
 
     unsigned int change_counter;
+
     Page nb_pages;
     unsigned int default_cache_size;
 

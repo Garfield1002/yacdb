@@ -52,7 +52,7 @@ struct node *read_node(size_t addr);
 /**
  * @brief Writes a node to disk (or cache) at a given address. If an error occurs returns -1
  */
-// TODO: Implement
+// TODO: Finish this
 int write_node(struct node *node, size_t addr);
 
 /**
@@ -64,4 +64,9 @@ int remove_node(size_t addr);
 /**
  * @brief Creates an address for a new node. If an error occurs returns -1
  */
-int create_addr();
+Page create_addr();
+
+/**
+ * @brief initializes the database
+ */
+int init_db();

@@ -1,5 +1,5 @@
 #include <string.h>
-// #include <unistd.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <assert.h>
 #include "diskio.h"
@@ -46,7 +46,7 @@ void *read_page(struct yacdb *db, size_t addr)
         return NULL;
     }
 
-    if (fread(buf, size, 1, db->file) != size)
+    if (fread(buf, size, 1, db->file) != 1)
     {
         free(buf);
         printf("ERR read_at: Failed to read\n");
@@ -146,7 +146,7 @@ int get_overflow_data(Page page, struct overflow_data *data, struct linked_overf
     {
         free(history);
         printf("ERR get_overflow_data: Failed to allocate data\n");
-        return NULL;
+        return -1;
     }
 
     if (memcpy(data->data, (char *)raw + sizeof(struct overflow_header), header->size) == NULL)
@@ -361,6 +361,7 @@ struct node *read_node(size_t addr)
 
             if (tlh->overflow != 0)
             {
+                printf("Overflow: %zu\n", tlh->overflow);
                 if (get_tl_overflow(tlh->overflow, node->key_vals[i]) == -1)
                 {
                     printf("ERR read_node: Failed to get overflow data\n");
@@ -392,7 +393,14 @@ struct node *read_node(size_t addr)
 int save_header()
 {
     size_t size = sizeof(struct yacdb_header);
-    if (fwrite(db.header, size, 1, db.file) != size)
+
+    if (fseek(db.file, 0, SEEK_SET) == -1)
+    {
+        printf("ERR save_header: Failed to seek\n");
+        return -1;
+    }
+
+    if (fwrite(db.header, size, 1, db.file) != 1)
     {
         printf("ERR write_at: Failed to write\n");
         return -1;
@@ -406,13 +414,15 @@ int save_header()
  * @brief Finds the first available page in the file. If there is a free page available it is removed from the free page list and returned. The necessary changes will be made to the file.
  * @return the page number or -1 if an error occurred.
  */
-int create_addr()
+Page create_addr()
 {
+    Page page;
+
     // Is a free page available?
     if (db.header->nb_free_pages > 0)
     {
         // If so, we can return it
-        int page = db.header->fst_free_page;
+        page = db.header->fst_free_page;
 
         // Set the first free page to the next free page
         // Reading the page is OK as it will probably need to be in cache
@@ -431,28 +441,20 @@ int create_addr()
 
         // Remove the page from the free page list
         db.header->nb_free_pages--;
+    }
+    else
+    {
+        // If not, we need to allocate a new page
+        page = db.header->nb_pages++;
 
-        // Save the changes
         // TODO: CACHE
-        if (save_header() == -1)
+
+        if (ftruncate(fileno(db.file), db.header->page_size * db.header->nb_pages) == -1)
         {
-            printf("ERR find_page: Failed to save header\n");
+            printf("ERR find_page: Failed to resize file\n");
             return -1;
         }
-
-        return page;
     }
-
-    // If not, we need to allocate a new page
-    int page = ++db.header->nb_pages;
-
-    // TODO: CACHE
-    // Resize the file
-    // if (ftruncate(db->file, db->header->page_size * db.header->nb_pages) == -1)
-    // {
-    //     printf("ERR find_page: Failed to resize file\n");
-    //     return -1;
-    // }
 
     // Save the changes
     // TODO: CACHE
@@ -461,6 +463,8 @@ int create_addr()
         printf("ERR find_page: Failed to save header\n");
         return -1;
     }
+
+    printf("INFO find_page: Page %zu created\n", page);
 
     return page;
 }
@@ -552,14 +556,23 @@ int free_linked_overflow_pages(struct linked_overflow *overflow)
     return 0;
 }
 
-int write_overflow(void *value, size_t size, struct linked_overflow *overflow)
+int write_overflow(void *value, size_t size, struct linked_overflow **overflow_ptr)
 {
-    if (overflow == NULL)
+    if (*overflow_ptr == NULL)
     {
-        overflow = (struct linked_overflow *)malloc(sizeof(struct linked_overflow));
-        overflow->next = NULL;
-        overflow->page = create_addr();
+        *overflow_ptr = (struct linked_overflow *)malloc(sizeof(struct linked_overflow));
+
+        if (*overflow_ptr == NULL)
+        {
+            printf("ERR write_overflow: Failed to allocate memory\n");
+            return -1;
+        }
+
+        (*overflow_ptr)->next = NULL;
+        (*overflow_ptr)->page = create_addr();
     }
+
+    struct linked_overflow *overflow = *overflow_ptr;
 
     void *rpage = malloc(db.header->page_size);
 
@@ -574,7 +587,8 @@ int write_overflow(void *value, size_t size, struct linked_overflow *overflow)
     if (size > actual_size)
     {
         // use a new overflow page
-        write_overflow((char *)value + actual_size, size - actual_size, overflow->next);
+        write_overflow((char *)value + actual_size, size - actual_size, &(overflow->next));
+
         *(Page *)rpage = overflow->next->page;
     }
     else
@@ -586,7 +600,7 @@ int write_overflow(void *value, size_t size, struct linked_overflow *overflow)
             return -1;
         }
 
-        *(Page *)rpage = NULL;
+        *(Page *)rpage = 0;
     }
 
     if (memcpy((char *)rpage + sizeof(Page), value, actual_size) != (char *)rpage + sizeof(Page))
@@ -627,7 +641,7 @@ int write_tl_node(struct node *node, size_t addr)
     ((struct btree_header *)rpage)->right_pointer = 0;
 
     // char* is used to do pointer arithmetic
-    void *cell_ptr = (char *)rpage + sizeof(struct btree_header) + sizeof(size_t) * node->nb_keys;
+    void *cell_ptr = (char *)rpage + sizeof(struct btree_header);
 
     for (size_t i = 0; i < node->nb_keys; i++)
     {
@@ -640,7 +654,18 @@ int write_tl_node(struct node *node, size_t addr)
         {
             cell->size = available_size;
 
-            write_overflow((char *)node->key_vals[i]->value + cell->size, node->key_vals[i]->size - cell->size, node->key_vals[i]->overflow);
+            write_overflow((char *)node->key_vals[i]->value + cell->size, node->key_vals[i]->size - cell->size, &(node->key_vals[i]->overflow));
+        }
+        else
+        {
+            // remove all the overflow pages
+            if (free_linked_overflow_pages(node->key_vals[i]->overflow) == -1)
+            {
+                printf("ERR write_overflow: Failed to free overflow pages\n");
+                return -1;
+            }
+
+            cell->overflow = 0;
         }
 
         available_size -= cell->size;
@@ -661,6 +686,104 @@ int write_tl_node(struct node *node, size_t addr)
     }
 
     free(rpage);
+
+    return 0;
+}
+
+int write_node(struct node *node, size_t addr)
+{
+    switch (node->type)
+    {
+    case NODE_TYPE_TABLE_LEAF:
+        return write_tl_node(node, addr);
+    default:
+        printf("ERR write_node: Unknown node type\n");
+        return -1;
+    }
+}
+
+int init_db()
+{
+    FILE *file;
+    FILE *temp;
+
+    // Checks if the database file exists
+    if ((file = fopen(YACDB_FILE_NAME, "r+")))
+    {
+        db.file = file;
+
+        // Reads the header
+        db.header = (struct yacdb_header *)malloc(sizeof(struct yacdb_header));
+
+        if (db.header == NULL)
+        {
+            printf("ERR init_db: Failed to allocate memory\n");
+            return -1;
+        }
+        if (fseek(db.file, 0, SEEK_SET))
+        {
+            printf("ERR init_db: Failed to seek\n");
+            return -1;
+        };
+
+        if (fread(db.header, sizeof(struct yacdb_header), 1, db.file) != 1)
+        {
+            printf("ERR init_db: Failed to read header\n");
+            return -1;
+        }
+    }
+    else
+    {
+        // Creates the database file
+        if (!(file = fopen(YACDB_FILE_NAME, "w+")))
+        {
+            printf("ERR init_db: Failed to create database file\n");
+            return -1;
+        }
+
+        if (fclose(file))
+        {
+            printf("ERR init_db: Failed to close file\n");
+            return -1;
+        }
+
+        if (!(file = fopen(YACDB_FILE_NAME, "r+")))
+        {
+            printf("ERR init_db: Failed to open file\n");
+            return -1;
+        }
+
+        db.header = (struct yacdb_header *)malloc(sizeof(struct yacdb_header));
+
+        if (db.header == NULL)
+        {
+            printf("ERR init_db: Failed to allocate memory\n");
+            return -1;
+        }
+
+        db.file = file;
+
+        strcpy(db.header->signature, YACDB_SIGNATURE);
+
+        db.header->page_size = YACDB_PAGE_SIZE;
+
+        db.header->change_counter = 0;
+
+        db.header->nb_pages = 1;
+        db.header->default_cache_size = YACDB_DEFAULT_CACHE_SIZE;
+
+        db.header->nb_free_pages = 0;
+        db.header->fst_free_page = 0;
+
+        // Resize the file
+        if (ftruncate(fileno(db.file), db.header->page_size * db.header->nb_pages) == -1)
+        {
+            printf("ERR find_page: Failed to resize file\n");
+            return -1;
+        }
+
+        save_header();
+    }
 
     return 0;
 }
