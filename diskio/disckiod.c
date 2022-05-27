@@ -43,7 +43,7 @@ void dump_node(struct node *node)
     {
         printf("  Key %zu: %d\n", i, node->key_vals[i]->key);
     }
-    for (size_t i = 0; i < node->nb_keys + 1; i++)
+    for (size_t i = 0; i < node->nb_keys; i++)
     {
         printf("  Child %zu: %zu\n", i, node->child_addrs[i]);
     }
@@ -55,7 +55,8 @@ void dump_node(struct node *node)
             printf("  Value %zu: %zu\n", i, node->key_vals[i]->value);
 
             printf("  Overflow:\n");
-            dump_linked_overflow(node->key_vals[i]->overflow);
+            // dump_linked_overflow(node->key_vals[i]->overflow);
+            // printf("  done;\n");
         }
     }
 }

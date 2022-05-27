@@ -4,7 +4,9 @@
 #include "../schema/record.h"
 #include "dbfio.h"
 
-#define ORDER 10
+#define ORDER 5
+
+typedef unsigned long Key;
 
 struct linked_overflow
 {
@@ -14,10 +16,11 @@ struct linked_overflow
 
 struct key_value
 {
-    int key;
+    Key key;
     void *value;
     size_t size;
 
+    // Private field please ignore
     struct linked_overflow *overflow;
 };
 

@@ -476,13 +476,23 @@ Page create_addr()
 // TODO: Cache
 int write_page(size_t addr, void *rpage)
 {
-    if (fseek(db.file, addr * db.header->page_size, SEEK_SET) == -1)
+
+    size_t offset = addr * db.header->page_size;
+    size_t size = db.header->page_size;
+
+    if (addr == 0)
+    {
+        offset += sizeof(struct yacdb_header);
+        size -= sizeof(struct yacdb_header);
+    }
+
+    if (fseek(db.file, offset, SEEK_SET) == -1)
     {
         printf("ERR write_page: Failed to seek\n");
         return -1;
     }
 
-    if (fwrite(rpage, db.header->page_size, 1, db.file) != 1)
+    if (fwrite(rpage, size, 1, db.file) != 1)
     {
         printf("ERR write_page: Failed to write\n");
         return -1;
@@ -626,15 +636,22 @@ int write_tl_node(struct node *node, size_t addr)
     size_t min_size = sizeof(struct btree_header)                      // the header
                       + sizeof(struct tl_cell_header) * node->nb_keys; // the key values
 
+    size_t page_size = db.header->page_size;
+
+    if (addr == 0)
+    {
+        page_size -= sizeof(struct yacdb_header);
+    }
+
     if (min_size > db.header->page_size)
     {
         printf("ERR write_tl_node: Node is too big\n");
         return -1;
     }
 
-    size_t available_size = db.header->page_size - min_size;
+    size_t available_size = page_size - min_size;
 
-    void *rpage = malloc(db.header->page_size);
+    void *rpage = malloc(page_size);
 
     ((struct btree_header *)rpage)->page_type = NODE_TYPE_TABLE_LEAF;
     ((struct btree_header *)rpage)->nb_cells = node->nb_keys;

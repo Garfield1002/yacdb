@@ -13,27 +13,27 @@
 
 struct record
 {
-    size_t type;
+    unsigned char type;
     void *data;
 };
 
 enum record_type
 {
-    RECORD_TYPE_NULL,
-    RECORD_TYPE_CHAR,
-    RECORD_TYPE_SHORT,
-    RECORD_TYPE_INT,
-    RECORD_TYPE_LONG,
-    RECORD_TYPE_FLOAT,
-    RECORD_TYPE_0,
-    RECORD_TYPE_1,
+    RECORD_TYPE_NULL = 0,
+    RECORD_TYPE_CHAR = 1,
+    RECORD_TYPE_SHORT = 2,
+    RECORD_TYPE_INT = 3,
+    RECORD_TYPE_LONG = 4,
+    RECORD_TYPE_FLOAT = 5,
+    RECORD_TYPE_0 = 6,
+    RECORD_TYPE_1 = 7,
 };
 
-#define LAST_RECORD_TYPE RECORD_TYPE_1
+#define LAST_RECORD_TYPE 7
 
 size_t record_size(struct record *record);
 
-char *record_get_char(struct record *record);
+int record_get_char(struct record *record, char **buffer);
 short *record_get_short(struct record *record);
 int *record_get_int(struct record *record);
 long *record_get_long(struct record *record);
@@ -46,3 +46,13 @@ struct record *record_from_int(int *data);
 struct record *record_from_long(long *data);
 struct record *record_from_float(float *data);
 struct record *record_from_string(char **data);
+
+/**
+ * @brief Takes a list of records and returns a single buffer that is the concatenation of all the records.
+ *
+ * @param records The list of records
+ * @param nb_records The number of records in the list
+ * @param size The size of the buffer
+ * @param buffer The buffer to be written to
+ */
+int compress_records(struct record *records, size_t nb_records, size_t *size, void **buffer);

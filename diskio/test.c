@@ -49,7 +49,7 @@ void test_create_overflow_node(Page addr)
 
 int main()
 {
-
+    printf("AAAAAAAAAAAAAAAAA");
     init_db();
 
     dump_header();
