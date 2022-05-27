@@ -1,11 +1,9 @@
-/* Type of the node, either it's internal or a leaf */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-/*typedef enum {Node_branch, Node_leaf} NodeType;*/
 
 #define ORDER 5
 
@@ -51,5 +49,9 @@ yabgetall(btree tree, dataarray *allfound);
 
 int
 yabdelete(btree tree, int key);
+
 void
 node_to_string(struct node* nod);
+
+void
+dump_tree(btree t);
