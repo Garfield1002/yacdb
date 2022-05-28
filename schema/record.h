@@ -34,11 +34,11 @@ enum record_type
 size_t record_size(struct record *record);
 
 int record_get_char(struct record *record, char **buffer);
+int record_get_string(struct record *record, char **buffer);
 short *record_get_short(struct record *record);
 int *record_get_int(struct record *record);
-long *record_get_long(struct record *record);
+int record_get_long(struct record *record, long *buffer);
 float *record_get_float(struct record *record);
-char **record_get_string(struct record *record);
 
 struct record *record_from_char(char *data);
 struct record *record_from_short(short *data);
@@ -55,4 +55,14 @@ struct record *record_from_string(char **data);
  * @param size The size of the buffer
  * @param buffer The buffer to be written to
  */
-int compress_records(struct record *records, size_t nb_records, size_t *size, void **buffer);
+int compress_records(struct record **records, size_t nb_records, size_t *size, void **buffer);
+
+/**
+ * @brief Extracts the nth record from a compressed group of records
+ */
+struct record *extract_record(void *buffer, size_t n);
+
+/**
+ * @brief Replaces the nth record from a compressed group of records
+ */
+int replace_record(void **buffer, size_t *size, size_t n, struct record *record);

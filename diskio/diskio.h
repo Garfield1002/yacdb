@@ -75,3 +75,5 @@ Page create_addr();
  * @brief initializes the database
  */
 int init_db();
+
+struct node *create_node();

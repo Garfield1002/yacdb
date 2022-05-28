@@ -49,7 +49,7 @@ int record_get_char(struct record *record, char **buffer)
         if (*buffer == NULL)
         {
             printf("Err record_get_char: Failed to allocate buffer\n");
-            return 0;
+            return -1;
         }
         **buffer = *(char *)record->data;
         return 0;
@@ -59,7 +59,7 @@ int record_get_char(struct record *record, char **buffer)
         if (*buffer == NULL)
         {
             printf("Err record_get_char: Failed to allocate buffer\n");
-            return 0;
+            return -1;
         }
         **buffer = 0;
         return 0;
@@ -69,13 +69,120 @@ int record_get_char(struct record *record, char **buffer)
         if (*buffer == NULL)
         {
             printf("Err record_get_char: Failed to allocate buffer\n");
-            return 0;
+            return -1;
         }
         **buffer = 1;
         return 0;
 
     default:
         return -1;
+    };
+}
+
+int record_get_long(struct record *record, long *buffer)
+{
+    int t = record->type;
+
+    switch (t)
+    {
+    case RECORD_TYPE_NULL:
+        *buffer = 0;
+        return 0;
+
+    case RECORD_TYPE_LONG:
+        *buffer = *(long *)record->data;
+        return 0;
+
+    case RECORD_TYPE_0:
+        *buffer = 0;
+        return 0;
+
+    case RECORD_TYPE_1:
+        *buffer = 1;
+        return 0;
+
+    default:
+        return -1;
+    };
+}
+
+int record_get_string(struct record *record, char **buffer)
+{
+    int t = record->type;
+
+    switch (t)
+    {
+    case RECORD_TYPE_NULL:
+        *buffer = "NULL";
+        return 0;
+
+    case RECORD_TYPE_CHAR:
+        *buffer = (char *)malloc(sizeof(char) * 2);
+        if (*buffer == NULL)
+        {
+            printf("Err record_get_string: Failed to allocate buffer\n");
+            return -1;
+        }
+        sprintf(*buffer, "%c", *(char *)record->data);
+        return 0;
+
+    case RECORD_TYPE_0:
+        *buffer = "0";
+        return 0;
+
+    case RECORD_TYPE_1:
+        *buffer = "1";
+        return 0;
+
+    case RECORD_TYPE_SHORT:
+        *buffer = (char *)malloc(sizeof(char) * 6);
+        if (*buffer == NULL)
+        {
+            printf("Err record_get_string: Failed to allocate buffer\n");
+            return -1;
+        }
+        sprintf(*buffer, "%hd", *(short *)record->data);
+        return 0;
+
+    case RECORD_TYPE_INT:
+        *buffer = (char *)malloc(sizeof(char) * 11);
+        if (*buffer == NULL)
+        {
+            printf("Err record_get_string: Failed to allocate buffer\n");
+            return -1;
+        }
+        sprintf(*buffer, "%d", *(int *)record->data);
+        return 0;
+
+    case RECORD_TYPE_LONG:
+        *buffer = (char *)malloc(sizeof(char) * 21);
+        if (*buffer == NULL)
+        {
+            printf("Err record_get_string: Failed to allocate buffer\n");
+            return -1;
+        }
+        sprintf(*buffer, "%ld", *(long *)record->data);
+        return 0;
+
+    case RECORD_TYPE_FLOAT:
+        *buffer = (char *)malloc(sizeof(char) * 21);
+        if (*buffer == NULL)
+        {
+            printf("Err record_get_string: Failed to allocate buffer\n");
+            return -1;
+        }
+        sprintf(*buffer, "%f", *(float *)record->data);
+        return 0;
+    default:
+        // otherwise, it's a string
+        *buffer = (char *)malloc(sizeof(char) * (t - LAST_RECORD_TYPE - 1));
+        if (*buffer == NULL)
+        {
+            printf("Err record_get_string: Failed to allocate buffer\n");
+            return -1;
+        }
+        strcpy(*buffer, (char *)record->data);
+        return 0;
     };
 }
 
@@ -317,7 +424,7 @@ struct record *record_from_string(char **data)
  * @param size The size of the buffer
  * @param buffer The buffer to be written to
  */
-int compress_records(struct record *records, size_t nb_records, size_t *size, void **buffer)
+int compress_records(struct record *records[], size_t nb_records, size_t *size, void **buffer)
 {
 
     *size = 0;
@@ -326,7 +433,7 @@ int compress_records(struct record *records, size_t nb_records, size_t *size, vo
 
     for (size_t i = 0; i < nb_records; i++)
     {
-        struct record *record = &records[i];
+        struct record *record = records[i];
 
         size_t r_size = record_size(record);
 
@@ -353,6 +460,104 @@ int compress_records(struct record *records, size_t nb_records, size_t *size, vo
 
         *size += r_size + 1;
     }
+
+    return 0;
+}
+
+/**
+ * @brief Extracts the nth record from a compressed group of records
+ */
+struct record *extract_record(void *buffer, size_t n)
+{
+    struct record *record = (struct record *)malloc(sizeof(struct record));
+
+    if (record == NULL)
+    {
+        printf("Err extract_record: Failed to allocate record\n");
+        return NULL;
+    }
+
+    // find the offset of the nth record
+    size_t offs = 0;
+
+    for (size_t i = 0; i < n; i++)
+    {
+        offs += record_size((struct record *)((char *)buffer + offs));
+        offs++; // record header
+    }
+
+    record->type = ((char *)buffer)[offs];
+    record->data = (void *)((char *)buffer + offs + 1);
+
+    return record;
+}
+
+int replace_record(void **buffer, size_t *size, size_t n, struct record *record)
+{
+    struct record *old_record = (struct record *)malloc(sizeof(struct record));
+
+    if (old_record == NULL)
+    {
+        printf("Err extract_record: Failed to allocate record\n");
+        return -1;
+    }
+
+    // find the offset of the nth record
+    size_t offs = 0;
+
+    for (size_t i = 0; i < n; i++)
+    {
+        offs += record_size((struct record *)((char *)(*buffer) + offs));
+        offs++; // record header
+    }
+
+    old_record->type = ((char *)(*buffer))[offs];
+    old_record->data = (void *)((char *)(*buffer) + offs + 1);
+
+    size_t r_size = record_size(record), old_r_size = record_size(old_record);
+
+    size_t new_size = *size - old_r_size + r_size;
+
+    void *new_buffer = realloc((*buffer), new_size);
+    if (new_buffer == NULL)
+    {
+        printf("Err replace_record: Failed to allocate buffer\n");
+        free(old_record);
+        return -1;
+    }
+
+    if (r_size != record_size(old_record))
+    {
+        // move the data after the old record to the end of the buffer
+        if (memmove(
+                (char *)new_buffer + offs + r_size,
+                (char *)new_buffer + offs + old_r_size,
+                *size - offs) == NULL)
+        {
+            printf("Err replace_record: Failed to move data\n");
+            free(old_record);
+            return -1;
+        };
+    }
+
+    char *r_type = (char *)new_buffer;
+
+    r_type[offs] = record->type;
+
+    if (r_size > 0)
+    {
+        if (memcpy((char *)new_buffer + offs + 1, record->data, r_size) == NULL)
+        {
+            printf("Err replace_record: Failed to copy data\n");
+            free(old_record);
+            return -1;
+        }
+    }
+
+    free(old_record);
+
+    *buffer = new_buffer;
+    *size = new_size;
 
     return 0;
 }

@@ -348,6 +348,7 @@ struct node *read_node(size_t addr)
     switch (page.btree_h->page_type)
     {
     case NODE_TYPE_TABLE_LEAF:
+        node->child_addrs[0] = page.btree_h->right_pointer;
 
         for (size_t i = 0; i < page.btree_h->nb_cells; i++)
         {
@@ -676,12 +677,12 @@ int write_tl_node(struct node *node, size_t addr)
 
     size_t available_size = page_size - min_size;
 
-    void *rpage = malloc(page_size);
+    void *rpage = calloc(page_size, 1);
 
     ((struct btree_header *)rpage)->parent_addr = node->parent_addr;
     ((struct btree_header *)rpage)->page_type = NODE_TYPE_TABLE_LEAF;
     ((struct btree_header *)rpage)->nb_cells = node->nb_keys;
-    ((struct btree_header *)rpage)->right_pointer = 0;
+    ((struct btree_header *)rpage)->right_pointer = node->child_addrs[0];
 
     // char* is used to do pointer arithmetic
     void *cell_ptr = (char *)rpage + sizeof(struct btree_header);
@@ -754,7 +755,7 @@ int write_ti_node(struct node *node, size_t addr)
 
     size_t available_size = page_size - min_size;
 
-    void *rpage = malloc(page_size);
+    void *rpage = calloc(page_size, 1);
 
     ((struct btree_header *)rpage)->parent_addr = node->parent_addr;
     ((struct btree_header *)rpage)->page_type = node->type;
@@ -778,8 +779,6 @@ int write_ti_node(struct node *node, size_t addr)
         Page *page_ptr = (Page *)cell_ptr;
 
         *page_ptr = node->child_addrs[i];
-
-        printf("%zu ", node->child_addrs[i]);
 
         cell_ptr = (char *)cell_ptr + sizeof(Page);
     }
@@ -893,4 +892,24 @@ int init_db()
     }
 
     return 0;
+}
+
+struct node *create_node()
+{
+    struct node *node = (struct node *)malloc(sizeof(struct node));
+
+    if (node == NULL)
+    {
+        printf("ERR create_node: Failed to allocate memory\n");
+        return NULL;
+    }
+
+    node->parent_addr = (Page)-1;
+    node->type = NODE_TYPE_TABLE_LEAF;
+    node->nb_keys = 0;
+
+    // The right pointer is set to -1 this is the rightemost child
+    node->child_addrs[0] = (Page)-1;
+
+    return node;
 }

@@ -59,6 +59,7 @@ Cursor *find_leaf(Page root, Key key)
     }
 
     cursor->node = read_node(root);
+
     if (cursor->node == NULL)
     {
         printf("Err find: Failed to read node.\n");
@@ -69,16 +70,10 @@ Cursor *find_leaf(Page root, Key key)
 
     while (!is_leaf(cursor->node))
     {
-        // print the current page
-        printf("%lu\n", cursor->page);
-
         while (cursor->cell < cursor->node->nb_keys)
         {
             if (key < cursor->node->key_vals[cursor->cell]->key)
             {
-                // step_in(cursor);
-                // continue;
-                printf("HERE\n");
                 break;
             }
 
@@ -88,6 +83,27 @@ Cursor *find_leaf(Page root, Key key)
     }
 
     return cursor;
+}
+
+int cursor_next(Cursor *cursor)
+{
+    cursor->cell++;
+
+    if (cursor->cell < cursor->node->nb_keys)
+    {
+        return 0;
+    }
+
+    if (cursor->node->child_addrs[0] == (Page)-1)
+    {
+        return -1;
+    }
+
+    cursor->cell = 0;
+    cursor->page = cursor->node->child_addrs[0];
+    cursor->node = read_node(cursor->node->child_addrs[0]);
+
+    return 0;
 }
 
 /**
@@ -172,6 +188,7 @@ int split_leaf_node(struct node *node, Key *key, Page *page)
     }
 
     new_node->type = NODE_TYPE_TABLE_LEAF;
+    new_node->child_addrs[0] = (Page)-1;
 
     *key = node->key_vals[ORDER / 2]->key;
 
@@ -182,12 +199,12 @@ int split_leaf_node(struct node *node, Key *key, Page *page)
         node->key_vals[i] = NULL;
     }
 
-    // Copy the child addresses original node to the new node and remove them from the original node.
-    for (size_t i = ORDER / 2; i < ORDER + 1; i++)
-    {
-        new_node->child_addrs[i - ORDER / 2] = node->child_addrs[i];
-        node->child_addrs[i] = 0;
-    }
+    // // Copy the child addresses original node to the new node and remove them from the original node.
+    // for (size_t i = ORDER / 2; i < ORDER + 1; i++)
+    // {
+    //     new_node->child_addrs[i - ORDER / 2] = node->child_addrs[i];
+    //     node->child_addrs[i] = 0;
+    // }
 
     // sets the number of keys in both nodes.
     node->nb_keys = ORDER / 2;
@@ -202,7 +219,16 @@ int split_leaf_node(struct node *node, Key *key, Page *page)
         printf("Err split_internal_node: Failed to create a new page.\n");
         return -1;
     }
-    return write_node(new_node, *page);
+
+    node->child_addrs[0] = *page;
+
+    if (write_node(new_node, *page) == -1)
+    {
+        printf("Err split_internal_node: Failed to write new node.\n");
+        return -1;
+    }
+
+    return 0;
 }
 
 struct key_value *create_kv(Key key, void *value, size_t size)
@@ -365,9 +391,6 @@ int insert_internal(Page addr, Key key, Page value)
 int insert(Page root, struct key_value *kv)
 {
     Cursor *cursor = find_leaf(root, kv->key);
-    printf("HERE\n");
-
-    printf("insert: leaf_addr: %lu\n", cursor->page);
 
     if (cursor == NULL)
     {
