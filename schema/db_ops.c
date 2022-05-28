@@ -4,7 +4,9 @@
 #include "../diskio/diskiod.h"
 #include "../diskio/dbfio.h"
 #include "cursor.h"
+#include "cursor_bt.h"
 #include <string.h>
+#include <assert.h>
 
 /**
  * @brief Creates the TABLES table
@@ -25,7 +27,7 @@ int init_TABLES_table()
 
     Key row_id = 0;
 
-    struct key_value kv = {.key = row_id};
+    struct key_value kv = {.key = row_id, .overflow = NULL};
 
     row_id++;
 
@@ -65,152 +67,212 @@ int init_TABLES_table()
     return 0;
 }
 
+int init_TABLES_NAME_table()
+{
+    Page root_page = TABLES_NAMES;
+
+    struct node *root_node = create_node();
+
+    root_node->type = NODE_TYPE_INDEX_LEAF;
+
+    root_node->nb_keys = 1;
+    root_node->key_vals[0] = (struct key_value *)calloc(sizeof(struct key_value), 1);
+
+    root_node->key_vals[0]->key = TABLES;
+    root_node->key_vals[0]->size = 0;
+    root_node->key_vals[0]->value = NULL;
+    root_node->key_vals[0]->overflow = NULL;
+
+    if (write_node(root_node, root_page) == -1)
+    {
+        printf("Error: Could not write node to disk.\n");
+        free(root_node);
+        return -1;
+    }
+    free(root_node);
+    return 0;
+}
+
 /**
  * @brief Creates the COLUMNS table
  */
-
 int init_COLUMNS_table()
 {
-    struct node table_root;
 
-    table_root.type = NODE_TYPE_TABLE_LEAF;
-
-    table_root.nb_keys = 3;
-
-    table_root.key_vals[0] = (struct key_value *)malloc(sizeof(struct key_value));
-
-    if (table_root.key_vals[0] == NULL)
+    // Create the root node
     {
-        printf("Err initialize_tables: Failed to allocate buffer\n");
-        return -1;
+        Page root_page = COLUMNS;
+
+        Key next_id = 0;
+
+        char *table_name = "COLUMNS";
+
+        struct record *rec[3];
+        rec[0] = record_from_string(&table_name);
+        rec[1] = record_from_long((long *)&root_page);
+        rec[2] = record_from_long((long *)&next_id);
+
+        if (rec[0] == NULL || rec[1] == NULL || rec[2] == NULL)
+        {
+            printf("Err init_COLUMNS_table: Failed to create record\n");
+            return -1;
+        }
+
+        Key id = insert_row(TABLES, rec, 3);
+
+        assert(id == COLUMNS);
+
+        for (size_t i = 0; i < 3; i++)
+        {
+            free(rec[i]);
+        }
+
+        struct node *root_node = create_node();
+
+        if (write_node(root_node, root_page) == -1)
+        {
+            free(root_node);
+            printf("Err init_COLUMNS_table: Failed to write node\n");
+            return -1;
+        }
+
+        free(root_node);
+
+        // add the table name to the TABLES_NAMES index tree
+        insert_bt(TABLES_NAMES, COLUMNS, 0, TABLES);
     }
 
-    table_root.key_vals[0]->key = 0;
-    //     `_idx`: the index of the column
-    //  * - `table_idx`: the index of the table
-    //  * - `name`: the name of the column
-    //  * - `_type`: the type of the column
-    //  * - `_offset`: the offset of the column in the table
-    //  * - `_root`
+    // Insert the TABLES_NAMES column into the COLUMNS table
+    {
 
-    long table_idx = 0;
-    char *name = "NAME";
-    char _type = FIELD_TYPE_STRING;
-    char _offset = 0;
-    long _root = 2;
+        Key table_idx = TABLES;
+        char *name = "NAMES";
+        short _offset = 0;
+        Page _root = TABLES_NAMES;
 
-    struct record
-        *r_table_idx = record_from_long(&table_idx),
-        *r_name = record_from_string(&name),
-        *r_type = record_from_char(&_type),
-        *r_offset = record_from_char(&_offset),
-        *r_root = record_from_long(&_root);
+        struct record *rec[4];
+        rec[0] = record_from_long((long *)&table_idx);
+        rec[1] = record_from_string(&name);
+        rec[2] = record_from_short(&_offset);
+        rec[3] = record_from_long((long *)&_root);
 
-    struct record *entry[5] = {
-        r_table_idx,
-        r_name,
-        r_type,
-        r_offset,
-        r_root};
+        if (rec[0] == NULL || rec[1] == NULL || rec[2] == NULL || rec[3] == NULL)
+        {
+            printf("Err init_COLUMNS_table: Failed to create record\n");
+            return -1;
+        }
 
-    compress_records(entry, 5, &table_root.key_vals[0]->size, &table_root.key_vals[0]->value);
+        Key id = insert_row(COLUMNS, rec, 4);
 
-    free(r_table_idx->data);
-    free(r_table_idx);
+        for (size_t i = 0; i < 4; i++)
+        {
+            free(rec[i]);
+        }
+    }
 
-    free(r_name->data);
-    free(r_name);
+    // Insert the COLUMNS_TIDX column into the COLUMNS table
+    {
 
-    free(r_type->data);
-    free(r_type);
+        Key table_idx = COLUMNS;
+        char *name = "TABLE_IDX";
+        short _offset = 0;
+        Page _root = COLUMNS_TIDX;
 
-    free(r_offset->data);
-    free(r_offset);
+        struct record *rec[4];
+        rec[0] = record_from_long((long *)&table_idx);
+        rec[1] = record_from_string(&name);
+        rec[2] = record_from_short(&_offset);
+        rec[3] = record_from_long((long *)&_root);
 
-    free(r_root->data);
-    free(r_root);
+        if (rec[0] == NULL || rec[1] == NULL || rec[2] == NULL || rec[3] == NULL)
+        {
+            printf("Err init_COLUMNS_table: Failed to create record\n");
+            return -1;
+        }
 
-    table_root.key_vals[1] = (struct key_value *)malloc(sizeof(struct key_value));
-    table_root.key_vals[1]->key = 1;
+        Key id = insert_row(COLUMNS, rec, 4);
 
-    table_idx = 1;
-    name = "TABLE_IDX";
-    _type = FIELD_TYPE_LONG;
-    _offset = 0;
-    _root = 3;
+        for (size_t i = 0; i < 4; i++)
+        {
+            free(rec[i]);
+        }
+    }
 
-    r_table_idx = record_from_long(&table_idx),
-    r_name = record_from_string(&name),
-    r_type = record_from_char(&_type),
-    r_offset = record_from_char(&_offset),
-    r_root = record_from_long(&_root);
+    // Insert the COLUMNS_NAMES column into the COLUMNS table
+    {
 
-    entry[0] = r_table_idx;
-    entry[1] = r_name;
-    entry[2] = r_type;
-    entry[3] = r_offset;
-    entry[4] = r_root;
+        Key table_idx = COLUMNS;
+        char *name = "NAMES";
+        short _offset = 1;
+        Page _root = COLUMNS_NAMES;
 
-    compress_records(entry, 5, &table_root.key_vals[1]->size, &table_root.key_vals[1]->value);
+        struct record *rec[4];
+        rec[0] = record_from_long((long *)&table_idx);
+        rec[1] = record_from_string(&name);
+        rec[2] = record_from_short(&_offset);
+        rec[3] = record_from_long((long *)&_root);
 
-    free(r_table_idx->data);
-    free(r_table_idx);
+        if (rec[0] == NULL || rec[1] == NULL || rec[2] == NULL || rec[3] == NULL)
+        {
+            printf("Err init_COLUMNS_table: Failed to create record\n");
+            return -1;
+        }
 
-    free(r_name->data);
-    free(r_name);
+        Key id = insert_row(COLUMNS, rec, 4);
 
-    free(r_type->data);
-    free(r_type);
+        for (size_t i = 0; i < 4; i++)
+        {
+            free(rec[i]);
+        }
+    }
+}
 
-    free(r_offset->data);
-    free(r_offset);
+int init_COLUMNS_TIDX_table()
+{
+    Page root_page = COLUMNS_TIDX;
 
-    free(r_root->data);
-    free(r_root);
+    struct node *root_node = create_node();
 
-    table_root.key_vals[2] = (struct key_value *)malloc(sizeof(struct key_value));
-    table_root.key_vals[2]->key = 2;
+    root_node->type = NODE_TYPE_INDEX_LEAF;
 
-    table_idx = 1;
-    name = "NAME";
-    _type = FIELD_TYPE_STRING;
-    _offset = 1;
-    _root = 4;
+    root_node->nb_keys = 0;
 
-    r_table_idx = record_from_long(&table_idx),
-    r_name = record_from_string(&name),
-    r_type = record_from_char(&_type),
-    r_offset = record_from_char(&_offset),
-    r_root = record_from_long(&_root);
+    if (write_node(root_node, root_page) == -1)
+    {
+        printf("Error: Could not write node to disk.\n");
+        free(root_node);
+        return -1;
+    }
+    free(root_node);
 
-    entry[0] = r_table_idx;
-    entry[1] = r_name;
-    entry[2] = r_type;
-    entry[3] = r_offset;
-    entry[4] = r_root;
+    insert_bt(COLUMNS_TIDX, 0, 0, COLUMNS);
+    insert_bt(COLUMNS_TIDX, 1, 0, COLUMNS);
+    insert_bt(COLUMNS_TIDX, 2, 0, COLUMNS);
+    return 0;
+}
 
-    compress_records(entry, 5, &table_root.key_vals[2]->size, &table_root.key_vals[2]->value);
+int init_COLUMNS_NAME_table()
+{
+    Page root_page = COLUMNS_NAMES;
 
-    free(r_table_idx->data);
-    free(r_table_idx);
+    struct node *root_node = create_node();
 
-    free(r_name->data);
-    free(r_name);
+    root_node->type = NODE_TYPE_INDEX_LEAF;
 
-    free(r_type->data);
-    free(r_type);
+    root_node->nb_keys = 0;
 
-    free(r_offset->data);
-    free(r_offset);
+    if (write_node(root_node, root_page) == -1)
+    {
+        printf("Error: Could not write node to disk.\n");
+        free(root_node);
+        return -1;
+    }
+    free(root_node);
 
-    free(r_root->data);
-    free(r_root);
-
-    int ret = write_node(&table_root, 1);
-
-    free(table_root.key_vals[0]);
-    free(table_root.key_vals[1]);
-    free(table_root.key_vals[2]);
+    insert_bt(COLUMNS_NAMES, 0, 1, COLUMNS);
+    insert_bt(COLUMNS_NAMES, 1, 1, COLUMNS);
+    insert_bt(COLUMNS_NAMES, 2, 1, COLUMNS);
+    return 0;
 }
 
 /**
@@ -239,7 +301,6 @@ int init_COLUMNS_table()
  * - `_idx`: the index of the column
  * - `table_idx`: the index of the table
  * - `name`: the name of the column
- * - `_type`: the type of the column
  * - `_offset`: the offset of the column in the table
  * - `_root`: the root page of the index tree associated with the column
  */
@@ -247,7 +308,29 @@ int initialize_tables()
 {
     init_db();
 
-    return init_TABLES_table();
+    printf("Initializing tables...\n");
+
+    if (db.header->nb_pages == 1)
+    {
+        printf("Creating OG tables...\n");
+        create_addr(); // 1
+        create_addr(); // 2
+        create_addr(); // 3
+        create_addr(); // 4
+
+        init_TABLES_table();
+
+        init_TABLES_NAME_table();
+        printf("HERE\n");
+
+        init_COLUMNS_table();
+
+        init_COLUMNS_TIDX_table();
+        init_COLUMNS_NAME_table();
+
+        return 1;
+    }
+    return 0;
 }
 
 void *get_row(Page root, Key key, Cursor **cursor)
@@ -371,6 +454,32 @@ Page get_table_addr(Key root_id)
     return next_id;
 }
 
+Key get_table_id(char *table_name)
+{
+    Key *keys;
+    size_t size;
+
+    struct record *r = record_from_string(&table_name);
+
+    find_all(TABLES_NAMES, r, 0, TABLES, &keys, &size);
+
+    free(r);
+
+    if (size == 0)
+    {
+        printf("Err get_table_id: No table found\n");
+        return -1;
+    }
+
+    if (size > 1)
+    {
+        printf("Err get_table_id: More than one table found\n");
+        return -1;
+    }
+
+    return keys[0];
+}
+
 /**
  * @brief Get the next available index in the table.
  */
@@ -415,7 +524,7 @@ Key insert_row(Key root_id, struct record **records, size_t size)
         return -1;
     }
 
-    struct key_value kv = {.key = row_id};
+    struct key_value kv = {.key = row_id, .overflow = NULL};
 
     if (compress_records(records, size, &kv.size, &kv.value) == -1)
     {
@@ -476,13 +585,24 @@ Page create_table(char *table_name)
 
     free(root_node);
 
+    // add the table name to the TABLES_NAMES index tree
+    insert_bt(TABLES_NAMES, id, 0, TABLES);
+
     return id;
 }
 
-char *select_row_columns(Key table, Key key, size_t columns[],
+char *select_row_columns(char *table_name, Key key, size_t columns[],
                          size_t num_columns)
 {
-    Page root = get_table_addr(table);
+    Key table_id = get_table_id(table_name);
+
+    if (table_id == (Key)-1)
+    {
+        printf("Err select_row_columns: Failed to get table id\n");
+        return NULL;
+    }
+
+    Page root = get_table_addr(table_id);
     Cursor *cursor;
 
     void *buffer = get_row(root, key, &cursor);
@@ -556,10 +676,19 @@ char *select_row_columns(Key table, Key key, size_t columns[],
     return result;
 }
 
-char *select_all(Key table, size_t columns[],
+char *select_all(char *table_name, size_t columns[],
                  size_t num_columns)
 {
-    Page root = get_table_addr(table);
+    Key table_id = get_table_id(table_name);
+
+    if (table_id == (Key)-1)
+    {
+        printf("Err select_row_columns: Failed to get table id\n");
+        return NULL;
+    }
+
+    Page root = get_table_addr(table_id);
+
     Cursor *cursor = create_at_start(root);
 
     if (cursor == NULL)

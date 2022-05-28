@@ -1,4 +1,4 @@
-FILES := ../diskio/disckiod.c ../diskio/diskio.c record.c db_ops.c test/test.c cursor.c
+FILES := ../diskio/disckiod.c ../diskio/diskio.c record.c db_ops.c test/test.c cursor.c cursor_bt.c
 OUT := test/test
 
 all:

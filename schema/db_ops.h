@@ -5,6 +5,9 @@
 
 #define TABLES 0
 #define COLUMNS 1
+#define TABLES_NAMES 2
+#define COLUMNS_TIDX 3
+#define COLUMNS_NAMES 4
 
 typedef unsigned short col_num_t;
 
@@ -37,7 +40,12 @@ struct record *get_n_record(Page root, Key key, size_t n);
 /**
  * @brief Get the table tree address of the given table.
  */
-Page get_table_addr(Key root_id);
+Page get_table_addr(Key table_id);
+
+/**
+ * @brief Get the table id from a table name
+ */
+Key get_table_id(char *table_name);
 
 /**
  * @brief Get the next available index in the table.
@@ -74,8 +82,8 @@ col_num_t get_column_offset(char *table_name, char *column_name);
  * @brief The backend for the SQL command
  * `SELECT col1, col2, col3 FROM TABLE WHERE key=value`
  */
-char *select_row_columns(Key table, Key key, size_t columns[],
+char *select_row_columns(char *table_name, Key key, size_t columns[],
                          size_t num_columns);
 
-char *select_all(Key table, size_t columns[],
+char *select_all(char *table_name, size_t columns[],
                  size_t num_columns);

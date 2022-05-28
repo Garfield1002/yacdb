@@ -4,6 +4,7 @@
 #include "../schema/record.h"
 #include "dbfio.h"
 
+// #define ORDER 4
 #define ORDER 4
 
 typedef unsigned long Key;

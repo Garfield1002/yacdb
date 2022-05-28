@@ -36,7 +36,7 @@ Cursor *create_at_start(Page root)
 void step_in(Cursor *cursor)
 {
     cursor->page = cursor->node->child_addrs[cursor->cell];
-    cursor->node = read_node(cursor->node->child_addrs[cursor->cell]);
+    cursor->node = read_node(cursor->page);
     if (cursor->node == NULL)
     {
         printf("Err step_in: Failed to read node.\n");
@@ -435,5 +435,6 @@ int insert(Page root, struct key_value *kv)
             return -1;
         }
     }
+
     return write_node(cursor->node, cursor->page);
 }

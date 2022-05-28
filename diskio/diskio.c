@@ -287,41 +287,6 @@ int read_tlcell(struct key_value *kv, void *rpage)
     return 0;
 }
 
-/**
- * @deprecated
- */
-int read_cells(struct node *node, struct btree_page *page)
-{
-    switch (page->btree_h->page_type)
-    {
-    case NODE_TYPE_TABLE_LEAF:
-        for (size_t i = 0; i < node->nb_keys; i++)
-        {
-            size_t offset = page->offsets[i];
-
-            node->key_vals[i] = (struct key_value *)malloc(sizeof(struct key_value));
-
-            if (read_tlcell(node->key_vals[i], page + offset) == -1)
-            {
-                // TODO: Free key_vals
-                printf("ERR read_cells: Failed to read tl cell\n");
-                return -1;
-            }
-        }
-        return 0;
-
-    case NODE_TYPE_TABLE_INTERIOR:
-        // TODO: Implement
-        printf("ERR read_cells: Interior node not implemented\n");
-        return 0;
-
-    default:
-        printf("ERR read_cells: Unknown node type\n");
-        printf("ERR read_cells: %d\n", page->btree_h->page_type);
-        return -1;
-    }
-}
-
 struct node *read_node(size_t addr)
 {
     struct node *node = (struct node *)malloc(sizeof(struct node));
@@ -353,18 +318,18 @@ struct node *read_node(size_t addr)
         for (size_t i = 0; i < page.btree_h->nb_cells; i++)
         {
             struct tl_cell_header *tlh = (struct tl_cell_header *)cell_ptr;
-            node->key_vals[i] = (struct key_value *)malloc(sizeof(struct key_value));
+            node->key_vals[i] = (struct key_value *)calloc(sizeof(struct key_value), 1);
 
             node->key_vals[i]->key = tlh->key;
             node->key_vals[i]->size = tlh->size;
-            node->key_vals[i]->value = malloc(tlh->size);
+            node->key_vals[i]->value = calloc(tlh->size, 1);
+            node->key_vals[i]->overflow = NULL;
 
             cell_ptr = (char *)cell_ptr + sizeof(struct tl_cell_header);
             node->key_vals[i]->value = memcpy(node->key_vals[i]->value, cell_ptr, tlh->size);
 
             if (tlh->overflow != 0)
             {
-                printf("Overflow: %zu\n", tlh->overflow);
                 if (get_tl_overflow(tlh->overflow, node->key_vals[i]) == -1)
                 {
                     printf("ERR read_node: Failed to get overflow data\n");
@@ -379,17 +344,20 @@ struct node *read_node(size_t addr)
 
         break;
 
+    case NODE_TYPE_INDEX_LEAF:
+    case NODE_TYPE_INDEX_INTERIOR:
     case NODE_TYPE_TABLE_INTERIOR:
         node->child_addrs[node->nb_keys] = page.btree_h->right_pointer;
 
         for (size_t i = 0; i < page.btree_h->nb_cells; i++)
         {
             struct tl_cell_header *tlh = (struct tl_cell_header *)cell_ptr;
-            node->key_vals[i] = (struct key_value *)malloc(sizeof(struct key_value));
+            node->key_vals[i] = (struct key_value *)calloc(sizeof(struct key_value), 1);
 
             node->key_vals[i]->key = tlh->key;
             node->key_vals[i]->size = 0;
             node->key_vals[i]->value = NULL;
+            node->key_vals[i]->overflow = NULL;
 
             cell_ptr = (char *)cell_ptr + sizeof(struct tl_cell_header);
             node->child_addrs[i] = *(Page *)cell_ptr;
@@ -798,6 +766,8 @@ int write_node(struct node *node, size_t addr)
 {
     switch (node->type)
     {
+    case NODE_TYPE_INDEX_LEAF:
+    case NODE_TYPE_INDEX_INTERIOR:
     case NODE_TYPE_TABLE_INTERIOR:
         return write_ti_node(node, addr);
     case NODE_TYPE_TABLE_LEAF:

@@ -25,7 +25,13 @@ enum record_type
     RECORD_TYPE_INT = 3,
     RECORD_TYPE_LONG = 4,
     RECORD_TYPE_FLOAT = 5,
+    /**
+     * @deprecated
+     */
     RECORD_TYPE_0 = 6,
+    /**
+     * @deprecated
+     */
     RECORD_TYPE_1 = 7,
 };
 
@@ -66,3 +72,11 @@ struct record *extract_record(void *buffer, size_t n);
  * @brief Replaces the nth record from a compressed group of records
  */
 int replace_record(void **buffer, size_t *size, size_t n, struct record *record);
+
+/**
+ * @brief Compares 2 records r1 r2.
+ * returns 0 if r1 == r2, -1 if r1 < r2, 1 if r1 > r2
+ *
+ * returns 2 if r1 and r2 are of different types
+ */
+int compare_r(struct record *r1, struct record *r2);

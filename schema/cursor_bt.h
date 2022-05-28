@@ -1,16 +1,14 @@
 #pragma once
 
+#include "record.h"
+#include "cursor.h"
 #include "../diskio/diskio.h"
 #include "../diskio/dbfio.h"
-#include "cursor.h"
 
-Cursor *create_at_start_bt(Page root);
+int insert_bt(Page root, Key key, size_t n, Page table);
 
-int insert_bt(Page root, struct key_value *kv);
-
-/**
- * @brief find the correct leaf node for a given key
- */
-Cursor *find_leaf_bt(Page root, Key key);
+Cursor *find_bt(Page root, struct record *key, size_t n, Page table);
 
 int cursor_next_bt(Cursor *cursor);
+
+int find_all(Page root, struct record *key_r, size_t n, Page table, Key **keys, size_t *size);

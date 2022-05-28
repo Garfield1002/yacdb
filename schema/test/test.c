@@ -1,5 +1,6 @@
 #include "../db_ops.h"
 #include "../cursor.h"
+#include "../cursor_bt.h"
 #include "../record.h"
 #include "../../diskio/diskiod.h"
 
@@ -13,12 +14,13 @@ void dump_record(struct record *r)
 void dump_tree(Page page)
 {
     struct node *node = read_node(page);
+
     printf("Dumping tree: \n");
     printf("  page: %lu\n", page);
     printf("  type: %u\n", node->type);
     printf("  nb_keys: %lu\n", node->nb_keys);
     printf("  keys: ");
-    for (int i = 0; i < node->nb_keys; i++)
+    for (size_t i = 0; i < node->nb_keys; i++)
     {
         printf("%lu ", node->key_vals[i]->key);
     }
@@ -43,13 +45,15 @@ void dump_tree(Page page)
     }
 }
 
-Key create_user(Key customer_table, char *first_name, char *last_name, long account_id)
+Key create_user(char *table_name, char *first_name, char *last_name, long account_id)
 {
     struct record *records[3];
     records[0] = record_from_string(&first_name);
     records[1] = record_from_string(&last_name);
     records[2] = record_from_long(&account_id);
-    Key id = insert_row(customer_table, records, 3);
+
+    Key root_id = get_table_id(table_name);
+    Key id = insert_row(root_id, records, 3);
 
     for (size_t i = 0; i < 3; i++)
     {
@@ -77,23 +81,40 @@ void bank_db()
     Key transactions_table = create_table("Transactions");
 
     printf("Creating indexes...\n");
-    create_user(customer_table, "John", "Doe", 12345);
-    create_user(customer_table, "Bob", "Marley", 89242);
-    create_user(customer_table, "Jane", "Doe", 54321);
-    create_user(customer_table, "Jill", "Doe", 2323);
-    create_user(customer_table, "Joe", "Doe", 65432);
-    create_user(customer_table, "Fred", "Johnson", 98765);
+    create_user("Customers", "John", "Doe", 12345);
+    create_user("Customers", "Bob", "Marley", 89242);
+    create_user("Customers", "Jane", "Doe", 54321);
+    create_user("Customers", "Jill", "Doe", 2323);
+    create_user("Customers", "Joe", "Doe", 65432);
+    create_user("Customers", "Fred", "Johnson", 98765);
 
     printf("Selecting data...\n");
+    printf("\n\nSELECT * FROM COLUMNS WHERE id = 5\n\n%s\n",
+           select_all("COLUMNS", (size_t[]){0, 1, 2, 3}, 4));
+
     printf("\n\nSELECT first_name, last_name FROM customers WHERE id = 5\n\n%s\n",
-           select_row_columns(customer_table, 5, (size_t[]){0, 1}, 2));
+           select_row_columns("Customers", 5, (size_t[]){0, 1}, 2));
 
     printf("\n\nSELECT last_name, first_name FROM customers\n\n%s",
-           select_all(customer_table, (size_t[]){1, 0}, 2));
+           select_all("Customers", (size_t[]){1, 0}, 2));
 
-    create_user(customer_table, "Jack", "Royer", 67294);
-    printf("\n\nINSERT INTO customers VALUES (Jack, Royer);\nSELECT first_name, last_name FROM customers\n\n%s",
-           select_all(customer_table, (size_t[]){0, 1}, 2));
+    create_user("Customers", "Jack", "Royer", 67294);
+    printf("\n\nINSERT INTO customers VALUES (Jack, Royer);\nSELECT first_name, last_name FROM customers\n\n%s\n\n",
+           select_all("Customers", (size_t[]){0, 1}, 2));
+
+    // find all pages named Customers
+    Key *keys;
+    size_t size;
+
+    char *s = "Customers";
+
+    find_all(TABLES_NAMES, record_from_string(&s), 0, TABLES, &keys, &size);
+    for (size_t i = 0; i < size; i++)
+    {
+        printf("key: %lu\n", keys[i]);
+    }
+
+    // dump_tree(TABLES_NAMES);
 }
 
 int record_test()
@@ -306,6 +327,60 @@ int btree_test()
     dump_tree(page);
 
     return 0;
+}
+
+void bt()
+{
+    init_db();
+
+    create_addr();
+    create_addr();
+
+    struct node root;
+
+    root.parent_addr = (Page)-1;
+    root.type = NODE_TYPE_INDEX_LEAF;
+    root.nb_keys = 1;
+    root.key_vals[0] = (struct key_value *)malloc(sizeof(struct key_value));
+    root.key_vals[0]->key = 8;
+    root.key_vals[0]->size = 0;
+
+    Page page = create_addr();
+    write_node(&root, page);
+
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    insert_bt(page, 9, 0, 0);
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    insert_bt(page, 10, 0, 0);
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    insert_bt(page, 11, 0, 0);
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    insert_bt(page, 15, 0, 0);
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    insert_bt(page, 20, 0, 0);
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    insert_bt(page, 17, 0, 0);
+    dump_tree(page);
+    printf("\n\n\n\n\n");
+
+    long nine = 9;
+
+    Cursor *crs = find_bt(page, record_from_long(&nine), 0, 0);
+
+    // print the key at the cursor position
+    printf("Cursor key: %ld\n", crs->node->key_vals[crs->cell]->key);
 }
 
 int main()
