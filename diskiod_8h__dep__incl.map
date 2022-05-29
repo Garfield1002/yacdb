@@ -1,6 +1,0 @@
-<map id="server&#45;side/diskio/include/diskiod.h" name="server&#45;side/diskio/include/diskiod.h">
-<area shape="rect" id="node1" title="Debug utils for disk and cache operations." alt="" coords="195,5,319,47"/>
-<area shape="rect" id="node2" href="$db__ops_8h.html" title="High(ish) level instructions for general database operations." alt="" coords="189,95,325,136"/>
-<area shape="rect" id="node3" href="$core_8h.html" title="Core YACDB managment, from user input to execution." alt="" coords="5,184,165,225"/>
-<area shape="rect" id="node4" href="$cursor__bt_8h_source.html" title=" " alt="" coords="189,184,325,225"/>
-</map>

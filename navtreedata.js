@@ -25,39 +25,13 @@
 var NAVTREE =
 [
   [ "YACDB-server C", "index.html", [
-    [ "YACDB", "index.html", null ],
-    [ "md_fileSpecification", "md_fileSpecification.html", null ],
-    [ "yacDB Query format", "md_query_format.html", null ],
-    [ "YACDB", "md_README.html", null ],
-    [ "The Database file", "md_server_side_diskio_fileSpecification.html", null ],
-    [ "Deprecated List", "deprecated.html", null ],
-    [ "Todo List", "todo.html", null ],
-    [ "Classes", "annotated.html", [
-      [ "Class List", "annotated.html", "annotated_dup" ],
-      [ "Class Index", "classes.html", null ],
-      [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Variables", "functions_vars.html", null ]
-      ] ]
-    ] ],
-    [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ],
-      [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
-        [ "Functions", "globals_func.html", null ],
-        [ "Variables", "globals_vars.html", null ],
-        [ "Typedefs", "globals_type.html", null ],
-        [ "Enumerations", "globals_enum.html", null ],
-        [ "Enumerator", "globals_eval.html", null ],
-        [ "Macros", "globals_defs.html", null ]
-      ] ]
-    ] ]
+    [ "YACDB", "md_README.html", null ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"index.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
