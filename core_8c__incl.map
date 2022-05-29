@@ -1,0 +1,20 @@
+<map id="server&#45;side/core/core.c" name="server&#45;side/core/core.c">
+<area shape="rect" id="node1" title="Source file for core.h." alt="" coords="147,5,301,32"/>
+<area shape="rect" id="node2" href="$core_8h.html" title="Core YACDB managment, from user input to execution." alt="" coords="173,80,275,107"/>
+<area shape="rect" id="node3" href="$main__parser_8h.html" title="Small parser include to only add some generic function." alt="" coords="28,155,151,196"/>
+<area shape="rect" id="node6" href="$record_8h.html" title="A structure for handling data of unknown type." alt="" coords="299,497,432,539"/>
+<area shape="rect" id="node9" href="$db__ops_8h.html" title="High(ish) level instructions for general database operations." alt="" coords="403,155,536,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="225,587,285,613"/>
+<area shape="rect" id="node5" href="$instruction_8h.html" title="Structures for instruction management." alt="" coords="43,244,135,271"/>
+<area shape="rect" id="node7" title=" " alt="" coords="334,587,397,613"/>
+<area shape="rect" id="node8" title=" " alt="" coords="664,587,728,613"/>
+<area shape="rect" id="node10" href="$diskio_8h.html" title="Interactions with the disk and cache." alt="" coords="583,408,705,449"/>
+<area shape="rect" id="node11" title=" " alt="" coords="910,505,978,531"/>
+<area shape="rect" id="node15" href="$db__structs_8h.html" title="Structures for interacting with the database." alt="" coords="181,505,275,531"/>
+<area shape="rect" id="node16" href="$diskiod_8h.html" title="Debug utils for disk and cache operations." alt="" coords="609,319,730,360"/>
+<area shape="rect" id="node17" href="$cursor_8h.html" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="313,326,381,353"/>
+<area shape="rect" id="node18" href="$cursor__bt_8h_source.html" title=" " alt="" coords="426,244,513,271"/>
+<area shape="rect" id="node12" title=" " alt="" coords="760,505,835,531"/>
+<area shape="rect" id="node13" title=" " alt="" coords="558,505,645,531"/>
+<area shape="rect" id="node14" title=" " alt="" coords="669,505,736,531"/>
+</map>

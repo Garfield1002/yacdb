@@ -1,15 +1,11 @@
 var searchData=
 [
-  ['read_5fnode_0',['read_node',['../diskio_8h.html#a7133907d11d62304406247d04d1172cb',1,'diskio.c']]],
-  ['record_5ffrom_5fchar_1',['record_from_char',['../record_8h.html#a853a2220ab548231e4feccfd4f22003a',1,'record.c']]],
-  ['record_5ffrom_5ffloat_2',['record_from_float',['../record_8h.html#a3ac3009aea49054396ffd1842d421dd1',1,'record.c']]],
-  ['record_5ffrom_5fint_3',['record_from_int',['../record_8h.html#acaa01dab3fd1ca657c0d17047520243e',1,'record.c']]],
-  ['record_5ffrom_5flong_4',['record_from_long',['../record_8h.html#a48e4ff88dd3ac3d0b8c868300bbbd309',1,'record.c']]],
-  ['record_5ffrom_5fshort_5',['record_from_short',['../record_8h.html#a3e72291f14b106064a5046c83f9fb09e',1,'record.c']]],
-  ['record_5ffrom_5fstring_6',['record_from_string',['../record_8h.html#a125d5d30dfdc0a63beb1327946399753',1,'record.c']]],
-  ['record_5fget_5ffloat_7',['record_get_float',['../record_8h.html#aad9966631056faf2b316dc21da4e7ba5',1,'record.h']]],
-  ['record_5fget_5fint_8',['record_get_int',['../record_8h.html#a5beff316848bc2a316e18a9a6955cbcb',1,'record.h']]],
-  ['record_5fsize_9',['record_size',['../record_8h.html#abe9a0cc65fd64a97fc4d5bfb7b526a65',1,'record.c']]],
-  ['remove_5fnode_10',['remove_node',['../diskio_8h.html#a14dc5f393806688779c52c91ad778a83',1,'diskio.c']]],
-  ['replace_5frecord_11',['replace_record',['../record_8h.html#acc24950e105604e7f80bb4351319f926',1,'record.c']]]
+  ['init_5fdatabase_0',['init_database',['../core_8c.html#a4e89d25053ddea19de1d3460058d61a6',1,'init_database():&#160;core.c'],['../core_8h.html#a4e89d25053ddea19de1d3460058d61a6',1,'init_database():&#160;core.c']]],
+  ['init_5fdb_1',['init_db',['../diskio_8h.html#ab5a4205bbb15b7b2034c2be83db2729f',1,'diskio.c']]],
+  ['initialize_5ftables_2',['initialize_tables',['../db__ops_8h.html#af4a9629b5007021ca25e1c84b630b40d',1,'db_ops.c']]],
+  ['insert_3',['insert',['../cursor_8h.html#a382037a585c0a98f6c1afcaefd5284d8',1,'cursor.c']]],
+  ['insert_5fin_5farr_5fkv_4',['insert_in_arr_kv',['../cursor_8h.html#a92e545c9f886a6c3e5ad921f2ed599ba',1,'cursor.c']]],
+  ['insert_5frow_5',['insert_row',['../db__ops_8h.html#a995d291ba8da4ee3d2e4614eeaa6a56c',1,'db_ops.c']]],
+  ['instrarray_5finit_6',['instrarray_init',['../parser__mallocs__frees_8h.html#a68069e4a674b8e218be7d559c645929d',1,'parser_mallocs_frees.c']]],
+  ['is_5fleaf_7',['is_leaf',['../diskio_8h.html#a61b10cadb5948894c279d308c4540496',1,'diskio.c']]]
 ];

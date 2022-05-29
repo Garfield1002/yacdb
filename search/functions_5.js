@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['init_5fdb_0',['init_db',['../diskio_8h.html#ab5a4205bbb15b7b2034c2be83db2729f',1,'diskio.c']]],
-  ['initialize_5ftables_1',['initialize_tables',['../db__ops_8h.html#af4a9629b5007021ca25e1c84b630b40d',1,'db_ops.c']]],
-  ['insert_2',['insert',['../cursor_8h.html#a382037a585c0a98f6c1afcaefd5284d8',1,'cursor.c']]],
-  ['insert_5fin_5farr_5fkv_3',['insert_in_arr_kv',['../cursor_8h.html#a92e545c9f886a6c3e5ad921f2ed599ba',1,'cursor.c']]],
-  ['insert_5frow_4',['insert_row',['../db__ops_8h.html#a995d291ba8da4ee3d2e4614eeaa6a56c',1,'db_ops.c']]],
-  ['is_5fleaf_5',['is_leaf',['../diskio_8h.html#a61b10cadb5948894c279d308c4540496',1,'diskio.c']]]
+  ['get_5fcolumn_5foffsets_0',['get_column_offsets',['../db__ops_8h.html#aa47cd7bea86ee683fd82c26e68dde303',1,'db_ops.c']]],
+  ['get_5fn_5frecord_1',['get_n_record',['../db__ops_8h.html#aabc2567fdbde96fa68676277aac146b5',1,'db_ops.c']]],
+  ['get_5fnext_5fid_2',['get_next_id',['../db__ops_8h.html#a363e828adc7b2fb2732dc0394755db80',1,'db_ops.c']]],
+  ['get_5frow_3',['get_row',['../db__ops_8h.html#a0903b289161325d7516a00864202a508',1,'db_ops.c']]],
+  ['get_5ftable_5faddr_4',['get_table_addr',['../db__ops_8h.html#af52d2b89b308efca9e8dc58d1eba8071',1,'db_ops.c']]],
+  ['get_5ftable_5fid_5',['get_table_id',['../db__ops_8h.html#a6080c613cff392031ac29537e62fd051',1,'db_ops.c']]]
 ];

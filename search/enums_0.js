@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['record_5ftype_0',['record_type',['../record_8h.html#a393986e23103348f07699f24dcb7f238',1,'record.h']]]
+  ['instrtype_0',['instrType',['../instruction_8h.html#a3db43e30ffe84d1155aea615e282a93d',1,'instruction.h']]]
 ];

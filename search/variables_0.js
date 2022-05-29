@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cell_0',['cell',['../structCursor.html#a88ca06612335a25d2efc29a5b95396f3',1,'Cursor']]]
+  ['arr_0',['arr',['../structcharray.html#ac8f3db09c01c47eaa913bc5298237788',1,'charray']]]
 ];

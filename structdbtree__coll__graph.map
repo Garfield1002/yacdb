@@ -8,6 +8,6 @@
 <area shape="rect" id="node7" href="$structnode.html" title=" " alt="" coords="176,392,227,419"/>
 <area shape="rect" id="node8" href="$structkey__value.html" title=" " alt="" coords="168,288,248,315"/>
 <area shape="rect" id="node9" href="$structdata.html" title=" " alt="" coords="185,199,231,225"/>
-<area shape="rect" id="node10" href="$structcharray.html" title=" " alt="" coords="176,95,240,121"/>
+<area shape="rect" id="node10" href="$structcharray.html" title="An array of char* (string)" alt="" coords="176,95,240,121"/>
 <area shape="rect" id="node11" href="$structlinked__overflow.html" title=" " alt="" coords="255,199,366,225"/>
 </map>
