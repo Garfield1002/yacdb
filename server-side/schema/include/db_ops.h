@@ -1,3 +1,10 @@
+/**
+ * @file db_ops.h
+ * @author Jack Royer
+ * @brief High(ish) level instructions for general database operations.
+ *
+ * @date 2022-05-29
+ */
 #pragma once
 #include "../../diskio/include/diskio.h"
 #include "../../diskio/include/db_structs.h"
@@ -9,10 +16,10 @@
 #include <string.h>
 #include <assert.h>
 
-#define TABLES 0
-#define COLUMNS 1
-#define TABLES_NAMES 2
-#define COLUMNS_TIDX 3
+#define TABLES 0       ///< The id, and the address of the TABLES table.
+#define COLUMNS 1      ///< The id, and the address of the COLUMNS table.
+#define TABLES_NAMES 2 ///< The address of the TABLES_NAMES table.
+#define COLUMNS_TIDX 3 ///< The address of the COLUMNS_TIDX table.
 #define COLUMNS_NAMES 4
 
 typedef unsigned short col_num_t;
