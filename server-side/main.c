@@ -31,6 +31,8 @@ int main(int argc, const char **argv)
             return 0;
         }
 
-        db_handle(stdout, l);
+        // db_handle(stdout, l);
+        debug_parser(stdout, l);
+
     }
 }

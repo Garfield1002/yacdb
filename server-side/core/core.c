@@ -1,8 +1,3 @@
-/**
- * @file core.c
- * @author Mateo
- * @brief Source file for core.h
- */
 #include "include/core.h"
 
 void db_handle(FILE *f, char *line)
@@ -83,7 +78,22 @@ void db_handle(FILE *f, char *line)
   }
 }
 
-void init_database(){
+void init_database()
+{
   printf("Initializing Database...\n");
   initialize_tables();
+}
+
+void debug_parser(FILE *f, char *line)
+{
+  InstrArray *instrarray = parse_user_input(line);
+  if (instrarray)
+  {
+    dump_instrarray(f, instrarray);
+    free_instrarray(instrarray);
+  }
+  else
+  {
+    fprintf(f, "ERROR: parsing error\n");
+  }
 }

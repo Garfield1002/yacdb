@@ -31,7 +31,6 @@ void sigintHandler(int sig_num)
 // Configuration de la socket réseau, retourne le file descriptor de la socket
 int configure_socket()
 {
-  /*begin hide*/
   struct sockaddr_in server;
 
   // Création de la socket
@@ -57,11 +56,9 @@ int configure_socket()
   if (listen(socket_desc, 5) < 0)
     exit_msg("Ecoute de la socket: ", 1);
   puts("INIT: Socket à l'écoute!\n");
-  /*end hide*/
   return socket_desc;
 }
 
-/*begin hide*/
 void exit_thread(int socket_desc)
 {
   nb_threads--;
@@ -70,13 +67,11 @@ void exit_thread(int socket_desc)
   close(socket_desc);
   pthread_exit(NULL);
 }
-/*end hide*/
 
 // Passage des commandes à la base de données par un pipe
 // Renvoi des réponses au client par la socket réseau
 void process_communication(int thread_socket)
 {
-  /*begin hide*/
   char **args;
   int fds[2];
   char line[LINE_SIZE];
@@ -126,7 +121,6 @@ void process_communication(int thread_socket)
 
     pipe(fds);                     // In via fds[1], out via fds[0]
     FILE *f = fdopen(fds[1], "w"); // file for easy response management
-    FILE *f2 = fopen("temp", "w");
 
     // Core processing
     db_handle(f, line);
@@ -149,26 +143,21 @@ void process_communication(int thread_socket)
     close(fds[0]);
     close(fds[1]);
   }
-  /*end hide*/
 }
 
-/*begin hide*/
 void *process_communication_thread(void *arg)
 {
   int i = *((int *)arg);
   process_communication(i);
 }
-/*end hide*/
 
 int main(int argc, char **argv)
 {
   signal(SIGINT, sigintHandler); // close socket on interrupt
   int new_socket;
-  /*begin hide*/
   int c;
   struct sockaddr_in client;
   pthread_t thread;
-  /*end hide*/
 
   // Configuration de la socket serveur
   socket_desc = configure_socket();
@@ -178,10 +167,8 @@ int main(int argc, char **argv)
   // Configuration du sémaphore
   if (sem_init(&semaphore, 0, 1) < 0)
     exit_msg("Initialisation du sémaphore: ", 1);
-  /*end hide*/
 
   // Réception des connections réseaux entrantes
-  /*begin hide*/
   c = sizeof(struct sockaddr_in);
   while (1)
   {
@@ -200,13 +187,10 @@ int main(int argc, char **argv)
     puts("Thread assigné");
     printf("Nombre de threads actifs: %d\n\n", nb_threads);
   }
-  /*end hide*/
 
   // Libération des ressources
-  /*begin hide*/
   sem_destroy(&semaphore);
   close(socket_desc);
 
-  /*end hide*/
   return 0;
 }

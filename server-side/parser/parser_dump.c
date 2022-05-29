@@ -49,7 +49,10 @@ void dump_instr(FILE *f, instr *instr)
 void dump_selinstr(FILE *f, struct SelInstr *instr)
 {
     fprintf(f, "type: %s\ntable: %s\ncolumns: ", typeToString[instr->type], instr->table);
-    dump_charray(f, instr->columns);
+    if (instr->columns->size == 0)
+        fprintf(f, "*\n");
+    else
+        dump_charray(f, instr->columns);
     if (instr->has_cond)
         dump_condition(f, instr->cond);
 }
@@ -77,7 +80,7 @@ void dump_charray(FILE *f, charray *a)
     {
         for (int i = 0; i < a->size - 1; ++i)
         {
-            fprintf(f, "%s,", a->arr[i]);
+            fprintf(f, "%s, ", a->arr[i]);
         }
         fprintf(f, "%s", a->arr[a->size - 1]);
     }
