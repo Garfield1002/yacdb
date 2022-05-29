@@ -26,10 +26,10 @@ var NAVTREE =
 [
   [ "YACDB-server C", "index.html", [
     [ "YACDB", "index.html", [
-      [ "Installation", "index.html#autotoc_md25", null ],
-      [ "Console usage", "index.html#autotoc_md26", null ],
-      [ "Queries in file", "index.html#autotoc_md27", null ],
-      [ "Documentation", "index.html#autotoc_md28", null ]
+      [ "Installation", "index.html#autotoc_md24", null ],
+      [ "Console usage", "index.html#autotoc_md25", null ],
+      [ "Queries in file", "index.html#autotoc_md26", null ],
+      [ "Documentation", "index.html#autotoc_md27", null ]
     ] ],
     [ "The Database file", "md_server_side_diskio_fileSpecification.html", [
       [ "Pages", "md_server_side_diskio_fileSpecification.html#autotoc_md1", null ],
@@ -48,14 +48,14 @@ var NAVTREE =
       [ "The free list", "md_server_side_diskio_fileSpecification.html#autotoc_md13", null ]
     ] ],
     [ "yacDB Query format", "md_client_side_query_format.html", [
-      [ "Instruction syntax", "md_client_side_query_format.html#autotoc_md18", [
-        [ "EXIT", "md_client_side_query_format.html#autotoc_md17", null ],
+      [ "Console", "md_client_side_query_format.html#autotoc_md17", null ],
+      [ "YacDB instruction syntax", "md_client_side_query_format.html#autotoc_md18", [
         [ "CREATE", "md_client_side_query_format.html#autotoc_md19", null ],
         [ "INSERT", "md_client_side_query_format.html#autotoc_md20", null ],
-        [ "SELECT", "md_client_side_query_format.html#autotoc_md21", null ],
-        [ "SELECT WHERE", "md_client_side_query_format.html#autotoc_md22", null ]
-      ] ],
-      [ "NOT IMPLEMENTED YET", "md_client_side_query_format.html#autotoc_md23", null ]
+        [ "SELECT", "md_client_side_query_format.html#autotoc_md21", [
+          [ "SELECT WHERE", "md_client_side_query_format.html#autotoc_md22", null ]
+        ] ]
+      ] ]
     ] ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Todo List", "todo.html", null ],
