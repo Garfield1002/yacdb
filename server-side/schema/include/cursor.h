@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../diskio/include/diskio.h"
-#include "../../diskio/include/dbfio.h"
+#include "../../diskio/include/db_structs.h"
 
 typedef struct
 {

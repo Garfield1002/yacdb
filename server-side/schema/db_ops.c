@@ -89,7 +89,6 @@ int init_TABLES_NAME_table()
  */
 int init_COLUMNS_table()
 {
-
     // Create the root node
     {
         Page root_page = COLUMNS;
@@ -775,7 +774,7 @@ Page create_table(char *table_name, char **column_names, unsigned short n)
     {
         free(root_node);
         printf("Err create_table: Failed to write node\n");
-        return -1;
+        return (Page)-1;
     }
 
     free(root_node);

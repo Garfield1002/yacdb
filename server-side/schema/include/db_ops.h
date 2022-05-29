@@ -1,6 +1,6 @@
 #pragma once
 #include "../../diskio/include/diskio.h"
-#include "../../diskio/include/dbfio.h"
+#include "../../diskio/include/db_structs.h"
 #include "../../diskio/include/diskiod.h"
 
 #include "record.h"
@@ -96,6 +96,17 @@ char *select_row_columns(char *table_name, Key key, char *columns[],
 char *select_all(char *table_name, char *columns[],
                  size_t num_columns);
 
+/**
+ * @brief Selects all rows from a table where the given column is equal to the
+ * given value.
+ *
+ * @param table_name The name of the table to select from
+ * @param col_names
+ * @param num_columns
+ * @param where_col_name
+ * @param where_record
+ * @return char*
+ */
 char *select_where(
     char *table_name, char *col_names[],
     size_t num_columns,

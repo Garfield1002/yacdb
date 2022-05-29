@@ -4,7 +4,7 @@
 #include "cursor.h"
 #include "db_ops.h"
 #include "../../diskio/include/diskio.h"
-#include "../../diskio/include/dbfio.h"
+#include "../../diskio/include/db_structs.h"
 #include <string.h>
 
 int insert_bt(Page root, Key key, size_t n, Page table);

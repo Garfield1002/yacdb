@@ -5,8 +5,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "db_structs.h"
 #include "../../schema/include/record.h"
-#include "dbfio.h"
 
 // #define ORDER 4
 #define ORDER 4
