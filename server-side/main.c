@@ -1,4 +1,4 @@
-#include "parser/include/main_parser.h"
+#include "core/include/core.h"
 #include "../utils/utils.h"
 #include <string.h>
 
@@ -11,7 +11,8 @@ int main(int argc, const char **argv)
     printf("sel IDENT_col, ... from IDENT_table\n");
     printf("add IDENT_col=VAL, .. in IDENT_table\n\n");
     printf("type q or exit to quit the console\n\n");
-    InstrArray *i;
+
+    init_database();
 
     char l[LINE_SIZE];
     while (1)
@@ -30,12 +31,6 @@ int main(int argc, const char **argv)
             return 0;
         }
 
-        i = parse_user_input(l);
-        if (i)
-        {
-            dump_instrarray(stdout, i);
-            free_instrarray(i);
-            i = NULL;
-        }
+        db_handle(stdout, l);
     }
 }
