@@ -4,14 +4,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "../server-side/parser/include/instruction.h"
 
 #define ORDER 5
 
+
 struct data
 {
-  char *prenom;
-  char *nom;
-  int age;
+  charray *values;
+  charray *columns;
 };
 
 struct key_value

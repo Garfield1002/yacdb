@@ -53,24 +53,30 @@ int main(){
   struct data *result;
   result = malloc(sizeof(*result));
   result = yabsearch(ttest,6);
-  if (result !=0){
-    printf("Nom : %s, Prenom : %s, Age :%d\n",result->nom,result->prenom,result->age);
+
+  if (result !=0)
+  {
+    printf("Resultat obtenu\n");
   }
 
   result = yabsearch(ttest,65);
  
   if (result !=0){
-    printf("Nom : %s, Prenom : %s, Age :%d\n",result->nom,result->prenom,result->age);
+    printf("Resultat Obtenu\n");
   }
 
   yabdelete(ttest,2);
   
   node_to_string(ttest);
-  for (int i=0; i<ttest->nb_keys+1;i++){
+
+  for (int i=0; i<ttest->nb_keys+1;i++)
+  {
     printf("LEVEL 2---------\n");
     node_to_string(ttest->children[i]);
     printf("LEVEL 3------------\n");
-    for (int i2=0;i2<=ttest->children[i]->nb_keys;i2++){
+
+    for (int i2=0;i2<=ttest->children[i]->nb_keys;i2++)
+    {
       node_to_string(ttest->children[i]->children[i2]);
     }
     printf("-------------------\n");
