@@ -5,6 +5,8 @@ project(YACDB-server C)
 
 # add the executable
 include_directories(parser/include)
+include_directories(diskio/include)
+include_directories(schema/include)
 
 file(GLOB SOURCES "*/*.c")
 add_executable(server server.c ${SOURCES})
