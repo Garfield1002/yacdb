@@ -696,7 +696,7 @@ short *get_column_offsets(Key table_id, char *column_names[], size_t nb_cols)
     return my_offsets;
 }
 
-Page create_table(char *table_name, char **column_names, unsigned short n)
+Page create_table(char *table_name, char **column_names, short nb_cols)
 {
     Page root_page = create_addr();
 
@@ -705,7 +705,7 @@ Page create_table(char *table_name, char **column_names, unsigned short n)
     if (root_page == (Page)-1)
     {
         printf("Err create_table: Failed to create address\n");
-        return -1;
+        return (Page)-1;
     }
 
     struct record *rec[3];
@@ -727,7 +727,7 @@ Page create_table(char *table_name, char **column_names, unsigned short n)
     }
 
     // Creates the columns
-    for (unsigned short i = 0; i < n; i++)
+    for (short i = 0; i < nb_cols; i++)
     {
         Page col_page = create_addr();
         struct node *col_node = create_node();

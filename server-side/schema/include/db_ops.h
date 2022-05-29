@@ -68,47 +68,77 @@ Key advanced_insert_row(Key tidx, struct record **records, size_t size);
 
 /**
  * @brief Creates a new table in the database.
- */
-Page create_table(char *table_name, char **column_names, unsigned short n);
-
-/**
- * @brief Get the address of the index tree associated with this column
- */
-Page get_column_addr(char *table_name, char *column_name);
-
-/**
- * @brief Get the offset of a column in a table
+ * @param table_name The name of the table to create.
+ * @param column_names The names of the columns in the table.
+ * @param nb_cols The number of columns in the table.
  *
- * For a table `TABLE` with columns
- * idx | COL 0 | COL 1 | COL 2
- *
- * The offset of COL 2 is 2.
+ * @return The identifier of the newly created table, -1 if an error occurred.
  */
-short *get_column_offsets(Key table_id, char *column_names[], size_t nb_cols);
+Page create_table(
+    char *table_name,
+    char **column_names,
+    short nb_cols);
 
 /**
- * @brief The backend for the SQL command
- * `SELECT col1, col2, col3 FROM TABLE WHERE key=value`
+ * @brief Get the offsets of a list of columns in a table
+ *
+ * For a table TABLE with columns idx, COL 0, COL 1, COL 2; the offset of COL 2 is 2.
+ *
+ * Use this function to get all the offsets at once as it is a costly operation.
+ *
+ * @param table_id The identifier of the table (it can be obtained with get_table_id)
+ * @param column_names The names of the columns
+ * @param nb_cols The number of columns
+ *
+ * @return The offsets of the columns in the table, NULL if an error occurred.
  */
-char *select_row_columns(char *table_name, Key key, char *columns[],
-                         size_t num_columns);
+short *get_column_offsets(
+    Key table_id,
+    char *col_names[],
+    size_t nb_cols);
 
-char *select_all(char *table_name, char *columns[],
-                 size_t num_columns);
+/**
+ * @brief Selects a row from a table with the given key
+ * @param table_name The name of the table to select from
+ * @param key The key of the row to select
+ * @param col_names The names of the columns the user wants to select
+ * @param nb_cols The number of columns to select
+ */
+char *select_row_columns(
+    char *table_name,
+    Key key,
+    char *col_names[],
+    size_t nb_cols);
+
+/**
+ * @brief Selects all rows from a table
+ *
+ * @param table_name The name of the table
+ * @param col_names The names of the columns the user wants to select
+ * @param nb_cols The number of columns the user wants to select, if 0 select all
+ *
+ * @return char* The result of the query, NULL if an error occured
+ */
+char *select_all(
+    char *table_name,
+    char *col_names[],
+    size_t nb_cols);
 
 /**
  * @brief Selects all rows from a table where the given column is equal to the
  * given value.
  *
  * @param table_name The name of the table
- * @param col_names
- * @param num_columns
- * @param where_col_name
- * @param where_record
- * @return char*
+ * @param col_names The names of the columns the user wants to select
+ * @param nb_cols The number of columns the user wants to select, if 0 select all
+ * @param where_col_name The name of the column to compare
+ * @param where_record  The value to compare
+ *
+ * @return char* The result of the query, NULL if an error occured
  */
 char *select_where(
-    char *table_name, char *col_names[],
-    size_t num_columns,
+    char *table_name,
+    char *col_names[],
+    size_t nb_cols,
     char *where_col_name,
     struct record *where_record);
