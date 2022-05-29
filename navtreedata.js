@@ -29,8 +29,8 @@ var NAVTREE =
       [ "⭐ Features", "index.html#autotoc_md24", null ],
       [ "🛠 Building", "index.html#autotoc_md25", null ],
       [ "💻 Console usage", "index.html#autotoc_md26", null ],
-      [ "Queries in file", "index.html#autotoc_md27", null ],
-      [ "Documentation", "index.html#autotoc_md28", null ]
+      [ "📄 Queries in file", "index.html#autotoc_md27", null ],
+      [ "🌳 Documentation", "index.html#autotoc_md28", null ]
     ] ],
     [ "The Database file", "md_server_side_diskio_fileSpecification.html", [
       [ "Pages", "md_server_side_diskio_fileSpecification.html#autotoc_md1", null ],
