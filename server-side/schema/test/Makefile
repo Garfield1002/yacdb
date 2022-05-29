@@ -5,4 +5,4 @@ all:
 	gcc -O0 -g $(FILES) -o $(OUT)
 
 clean:
-	rm $(OUT)
+	rm $(OUT) && rm yac.db
