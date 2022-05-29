@@ -1,43 +1,77 @@
 
-### yacDB Query format
-#### EXIT
+# yacDB Query format
+### EXIT
 
-q;
+Type any of the following instructions to exit the console :
 
-exit;
+ - q
+ - exit
+
+This is a console instruction only and has nothing to do with the database, hence the absence of ';'.
+## Instruction syntax
+
+The yacdb keywords such as instruction types (sel, crt, add) and instruction keywords (where, with, in) need to be written in lowercase letter.
+
+Any identifier, either table or column, can be composed of any letter -upper and lower case- as well as digits.
 
 
-#### CREATE / DROP
+### CREATE
+
+Instruction for table creation :
 
 crt IDENT_table with IDENT_col=type, ...;
 
-type:
+type: (not implemented yet, everything is string)
 - "int"
 - "string"
 
-drop IDENT_table;
+Exemple :
+- crt users with name=string, age=int, hobby=string;
 
-#### INSERT
+
+### INSERT
+
+Instruction to insert a data in an existing table :
 
 add IDENT_col=VAL, ... in IDENT_table;
 
-VAL:
+VAL :
 - int (ex: 48)
 - string(ex: "a test string")
 
-#### SELECT
-sel IDENT_col,... from IDENT_table;
+Exemple :
+- add name="Joe", age=42, hobby="Volleyball" in users;
 
-sel * from IDENT_table;
+### SELECT
 
-#### WHERE
-sel IDENT_col,... from IDENT_table cond CONDITION;
+Instruction to select data from the database :
+
+- sel IDENT_col,... from IDENT_table;
+- sel * from IDENT_table;
+
+Exemple :
+- sel hobby, age from users;
+- sel * from users;
+
+
+### SELECT WHERE
+
+Instruction select with a condition on a column :
+
+- sel IDENT_col,... from IDENT_table cond CONDITION;
+
+Exemple :
+- sel hobby from users where name="Joe";
+- sel * from users where age=30;
+
+## NOT IMPLEMENTED YET
+
+drop IDENT_table;
 
 del from IDENT_table cond CONDITION;
 
 up IDENT_table with IDENT_col = VAL, ... cond CONDITION;
 
-#### maybe:
 -- JOIN
 -- LIKE
 -- ORDER BY
