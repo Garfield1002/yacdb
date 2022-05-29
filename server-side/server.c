@@ -12,9 +12,7 @@
 
 #include <string.h>
 #include "../utils/utils.h"
-#include "parser/include/main_parser.h"
-#include "schema/include/record.h"
-#include "schema/include/db_ops.h"
+#include "core/include/core.h"
 
 int nb_threads = 0;
 sem_t semaphore;
@@ -129,85 +127,10 @@ void process_communication(int thread_socket)
     pipe(fds);                     // In via fds[1], out via fds[0]
     FILE *f = fdopen(fds[1], "w"); // file for easy response management
     FILE *f2 = fopen("temp", "w");
-    InstrArray *instrarray = parse_user_input(line);
-    if (instrarray)
-    {
-      dump_instrarray(f, instrarray);
-      for (int i = 0; i < instrarray->size; ++i)
-      {
-        instr *instr = instrarray->arr[i];
-        struct CrtInstr *crtinstr;
-        struct SelInstr *selinstr;
-        struct AddInstr *addinstr;
-        switch (instr->type)
-        {
-        case unknownInstrType:
-          break;
-        case sel:
-          selinstr = (struct SelInstr *)instr;
-          if (selinstr->has_cond)
-          {
-            strncpy(answer,
-                    select_where(selinstr->table,
-                                 selinstr->columns->arr,
-                                 selinstr->columns->size,
-                                 selinstr->cond->col,
-                                 record_from_string(&selinstr->cond->val)),
-                    REPLY_SIZE);
-          }
-          else
-          {
-            strncpy(answer,
-                    select_all(selinstr->table,
-                               selinstr->columns->arr,
-                               selinstr->columns->size),
-                    REPLY_SIZE);
-          }
-          break;
-        case crt:
-          crtinstr = (struct CrtInstr *)i;
-          Page page = create_table(crtinstr->table,
-                       crtinstr->columns->arr,
-                       crtinstr->columns->size);
-          if(page < 0)
-            strncpy(answer, "ERROR: Unable to create table\n", REPLY_SIZE);
-          else
-            strncpy(answer, "Table created\n", REPLY_SIZE);
-          break;
-        case add:
-        {
-          addinstr = (struct AddInstr *)instr;
-          short sz = addinstr->columns->size;
-          struct record *records[sz];
-          for (int i = 0; i < sz; ++i)
-            records[i] = record_from_string(&addinstr->values->arr[i]);
 
-          Key root_id = get_table_id(addinstr->table);
-          Key id = advanced_insert_row(root_id, records, sz);
-          for (size_t i = 0; i < sz; i++)
-          {
-            free(records[i]->data);
-            free(records[i]);
-          }
-          strncpy(answer, sprintf("Entry added at index %d", id), REPLY_SIZE);
-        }
-        break;
+    // Core processing
+    db_handle(f, line);
 
-        default:
-          break;
-        }
-      }
-      /*
-        YACDB management here
-      */
-      free_instrarray(instrarray);
-      instrarray = NULL;
-    }
-    else
-    {
-      // Should be impossible to reach
-      fprintf(f, "ERR: parsing failed");
-    }
 
     fclose(f);
 
@@ -250,8 +173,7 @@ int main(int argc, char **argv)
   // Configuration de la socket serveur
   socket_desc = configure_socket();
 
-  printf("Initializing Database...\n");
-  initialize_tables();
+  init_database();
 
   // Configuration du sémaphore
   if (sem_init(&semaphore, 0, 1) < 0)
