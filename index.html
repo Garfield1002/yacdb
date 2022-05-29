@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=9" />
     <meta name="generator" content="Doxygen 1.9.4" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>YACDB-server C: YACDB</title>
+    <title>YACDB-server C: YACDB-server C</title>
     <link href="tabs.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="dynsections.js"></script>
@@ -152,38 +152,61 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">YACDB </div></div>
+  <div class="headertitle"><div class="title">YACDB-server C </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p ><a class="anchor" id="md_README"></a> Yet Another C DataBase is a database built from scratch in C.</p>
-<h1><a class="anchor" id="autotoc_md24"></a>
-Installation</h1>
-<p >CMake is requiered</p>
+<div class="textblock"><p ><a class="anchor" id="md_README"></a> <img src="https://github.com/Garfield1002/yacdb/blob/master/yacdb.png?raw=true" alt="YACDB logo" title="YACDB" align="right" height="60" class="inline"/></p>
+<h1><a class="anchor" id="autotoc_md23"></a>
+YACDB</h1>
+<p ><b>Yet Another C(rappy) DataBase</b> is a database <b>built from scratch</b> in C. It is heavely inspired by <a href="https://www.sqlite.org/">SQLite</a> and would not be possible without their documentation.</p>
+<h2><a class="anchor" id="autotoc_md24"></a>
+⭐ Features</h2>
+<p >Currently, YACDB remains a very simple database, but it is planned to add more features in the future.</p>
+<p >Supported features:</p>
+<ul>
+<li>Creation of tables</li>
+<li>Insertion of rows</li>
+<li>Selection of rows, with or without conditions</li>
+</ul>
+<p >YACDB was built as a client/server database so you can use it remotely.</p>
+<p >YACDB also implements a limited cache system to speed up the database access.</p>
+<h2><a class="anchor" id="autotoc_md25"></a>
+🛠 Building</h2>
+<p >YACDB can be built using CMake.</p>
+<p >We have provided some utility scriots to help you with the build process.</p>
 <ol type="1">
-<li>Clone the repositiory <div class="fragment"><div class="line">git clone https://github.com/Garfield1002/yacdb.git</div>
+<li>Clone the repositiory</li>
+</ol>
+<div class="fragment"><div class="line">git clone https://github.com/Garfield1002/yacdb.git</div>
 <div class="line">cd yacdb</div>
-</div><!-- fragment --></li>
-<li>Setup &amp; Build (server-side) <div class="fragment"><div class="line">sh server-side/setup.sh &amp;&amp; sh server-side/build.sh</div>
-</div><!-- fragment --></li>
-<li>Build (client-side) <div class="fragment"><div class="line">make -C client-side all</div>
-</div><!-- fragment --></li>
+</div><!-- fragment --><ol type="1">
+<li>Setup &amp; Build (server-side)</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md25"></a>
-Console usage</h1>
+<div class="fragment"><div class="line">sh server-side/setup.sh &amp;&amp; sh server-side/build.sh</div>
+</div><!-- fragment --><ol type="1">
+<li>Build (client-side)</li>
+</ol>
+<div class="fragment"><div class="line">make -C client-side all</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md26"></a>
+💻 Console usage</h2>
 <ol type="1">
-<li>Launch the server <div class="fragment"><div class="line">server-side/server</div>
-</div><!-- fragment --></li>
-<li>Launch any number of clients <div class="fragment"><div class="line">client-side/client</div>
-</div><!-- fragment --></li>
+<li>Launch the server</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md26"></a>
-Queries in file</h1>
+<div class="fragment"><div class="line">server-side/server</div>
+</div><!-- fragment --><ol type="1">
+<li>Launch any number of clients</li>
+</ol>
+<div class="fragment"><div class="line">client-side/client</div>
+</div><!-- fragment --><p >The available commands can be found in the documentation under the <a href="https://garfield1002.github.io/yacdb/md_client_side_query_format.html">Query Format</a> section.</p>
+<h2><a class="anchor" id="autotoc_md27"></a>
+Queries in file</h2>
 <p >It is possible to execute a series of query stored in a file :</p>
 <div class="fragment"><div class="line">client-side/client file_path</div>
 </div><!-- fragment --><p >If the server is running, this will send the instruction to the server and execute them.</p>
-<h1><a class="anchor" id="autotoc_md27"></a>
-Documentation</h1>
-<p ><a href="https://garfield1002.github.io/yacdb/">https://garfield1002.github.io/yacdb/</a> </p>
+<h2><a class="anchor" id="autotoc_md28"></a>
+Documentation</h2>
+<p >Detailed documentation is available on the <a href="https://garfield1002.github.io/yacdb/">github page</a>.</p>
+<p >It was bult using <a href="https://www.doxygen.nl/">Doxygen</a> and <a href="https://jothepro.github.io/doxygen-awesome-css/">Doxygen-Awesome</a>. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
