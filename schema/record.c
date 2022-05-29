@@ -79,6 +79,33 @@ int record_get_char(struct record *record, char **buffer)
     };
 }
 
+int record_get_short(struct record *record, short *buffer)
+{
+    int t = record->type;
+
+    switch (t)
+    {
+    case RECORD_TYPE_NULL:
+        *buffer = 0;
+        return 0;
+
+    case RECORD_TYPE_SHORT:
+        *buffer = *(short *)record->data;
+        return 0;
+
+    case RECORD_TYPE_0:
+        *buffer = 0;
+        return 0;
+
+    case RECORD_TYPE_1:
+        *buffer = 1;
+        return 0;
+
+    default:
+        return -1;
+    };
+}
+
 int record_get_long(struct record *record, long *buffer)
 {
     int t = record->type;

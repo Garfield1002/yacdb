@@ -41,7 +41,7 @@ size_t record_size(struct record *record);
 
 int record_get_char(struct record *record, char **buffer);
 int record_get_string(struct record *record, char **buffer);
-short *record_get_short(struct record *record);
+int record_get_short(struct record *record, short *buffer);
 int *record_get_int(struct record *record);
 int record_get_long(struct record *record, long *buffer);
 float *record_get_float(struct record *record);

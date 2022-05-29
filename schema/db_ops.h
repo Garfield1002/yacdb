@@ -58,10 +58,12 @@ Key get_next_id(Key root_id);
  */
 Key insert_row(Key root_id, struct record **records, size_t size);
 
+Key advanced_insert_row(Key tidx, struct record **records, size_t size);
+
 /**
  * @brief Creates a new table in the database.
  */
-Page create_table(char *table_name);
+Page create_table(char *table_name, char **column_names, unsigned short n);
 
 /**
  * @brief Get the address of the index tree associated with this column
@@ -76,14 +78,20 @@ Page get_column_addr(char *table_name, char *column_name);
  *
  * The offset of COL 2 is 2.
  */
-col_num_t get_column_offset(char *table_name, char *column_name);
+short *get_column_offsets(Key table_id, char *column_names[], size_t nb_cols);
 
 /**
  * @brief The backend for the SQL command
  * `SELECT col1, col2, col3 FROM TABLE WHERE key=value`
  */
-char *select_row_columns(char *table_name, Key key, size_t columns[],
+char *select_row_columns(char *table_name, Key key, char *columns[],
                          size_t num_columns);
 
-char *select_all(char *table_name, size_t columns[],
+char *select_all(char *table_name, char *columns[],
                  size_t num_columns);
+
+char *select_where(
+    char *table_name, char *col_names[],
+    size_t num_columns,
+    char *where_col_name,
+    struct record *where_record);

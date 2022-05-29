@@ -73,7 +73,6 @@ Cursor *find_bt(Page root, struct record *key, size_t n, Page table)
 
         if (is_leaf(cursor->node))
         {
-            printf("Err find_bt: Key not found.\n");
             free(cursor);
             return NULL;
         }

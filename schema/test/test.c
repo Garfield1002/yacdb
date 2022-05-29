@@ -53,7 +53,7 @@ Key create_user(char *table_name, char *first_name, char *last_name, long accoun
     records[2] = record_from_long(&account_id);
 
     Key root_id = get_table_id(table_name);
-    Key id = insert_row(root_id, records, 3);
+    Key id = advanced_insert_row(root_id, records, 3);
 
     for (size_t i = 0; i < 3; i++)
     {
@@ -72,13 +72,13 @@ void bank_db()
     printf("Creating tables...\n");
 
     // Create a table for the customers
-    Key customer_table = create_table("Customers");
+    Key customer_table = create_table("Customers", (char *[]){"first_name", "last_name", "account_id"}, 3);
 
     // Create a table for the accounts
-    Key account_table = create_table("Accounts");
+    Key account_table = create_table("Accounts", (char *[]){"acc_id", "balance"}, 2);
 
     // Create a table for the accounts
-    Key transactions_table = create_table("Transactions");
+    Key transactions_table = create_table("Transactions", (char *[]){"acc_id1", "acc_id_2", "amount"}, 3);
 
     printf("Creating indexes...\n");
     create_user("Customers", "John", "Doe", 12345);
@@ -89,32 +89,36 @@ void bank_db()
     create_user("Customers", "Fred", "Johnson", 98765);
 
     printf("Selecting data...\n");
-    printf("\n\nSELECT * FROM COLUMNS WHERE id = 5\n\n%s\n",
-           select_all("COLUMNS", (size_t[]){0, 1, 2, 3}, 4));
+    printf("\n\nSELECT * FROM COLUMNS\n\n%s\n",
+           select_all("COLUMNS", (char *[]){"TABLE_IDX", "NAMES", "NAMES"}, 3));
 
     printf("\n\nSELECT first_name, last_name FROM customers WHERE id = 5\n\n%s\n",
-           select_row_columns("Customers", 5, (size_t[]){0, 1}, 2));
+           select_row_columns("Customers", 5, (char *[]){"first_name", "last_name", "account_id"}, 3));
 
     printf("\n\nSELECT last_name, first_name FROM customers\n\n%s",
-           select_all("Customers", (size_t[]){1, 0}, 2));
+           select_all("Customers", (char *[]){"last_name", "first_name"}, 2));
 
     create_user("Customers", "Jack", "Royer", 67294);
     printf("\n\nINSERT INTO customers VALUES (Jack, Royer);\nSELECT first_name, last_name FROM customers\n\n%s\n\n",
-           select_all("Customers", (size_t[]){0, 1}, 2));
+           select_all("Customers", (char *[]){"first_name", "last_name"}, 2));
 
     // find all pages named Customers
     Key *keys;
     size_t size;
 
-    char *s = "Customers";
+    char *s = "Doe";
 
-    find_all(TABLES_NAMES, record_from_string(&s), 0, TABLES, &keys, &size);
+    find_all(13, record_from_string(&s), 1, get_table_addr(2), &keys, &size);
     for (size_t i = 0; i < size; i++)
     {
         printf("key: %lu\n", keys[i]);
     }
 
-    // dump_tree(TABLES_NAMES);
+    printf("\n\nSELECT first_name, last_name FROM customers WHERE last_name = Doe\n\n%s\n",
+           select_where(
+               "Customers", (char *[]){"first_name", "last_name"}, 2, "last_name", record_from_string(&s)));
+
+    dump_tree(13);
 }
 
 int record_test()
