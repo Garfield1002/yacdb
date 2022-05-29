@@ -1,3 +1,8 @@
+/**
+ * @file core.c
+ * @author Mateo
+ * @brief Source file for core.h
+ */
 #include "include/core.h"
 
 void db_handle(FILE *f, char *line)

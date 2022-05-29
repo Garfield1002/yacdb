@@ -140,7 +140,7 @@ instrType parse_instrtype(char **data)
 
 int parse_expected_keyword(char **data, keyword expected)
 {
-    struct keywordData parsingKeywordData[] = {
+    struct parsingData parsingKeywordData[] = {
         {where, 5, "where"},
         {from, 4, "from"},
         {in, 2, "in"},
@@ -451,14 +451,12 @@ instr *parse_instr(char *start)
 
 InstrArray *parse_user_input(char *data)
 {
-    InstrArray *instrarray = malloc(sizeof(InstrArray));
     char *temp = data;
     int sz = 0;
     for (; *temp != '\0'; temp++)
         if (*temp == ';')
             sz++;
-    instrarray->size = sz;
-    instrarray->arr = calloc(sz, sizeof(instr *));
+    InstrArray* instrarray = instrarray_init(sz);
     char *token = data;
     char *semicolon = data;
 

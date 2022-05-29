@@ -1,10 +1,13 @@
-#ifndef PARSER_H
+/**
+ * @file main_parser.h
+ * @author Mateo
+ * @brief Small parser include to only add some generic function
+ */
 #define PARSER_H
 
 #include <stdio.h>
 #include "instruction.h"
 
-// Parse an instruction and return it
 instr *parse_instr(char *);
 InstrArray *parse_user_input(char *);
 void dump_instr(FILE *, instr *);

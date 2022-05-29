@@ -7,14 +7,22 @@ charray *charray_init()
     array->size = 0;
 }
 
-void free_charray(charray *arrayToFree)
+void free_charray(charray *array)
 {
-    for (int i = 0; i < arrayToFree->size; ++i)
+    for (int i = 0; i < array->size; ++i)
     {
-        free(arrayToFree->arr[i]);
+        free(array->arr[i]);
     }
-    free(arrayToFree->arr);
-    free(arrayToFree);
+    free(array->arr);
+    free(array);
+}
+
+InstrArray* instrarray_init(int sz){
+
+    InstrArray *instrarray = malloc(sizeof(InstrArray));
+    instrarray->size = sz;
+    instrarray->arr = calloc(sz, sizeof(instr *));
+    return instrarray;
 }
 
 void free_instrarray(InstrArray *instrarray)
