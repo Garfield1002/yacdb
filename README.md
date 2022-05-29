@@ -10,7 +10,7 @@ git clone https://github.com/Garfield1002/yacdb.git
 ```
 2. Setup & Build
  ```bash 
-sh yacdb/server-side/setup.sh
+sh yacdb/server-side/setup.sh && sh yacdb/server-side/build.sh
 ```
 
 ## Usage
