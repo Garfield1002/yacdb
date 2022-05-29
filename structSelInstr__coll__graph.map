@@ -1,0 +1,5 @@
+<map id="SelInstr" name="SelInstr">
+<area shape="rect" id="node1" title="Select instruction." alt="" coords="51,95,117,121"/>
+<area shape="rect" id="node2" href="$structcharray.html" title="An array of char* (string)" alt="" coords="5,5,69,32"/>
+<area shape="rect" id="node3" href="$structcondition.html" title="An equality condition." alt="" coords="93,5,168,32"/>
+</map>

@@ -1,0 +1,25 @@
+var annotated_dup =
+[
+    [ "AddInstr", "structAddInstr.html", "structAddInstr" ],
+    [ "btree_header", "structbtree__header.html", null ],
+    [ "btree_page", "structbtree__page.html", null ],
+    [ "charray", "structcharray.html", "structcharray" ],
+    [ "condition", "structcondition.html", "structcondition" ],
+    [ "CrtInstr", "structCrtInstr.html", "structCrtInstr" ],
+    [ "Cursor", "structCursor.html", "structCursor" ],
+    [ "instr", "structinstr.html", null ],
+    [ "InstrArray", "structInstrArray.html", null ],
+    [ "key_value", "structkey__value.html", null ],
+    [ "linked_overflow", "structlinked__overflow.html", null ],
+    [ "node", "structnode.html", null ],
+    [ "overflow_data", "structoverflow__data.html", null ],
+    [ "overflow_header", "structoverflow__header.html", null ],
+    [ "parsingData", "structparsingData.html", null ],
+    [ "record", "structrecord.html", null ],
+    [ "SelInstr", "structSelInstr.html", "structSelInstr" ],
+    [ "ti_cell", "structti__cell.html", null ],
+    [ "tl_cell", "structtl__cell.html", null ],
+    [ "tl_cell_header", "structtl__cell__header.html", null ],
+    [ "yacdb", "structyacdb.html", null ],
+    [ "yacdb_header", "structyacdb__header.html", null ]
+];

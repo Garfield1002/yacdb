@@ -1,0 +1,9 @@
+<map id="server&#45;side/parser/include/parser.h" name="server&#45;side/parser/include/parser.h">
+<area shape="rect" id="node1" title="Main parsing file, transform a user input into instruction from instruction.h." alt="" coords="163,5,289,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,65,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="90,95,154,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="271,169,333,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="229,95,295,121"/>
+<area shape="rect" id="node6" href="$parser__mallocs__frees_8h.html" title="Frees and mallocs helper for the structures in instruction.h." alt="" coords="320,95,476,121"/>
+<area shape="rect" id="node7" href="$instruction_8h.html" title="Structures for instruction management." alt="" coords="409,169,501,196"/>
+</map>

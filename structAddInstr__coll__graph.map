@@ -1,0 +1,4 @@
+<map id="AddInstr" name="AddInstr">
+<area shape="rect" id="node1" title="Add instruction." alt="" coords="5,109,76,136"/>
+<area shape="rect" id="node2" href="$structcharray.html" title="An array of char* (string)" alt="" coords="9,5,73,32"/>
+</map>

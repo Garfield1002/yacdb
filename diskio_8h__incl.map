@@ -1,0 +1,12 @@
+<map id="server&#45;side/diskio/include/diskio.h" name="server&#45;side/diskio/include/diskio.h">
+<area shape="rect" id="node1" title="Interactions with the disk and cache." alt="" coords="305,5,429,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,102,73,129"/>
+<area shape="rect" id="node3" title=" " alt="" coords="297,184,357,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="215,102,290,129"/>
+<area shape="rect" id="node5" title=" " alt="" coords="698,184,762,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="365,102,452,129"/>
+<area shape="rect" id="node7" title=" " alt="" coords="477,102,543,129"/>
+<area shape="rect" id="node8" href="$db__structs_8h.html" title="Structures for interacting with the database." alt="" coords="98,102,191,129"/>
+<area shape="rect" id="node9" href="$record_8h.html" title="A structure for handling data of unknown type." alt="" coords="567,95,701,136"/>
+<area shape="rect" id="node10" title=" " alt="" coords="603,184,665,211"/>
+</map>

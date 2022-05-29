@@ -25,13 +25,66 @@
 var NAVTREE =
 [
   [ "YACDB-server C", "index.html", [
-    [ "YACDB", "md_README.html", null ]
+    [ "YACDB", "index.html", [
+      [ "Installation", "index.html#autotoc_md25", null ],
+      [ "Console usage", "index.html#autotoc_md26", null ],
+      [ "Queries in file", "index.html#autotoc_md27", null ],
+      [ "Documentation", "index.html#autotoc_md28", null ]
+    ] ],
+    [ "The Database file", "md_server_side_diskio_fileSpecification.html", [
+      [ "Pages", "md_server_side_diskio_fileSpecification.html#autotoc_md1", null ],
+      [ "The Database header", "md_server_side_diskio_fileSpecification.html#autotoc_md2", [
+        [ "Magic Header string", "md_server_side_diskio_fileSpecification.html#autotoc_md3", null ],
+        [ "Page Size", "md_server_side_diskio_fileSpecification.html#autotoc_md4", null ],
+        [ "Reserved bytes per page", "md_server_side_diskio_fileSpecification.html#autotoc_md5", null ],
+        [ "File change counter", "md_server_side_diskio_fileSpecification.html#autotoc_md6", null ],
+        [ "In-header database size", "md_server_side_diskio_fileSpecification.html#autotoc_md7", null ],
+        [ "Suggested cache size", "md_server_side_diskio_fileSpecification.html#autotoc_md8", null ],
+        [ "Number of free blocks", "md_server_side_diskio_fileSpecification.html#autotoc_md9", null ],
+        [ "First free block", "md_server_side_diskio_fileSpecification.html#autotoc_md10", null ]
+      ] ],
+      [ "Rollback Journal", "md_server_side_diskio_fileSpecification.html#autotoc_md11", null ],
+      [ "The Freelist", "md_server_side_diskio_fileSpecification.html#autotoc_md12", null ],
+      [ "The free list", "md_server_side_diskio_fileSpecification.html#autotoc_md13", null ]
+    ] ],
+    [ "yacDB Query format", "md_client_side_query_format.html", [
+      [ "Instruction syntax", "md_client_side_query_format.html#autotoc_md18", [
+        [ "EXIT", "md_client_side_query_format.html#autotoc_md17", null ],
+        [ "CREATE", "md_client_side_query_format.html#autotoc_md19", null ],
+        [ "INSERT", "md_client_side_query_format.html#autotoc_md20", null ],
+        [ "SELECT", "md_client_side_query_format.html#autotoc_md21", null ],
+        [ "SELECT WHERE", "md_client_side_query_format.html#autotoc_md22", null ]
+      ] ],
+      [ "NOT IMPLEMENTED YET", "md_client_side_query_format.html#autotoc_md23", null ]
+    ] ],
+    [ "Deprecated List", "deprecated.html", null ],
+    [ "Todo List", "todo.html", null ],
+    [ "Data Structures", "annotated.html", [
+      [ "Data Structures", "annotated.html", "annotated_dup" ],
+      [ "Data Structure Index", "classes.html", null ],
+      [ "Data Fields", "functions.html", [
+        [ "All", "functions.html", null ],
+        [ "Variables", "functions_vars.html", null ]
+      ] ]
+    ] ],
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ],
+      [ "Globals", "globals.html", [
+        [ "All", "globals.html", null ],
+        [ "Functions", "globals_func.html", null ],
+        [ "Variables", "globals_vars.html", null ],
+        [ "Typedefs", "globals_type.html", null ],
+        [ "Enumerations", "globals_enum.html", null ],
+        [ "Enumerator", "globals_eval.html", null ],
+        [ "Macros", "globals_defs.html", null ]
+      ] ]
+    ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"index.html"
+"annotated.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

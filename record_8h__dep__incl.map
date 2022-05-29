@@ -1,0 +1,9 @@
+<map id="server&#45;side/schema/include/record.h" name="server&#45;side/schema/include/record.h">
+<area shape="rect" id="node1" title="A structure for handling data of unknown type." alt="" coords="51,5,187,47"/>
+<area shape="rect" id="node2" href="$core_8h.html" title="Core YACDB managment, from user input to execution." alt="" coords="5,363,165,404"/>
+<area shape="rect" id="node3" href="$diskio_8h.html" title="Interactions with the disk and cache." alt="" coords="133,95,257,136"/>
+<area shape="rect" id="node5" href="$db__ops_8h.html" title="High(ish) level instructions for general database operations." alt="" coords="127,273,263,315"/>
+<area shape="rect" id="node6" href="$cursor__bt_8h_source.html" title=" " alt="" coords="280,363,416,404"/>
+<area shape="rect" id="node4" href="$diskiod_8h.html" title="Debug utils for disk and cache operations." alt="" coords="133,184,257,225"/>
+<area shape="rect" id="node7" href="$cursor_8h.html" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="280,184,416,225"/>
+</map>

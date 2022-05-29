@@ -1,0 +1,19 @@
+<map id="server&#45;side/core/include/core.h" name="server&#45;side/core/include/core.h">
+<area shape="rect" id="node1" title="Core YACDB managment, from user input to execution." alt="" coords="144,5,304,47"/>
+<area shape="rect" id="node2" href="$main__parser_8h.html" title="Small parser include to only add some generic function." alt="" coords="28,95,151,136"/>
+<area shape="rect" id="node5" href="$record_8h.html" title="A structure for handling data of unknown type." alt="" coords="299,437,432,479"/>
+<area shape="rect" id="node8" href="$db__ops_8h.html" title="High(ish) level instructions for general database operations." alt="" coords="403,95,536,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="225,527,285,553"/>
+<area shape="rect" id="node4" href="$instruction_8h.html" title="Structures for instruction management." alt="" coords="43,184,135,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="334,527,397,553"/>
+<area shape="rect" id="node7" title=" " alt="" coords="664,527,728,553"/>
+<area shape="rect" id="node9" href="$diskio_8h.html" title="Interactions with the disk and cache." alt="" coords="583,348,705,389"/>
+<area shape="rect" id="node10" title=" " alt="" coords="910,445,978,471"/>
+<area shape="rect" id="node14" href="$db__structs_8h.html" title="Structures for interacting with the database." alt="" coords="181,445,275,471"/>
+<area shape="rect" id="node15" href="$diskiod_8h.html" title="Debug utils for disk and cache operations." alt="" coords="609,259,730,300"/>
+<area shape="rect" id="node16" href="$cursor_8h.html" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="313,266,381,293"/>
+<area shape="rect" id="node17" href="$cursor__bt_8h_source.html" title=" " alt="" coords="426,184,513,211"/>
+<area shape="rect" id="node11" title=" " alt="" coords="760,445,835,471"/>
+<area shape="rect" id="node12" title=" " alt="" coords="558,445,645,471"/>
+<area shape="rect" id="node13" title=" " alt="" coords="669,445,736,471"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="server&#45;side/schema/include/db_ops.h" name="server&#45;side/schema/include/db_ops.h">
+<area shape="rect" id="node1" title="High(ish) level instructions for general database operations." alt="" coords="340,5,476,47"/>
+<area shape="rect" id="node2" href="$diskio_8h.html" title="Interactions with the disk and cache." alt="" coords="299,259,421,300"/>
+<area shape="rect" id="node3" title=" " alt="" coords="123,355,191,382"/>
+<area shape="rect" id="node6" title=" " alt="" coords="731,437,795,464"/>
+<area shape="rect" id="node9" href="$db__structs_8h.html" title="Structures for interacting with the database." alt="" coords="5,355,99,382"/>
+<area shape="rect" id="node10" href="$record_8h.html" title="A structure for handling data of unknown type." alt="" coords="567,348,700,389"/>
+<area shape="rect" id="node12" href="$diskiod_8h.html" title="Debug utils for disk and cache operations." alt="" coords="589,169,710,211"/>
+<area shape="rect" id="node13" href="$cursor_8h.html" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="242,177,310,203"/>
+<area shape="rect" id="node14" href="$cursor__bt_8h_source.html" title=" " alt="" coords="365,95,451,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="401,437,461,464"/>
+<area shape="rect" id="node5" title=" " alt="" coords="468,355,543,382"/>
+<area shape="rect" id="node7" title=" " alt="" coords="215,355,302,382"/>
+<area shape="rect" id="node8" title=" " alt="" coords="327,355,393,382"/>
+<area shape="rect" id="node11" title=" " alt="" coords="602,437,665,464"/>
+</map>
