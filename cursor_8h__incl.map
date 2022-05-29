@@ -1,0 +1,13 @@
+<map id="server&#45;side/schema/include/cursor.h" name="server&#45;side/schema/include/cursor.h">
+<area shape="rect" id="node1" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="409,5,545,47"/>
+<area shape="rect" id="node2" href="$diskio_8h.html" title="Interactions with the disk and cache." alt="" coords="367,95,488,136"/>
+<area shape="rect" id="node9" href="$db__structs_8h.html" title="Structures for interacting with the database." alt="" coords="629,191,722,218"/>
+<area shape="rect" id="node3" title=" " alt="" coords="486,191,554,218"/>
+<area shape="rect" id="node4" title=" " alt="" coords="562,273,622,300"/>
+<area shape="rect" id="node5" title=" " alt="" coords="26,191,101,218"/>
+<area shape="rect" id="node6" title=" " alt="" coords="14,273,78,300"/>
+<area shape="rect" id="node7" title=" " alt="" coords="283,191,370,218"/>
+<area shape="rect" id="node8" title=" " alt="" coords="394,191,461,218"/>
+<area shape="rect" id="node10" href="$record_8h.html" title="A structure for handling data of unknown type." alt="" coords="125,184,258,225"/>
+<area shape="rect" id="node11" title=" " alt="" coords="160,273,223,300"/>
+</map>
