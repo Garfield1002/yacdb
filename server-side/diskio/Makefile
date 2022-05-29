@@ -1,4 +1,4 @@
-FILES := disckiod.c diskio.c test.c
+FILES := disckiod.c diskio.c test/test.c
 OUT := diskio_test
 
 all:

@@ -1,7 +1,13 @@
 #pragma once
-#include "../diskio/diskio.h"
-#include "../diskio/dbfio.h"
+#include "../../diskio/include/diskio.h"
+#include "../../diskio/include/dbfio.h"
+#include "../../diskio/include/diskiod.h"
+
+#include "record.h"
 #include "cursor.h"
+#include "cursor_bt.h"
+#include <string.h>
+#include <assert.h>
 
 #define TABLES 0
 #define COLUMNS 1

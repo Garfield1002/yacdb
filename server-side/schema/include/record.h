@@ -1,5 +1,7 @@
 #pragma once
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 /**
     Handles the general record type that abstracts away from the actual type of the data.

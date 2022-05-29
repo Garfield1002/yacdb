@@ -2,8 +2,10 @@
 
 #include "record.h"
 #include "cursor.h"
-#include "../diskio/diskio.h"
-#include "../diskio/dbfio.h"
+#include "db_ops.h"
+#include "../../diskio/include/diskio.h"
+#include "../../diskio/include/dbfio.h"
+#include <string.h>
 
 int insert_bt(Page root, Key key, size_t n, Page table);
 

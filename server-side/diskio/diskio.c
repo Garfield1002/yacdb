@@ -1,8 +1,4 @@
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <assert.h>
-#include "diskio.h"
+#include "include/diskio.h"
 
 bool is_leaf(struct node *node)
 {
@@ -458,7 +454,9 @@ Page create_addr()
         return -1;
     }
 
+#ifdef DEBUG
     printf("INFO find_page: Page %zu created\n", page);
+#endif
 
     return page;
 }

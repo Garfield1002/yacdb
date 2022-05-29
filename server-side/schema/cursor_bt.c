@@ -1,10 +1,4 @@
-#include "record.h"
-#include "cursor.h"
-#include "cursor_bt.h"
-#include "db_ops.h"
-#include "../diskio/diskio.h"
-#include "../diskio/dbfio.h"
-#include <string.h>
+#include "include/cursor_bt.h"
 
 /**
  * @brief find the correct leaf node for a given key

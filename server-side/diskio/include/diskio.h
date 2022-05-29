@@ -1,7 +1,11 @@
 #pragma once
+#include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "../schema/record.h"
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include "../../schema/include/record.h"
 #include "dbfio.h"
 
 // #define ORDER 4

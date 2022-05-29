@@ -1,6 +1,4 @@
-#include "record.h"
-#include <stdio.h>
-#include <string.h>
+#include "include/record.h"
 
 size_t record_size(struct record *record)
 {

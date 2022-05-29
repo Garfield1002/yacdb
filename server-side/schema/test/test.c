@@ -1,8 +1,8 @@
-#include "../db_ops.h"
-#include "../cursor.h"
-#include "../cursor_bt.h"
-#include "../record.h"
-#include "../../diskio/diskiod.h"
+#include "../include/db_ops.h"
+#include "../include/cursor.h"
+#include "../include/cursor_bt.h"
+#include "../include/record.h"
+#include "../../diskio/include/diskiod.h"
 
 void dump_record(struct record *r)
 {
@@ -66,10 +66,7 @@ Key create_user(char *table_name, char *first_name, char *last_name, long accoun
 void bank_db()
 {
     // Use the database as a database for bank data
-    printf("Initializing Database...\n");
     initialize_tables();
-
-    printf("Creating tables...\n");
 
     // Create a table for the customers
     Key customer_table = create_table("Customers", (char *[]){"first_name", "last_name", "account_id"}, 3);
@@ -102,23 +99,11 @@ void bank_db()
     printf("\n\nINSERT INTO customers VALUES (Jack, Royer);\nSELECT first_name, last_name FROM customers\n\n%s\n\n",
            select_all("Customers", (char *[]){"first_name", "last_name"}, 2));
 
-    // find all pages named Customers
-    Key *keys;
-    size_t size;
-
     char *s = "Doe";
-
-    find_all(13, record_from_string(&s), 1, get_table_addr(2), &keys, &size);
-    for (size_t i = 0; i < size; i++)
-    {
-        printf("key: %lu\n", keys[i]);
-    }
 
     printf("\n\nSELECT first_name, last_name FROM customers WHERE last_name = Doe\n\n%s\n",
            select_where(
                "Customers", (char *[]){"first_name", "last_name"}, 2, "last_name", record_from_string(&s)));
-
-    dump_tree(13);
 }
 
 int record_test()
@@ -391,5 +376,13 @@ int main()
 {
     // record_test();
     bank_db();
+    // initialize_tables();
+
+    // char *s = "Doe";
+
+    // printf("\n\nSELECT first_name, last_name FROM customers WHERE last_name = Doe\n\n%s\n",
+    //        select_where(
+    //            "Customers", (char *[]){"first_name", "last_name"}, 2, "last_name", record_from_string(&s)));
+
     return 0;
 }

@@ -1,5 +1,5 @@
-#include "diskio.h"
-#include "diskiod.h"
+#include "../include/diskio.h"
+#include "../include/diskiod.h"
 #include <string.h>
 
 /**
@@ -49,7 +49,6 @@ void test_create_overflow_node(Page addr)
 
 int main()
 {
-    printf("AAAAAAAAAAAAAAAAA");
     init_db();
 
     dump_header();

@@ -1,6 +1,4 @@
-#include "cursor.h"
-#include "../diskio/diskio.h"
-#include "../diskio/dbfio.h"
+#include "include/cursor.h"
 
 /**
  * @brief Create a cursor object on the leftmost leaf
@@ -367,13 +365,6 @@ int insert_internal(Page addr, Key key, Page value)
         {
             create_root(&cursor, new_page);
         }
-
-        // dump the cursor
-        printf("new_key: %d\n", new_key);
-        printf("addr: %d\n", addr);
-
-        printf("cursor.page: %lu\n", cursor.page);
-        printf("cursor.node parent: %lu\n", cursor.node->parent_addr);
 
         // insert the new key in the parent node.
         if (insert_internal(cursor.node->parent_addr, new_key, new_page) == -1)

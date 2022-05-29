@@ -1,17 +1,8 @@
-#include "db_ops.h"
-#include "record.h"
-#include "../diskio/diskio.h"
-#include "../diskio/diskiod.h"
-#include "../diskio/dbfio.h"
-#include "cursor.h"
-#include "cursor_bt.h"
-#include <string.h>
-#include <assert.h>
+#include "include/db_ops.h"
 
 /**
  * @brief Creates the TABLES table
  */
-
 int init_TABLES_table()
 {
     Page root_page = TABLES;
@@ -299,20 +290,25 @@ int init_COLUMNS_NAME_table()
  *
  * The table has the following columns:
  * - `_idx`: the index of the column
- * - `table_idx`: the index of the table
+ * - `table_idx`: the index of the tablet
  * - `name`: the name of the column
  * - `_offset`: the offset of the column in the table (short)
- * - `_root`: the root page of the index tree associated with the column
+ * - `_root`: the root page of the index tree associated with he column
  */
 int initialize_tables()
 {
     init_db();
 
+#ifdef DEBUG
     printf("Initializing tables...\n");
+#endif
 
     if (db.header->nb_pages == 1)
     {
+#ifdef DEBUG
         printf("Creating OG tables...\n");
+#endif
+
         create_addr(); // 1
         create_addr(); // 2
         create_addr(); // 3
@@ -784,9 +780,6 @@ Page create_table(char *table_name, char **column_names, unsigned short n)
 
     free(root_node);
 
-    // // add the table name to the TABLES_NAMES index tree
-    // insert_bt(TABLES_NAMES, id, 0, TABLES);
-
     return id;
 }
 
@@ -1129,8 +1122,6 @@ char *select_where(
     for (size_t i = 0; i < size; i++)
     {
         Key key = keys[i];
-
-        printf("key: %lu\n", key);
 
         Cursor *cursor;
         void *buffer = get_row(root, key, &cursor);
