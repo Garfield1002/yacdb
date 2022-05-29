@@ -90,20 +90,20 @@ void bank_db()
            select_all("COLUMNS", (char *[]){"TABLE_IDX", "NAMES", "NAMES"}, 3));
 
     printf("\n\nSELECT first_name, last_name FROM customers WHERE id = 5\n\n%s\n",
-           select_row_columns("Customers", 5, (char *[]){"first_name", "last_name", "account_id"}, 3));
+           select_row_columns("Customers", 5, (char *[]){"first_name", "last_name"}, 0));
 
     printf("\n\nSELECT last_name, first_name FROM customers\n\n%s",
-           select_all("Customers", (char *[]){"last_name", "first_name"}, 2));
+           select_all("Customers", (char *[]){"last_name", "first_name"}, 0));
 
     create_user("Customers", "Jack", "Royer", 67294);
     printf("\n\nINSERT INTO customers VALUES (Jack, Royer);\nSELECT first_name, last_name FROM customers\n\n%s\n\n",
-           select_all("Customers", (char *[]){"first_name", "last_name"}, 2));
+           select_all("Customers", (char *[]){"first_name", "last_name"}, 0));
 
     char *s = "Doe";
 
     printf("\n\nSELECT first_name, last_name FROM customers WHERE last_name = Doe\n\n%s\n",
            select_where(
-               "Customers", (char *[]){"first_name", "last_name"}, 2, "last_name", record_from_string(&s)));
+               "Customers", (char *[]){"first_name", "last_name"}, 0, "last_name", record_from_string(&s)));
 }
 
 int record_test()

@@ -854,6 +854,49 @@ int print_footer(char *buffer, size_t num_columns)
     return 0;
 }
 
+int get_all_columns(Key table_id, char ***col_names, size_t *nb_cols)
+{
+    struct record *table_id_r = record_from_long((long *)&table_id);
+
+    Key *cols;
+    if (
+        find_all(COLUMNS_TIDX, table_id_r, 0, COLUMNS,
+                 &cols, nb_cols) == -1)
+    {
+        printf("Err get_column_offsets: Failed to find columns\n");
+        free(table_id_r);
+        return -1;
+    }
+
+    free(table_id_r);
+
+    // Gets the names of the columns
+    *col_names = (char **)calloc(sizeof(char *), *nb_cols);
+
+    for (size_t i = 0; i < *nb_cols; i++)
+    {
+        struct record *col_name_r = get_n_record(COLUMNS, cols[i], 1);
+
+        if (col_name_r == NULL)
+        {
+            printf("Err get_all_columns: Failed to extract column name\n");
+            return -1;
+        }
+
+        char *col_name;
+        if (record_get_string(col_name_r, &col_name) == -1)
+        {
+            printf("Err get_all_columns: Failed to get column name\n");
+            return -1;
+        }
+
+        (*col_names)[i] = col_name;
+    }
+
+    free(cols);
+    return 0;
+}
+
 char *select_row_columns(char *table_name, Key key, char *col_names[],
                          size_t num_columns)
 {
@@ -886,6 +929,23 @@ char *select_row_columns(char *table_name, Key key, char *col_names[],
         return NULL;
     }
 
+    if (num_columns == 0)
+    {
+        // Get all columns
+        get_all_columns(table_id, &col_names, &num_columns);
+    }
+
+    short *columns;
+
+    // get the column offsets
+    columns = get_column_offsets(table_id, col_names, num_columns);
+    if (columns == NULL)
+    {
+        printf("Err select_all: Failed to get column offsets\n");
+        free(result);
+        return NULL;
+    }
+
     if (print_header(result, col_names, num_columns) == -1)
     {
         printf("Err select_row_columns: Failed to print header\n");
@@ -895,15 +955,6 @@ char *select_row_columns(char *table_name, Key key, char *col_names[],
     }
 
     sprintf(result, "%s\n| %3lu |", result, key);
-
-    // get the column offsets
-    short *columns = get_column_offsets(table_id, col_names, num_columns);
-    if (columns == NULL)
-    {
-        printf("Err select_all: Failed to get column offsets\n");
-        free(result);
-        return NULL;
-    }
 
     // adds the values of the columns to the result
     if (print_row(result, buffer, columns, num_columns) == -1)
@@ -943,6 +994,12 @@ char *select_all(char *table_name, char *col_names[],
     }
 
     char *result = (char *)malloc(sizeof(char) * 8192);
+
+    if (num_columns == 0)
+    {
+        // Get all columns
+        get_all_columns(table_id, &col_names, &num_columns);
+    }
 
     print_header(result, col_names, num_columns);
 
@@ -1102,6 +1159,12 @@ char *select_where(
     {
         printf("Err select_where: Failed to allocate memory\n");
         return NULL;
+    }
+
+    if (num_columns == 0)
+    {
+        // Get all columns
+        get_all_columns(table_id, &col_names, &num_columns);
     }
 
     if (print_header(result, col_names, num_columns) == -1)
