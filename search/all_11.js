@@ -1,13 +1,21 @@
 var searchData=
 [
-  ['table_0',['table',['../structSelInstr.html#a80718ede5e2891d6198a7b8c7159793a',1,'SelInstr::table()'],['../structCrtInstr.html#a8209c734fa3e6d86af1cfd8d960df457',1,'CrtInstr::table()'],['../structAddInstr.html#a6ea5260f4b52baf8608764f4774990cf',1,'AddInstr::table()']]],
-  ['tables_1',['TABLES',['../db__ops_8h.html#ad2c96b9296896ead1d2f8f1f8dfa5890',1,'db_ops.h']]],
-  ['tables_5fnames_2',['TABLES_NAMES',['../db__ops_8h.html#acdfeafd0eae277011a61191f05d89ab7',1,'db_ops.h']]],
-  ['the_20database_20file_3',['The Database file',['../md_server_side_diskio_fileSpecification.html',1,'']]],
-  ['ti_5fcell_4',['ti_cell',['../structti__cell.html',1,'']]],
-  ['tl_5fcell_5',['tl_cell',['../structtl__cell.html',1,'']]],
-  ['tl_5fcell_5fheader_6',['tl_cell_header',['../structtl__cell__header.html',1,'']]],
-  ['todo_20list_7',['Todo List',['../todo.html',1,'']]],
-  ['type_8',['type',['../structSelInstr.html#a7386ac13d4ba5593c27273dc6cb12dbb',1,'SelInstr::type()'],['../structCrtInstr.html#aafd8f99fc08d954d3e895a11a00198bd',1,'CrtInstr::type()'],['../structAddInstr.html#ac499bfa191651ec573625e121ee9eff0',1,'AddInstr::type()']]],
-  ['types_9',['types',['../structCrtInstr.html#a5e8a3e8c653f4da5405b6448e27b2a7a',1,'CrtInstr']]]
+  ['read_5fnode_0',['read_node',['../diskio_8h.html#a7133907d11d62304406247d04d1172cb',1,'diskio.c']]],
+  ['record_1',['record',['../structrecord.html',1,'']]],
+  ['record_2eh_2',['record.h',['../record_8h.html',1,'']]],
+  ['record_5ffrom_5fchar_3',['record_from_char',['../record_8h.html#a853a2220ab548231e4feccfd4f22003a',1,'record.c']]],
+  ['record_5ffrom_5ffloat_4',['record_from_float',['../record_8h.html#a3ac3009aea49054396ffd1842d421dd1',1,'record.c']]],
+  ['record_5ffrom_5fint_5',['record_from_int',['../record_8h.html#acaa01dab3fd1ca657c0d17047520243e',1,'record.c']]],
+  ['record_5ffrom_5flong_6',['record_from_long',['../record_8h.html#a48e4ff88dd3ac3d0b8c868300bbbd309',1,'record.c']]],
+  ['record_5ffrom_5fshort_7',['record_from_short',['../record_8h.html#a3e72291f14b106064a5046c83f9fb09e',1,'record.c']]],
+  ['record_5ffrom_5fstring_8',['record_from_string',['../record_8h.html#a125d5d30dfdc0a63beb1327946399753',1,'record.c']]],
+  ['record_5fget_5ffloat_9',['record_get_float',['../record_8h.html#aad9966631056faf2b316dc21da4e7ba5',1,'record.h']]],
+  ['record_5fget_5fint_10',['record_get_int',['../record_8h.html#a5beff316848bc2a316e18a9a6955cbcb',1,'record.h']]],
+  ['record_5fsize_11',['record_size',['../record_8h.html#abe9a0cc65fd64a97fc4d5bfb7b526a65',1,'record.c']]],
+  ['record_5ftype_12',['record_type',['../record_8h.html#a393986e23103348f07699f24dcb7f238',1,'record.h']]],
+  ['record_5ftype_5f0_13',['RECORD_TYPE_0',['../record_8h.html#a393986e23103348f07699f24dcb7f238a112d2659d7f77e7060bc38515e772fcd',1,'record.h']]],
+  ['record_5ftype_5f1_14',['RECORD_TYPE_1',['../record_8h.html#a393986e23103348f07699f24dcb7f238a3884c9dd5434fe93aac4b4446c023e6e',1,'record.h']]],
+  ['remove_5fnode_15',['remove_node',['../diskio_8h.html#a14dc5f393806688779c52c91ad778a83',1,'diskio.c']]],
+  ['remove_5fspaces_16',['remove_spaces',['../parser_8h.html#aa44bcfbc2c47e5f620eee2e25c3421d6',1,'parser.c']]],
+  ['replace_5frecord_17',['replace_record',['../record_8h.html#acc24950e105604e7f80bb4351319f926',1,'record.c']]]
 ];

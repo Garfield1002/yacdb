@@ -24,37 +24,34 @@
 */
 var NAVTREE =
 [
-  [ "YACDB-server C", "index.html", [
-    [ "YACDB", "index.html#autotoc_md23", [
-      [ "⭐ Features", "index.html#autotoc_md24", null ],
-      [ "🛠 Building", "index.html#autotoc_md25", null ],
-      [ "💻 Console usage", "index.html#autotoc_md26", null ],
-      [ "📄 Queries in file", "index.html#autotoc_md27", null ],
-      [ "🌳 Documentation", "index.html#autotoc_md28", null ]
+  [ "YACDB", "index.html", [
+    [ "YACDB", "index.html#autotoc_md20", [
+      [ "⭐ Features", "index.html#autotoc_md21", null ],
+      [ "🛠 Building", "index.html#autotoc_md22", null ],
+      [ "💻 Console usage", "index.html#autotoc_md23", null ],
+      [ "📄 Queries in file", "index.html#autotoc_md24", null ],
+      [ "🌳 Documentation", "index.html#autotoc_md25", null ]
     ] ],
-    [ "The Database file", "md_server_side_diskio_fileSpecification.html", [
+    [ "<tt>yac.db</tt> File Specification", "md_server_side_diskio_fileSpecification.html", [
       [ "Pages", "md_server_side_diskio_fileSpecification.html#autotoc_md1", null ],
-      [ "The Database header", "md_server_side_diskio_fileSpecification.html#autotoc_md2", [
+      [ "Database Header", "md_server_side_diskio_fileSpecification.html#autotoc_md2", [
         [ "Magic Header string", "md_server_side_diskio_fileSpecification.html#autotoc_md3", null ],
         [ "Page Size", "md_server_side_diskio_fileSpecification.html#autotoc_md4", null ],
-        [ "Reserved bytes per page", "md_server_side_diskio_fileSpecification.html#autotoc_md5", null ],
-        [ "File change counter", "md_server_side_diskio_fileSpecification.html#autotoc_md6", null ],
-        [ "In-header database size", "md_server_side_diskio_fileSpecification.html#autotoc_md7", null ],
-        [ "Suggested cache size", "md_server_side_diskio_fileSpecification.html#autotoc_md8", null ],
-        [ "Number of free blocks", "md_server_side_diskio_fileSpecification.html#autotoc_md9", null ],
-        [ "First free block", "md_server_side_diskio_fileSpecification.html#autotoc_md10", null ]
+        [ "File change counter (Unused)", "md_server_side_diskio_fileSpecification.html#autotoc_md5", null ],
+        [ "In-header database size", "md_server_side_diskio_fileSpecification.html#autotoc_md6", null ],
+        [ "Suggested cache size", "md_server_side_diskio_fileSpecification.html#autotoc_md7", null ],
+        [ "Number of free blocks", "md_server_side_diskio_fileSpecification.html#autotoc_md8", null ],
+        [ "First free block", "md_server_side_diskio_fileSpecification.html#autotoc_md9", null ]
       ] ],
-      [ "Rollback Journal", "md_server_side_diskio_fileSpecification.html#autotoc_md11", null ],
-      [ "The Freelist", "md_server_side_diskio_fileSpecification.html#autotoc_md12", null ],
-      [ "The free list", "md_server_side_diskio_fileSpecification.html#autotoc_md13", null ]
+      [ "The Freelist", "md_server_side_diskio_fileSpecification.html#autotoc_md10", null ]
     ] ],
-    [ "yacDB Query format", "md_client_side_query_format.html", [
-      [ "Console", "md_client_side_query_format.html#autotoc_md17", null ],
-      [ "YacDB instruction syntax", "md_client_side_query_format.html#autotoc_md18", [
-        [ "CREATE", "md_client_side_query_format.html#autotoc_md19", null ],
-        [ "INSERT", "md_client_side_query_format.html#autotoc_md20", null ],
-        [ "SELECT", "md_client_side_query_format.html#autotoc_md21", [
-          [ "SELECT WHERE", "md_client_side_query_format.html#autotoc_md22", null ]
+    [ "Query Format", "md_client_side_query_format.html", [
+      [ "Console", "md_client_side_query_format.html#autotoc_md14", null ],
+      [ "YACDB instruction syntax", "md_client_side_query_format.html#autotoc_md15", [
+        [ "CREATE", "md_client_side_query_format.html#autotoc_md16", null ],
+        [ "INSERT", "md_client_side_query_format.html#autotoc_md17", null ],
+        [ "SELECT", "md_client_side_query_format.html#autotoc_md18", [
+          [ "SELECT WHERE", "md_client_side_query_format.html#autotoc_md19", null ]
         ] ]
       ] ]
     ] ],

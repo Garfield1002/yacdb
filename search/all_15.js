@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['yacdb_0',['yacdb',['../structyacdb.html',1,'']]],
-  ['yacdb_20query_20format_1',['yacDB Query format',['../md_client_side_query_format.html',1,'']]],
-  ['yacdb_2dserver_20c_2',['YACDB-server C',['../index.html',1,'']]],
-  ['yacdb_5fheader_3',['yacdb_header',['../structyacdb__header.html',1,'']]]
+  ['val_0',['val',['../structcondition.html#aa569de0729e3cbb5e69be2f792cb3f00',1,'condition']]],
+  ['values_1',['values',['../structAddInstr.html#a950143919639b749d3408e7a7a86d4c8',1,'AddInstr']]]
 ];
