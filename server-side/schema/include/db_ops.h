@@ -100,7 +100,7 @@ char *select_all(char *table_name, char *columns[],
  * @brief Selects all rows from a table where the given column is equal to the
  * given value.
  *
- * @param table_name The name of the table to select from
+ * @param table_name The name of the table
  * @param col_names
  * @param num_columns
  * @param where_col_name
