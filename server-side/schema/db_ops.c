@@ -266,22 +266,24 @@ int init_COLUMNS_NAME_table()
 }
 
 /**
- * @brief Create initial tables
  *
- * Creates the initial tables in the database. There are 2 tables:
+ * Creates the initial tables in the database if they are missing.
+ * There are 2 tables:
  * - `TABLES`: a table of all tables in the database.
  * - `COLUMNS`: a table of all columns in the database.
  *
  * ## `TABLES` table
  *
- * It's root is on page 0, it has index 0.
+ * It's root is on page TABLES, it has index TABLES.
  *
  * The table has the following columns:
- * - `_idx`: the index of the table
- * - `name`: the name of the table
- * - `_root`: the root page of the table
- * - `_next_id`: the next available id for a row in the table
- *
+ * | Column | Offset | Type |  Description |
+ * | :-: | :-: | :-: | :-: |
+ * | `_idx` | - | `::Key` | The index of the table in the database |
+ * | `name` | 0 | `char *`| The name of the table |
+ * | `_root` | 1 | `::Page` | the root page of the table |
+ * | `_next_id`| 2|  `::Key` | the next available id for a row in the table|
+
  * ## `COLUMNS` table
  *
  * It's root is on page 1, it has index 1.

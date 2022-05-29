@@ -16,24 +16,35 @@
 #include <string.h>
 #include <assert.h>
 
-#define TABLES 0       ///< The id, and the address of the TABLES table.
-#define COLUMNS 1      ///< The id, and the address of the COLUMNS table.
-#define TABLES_NAMES 2 ///< The address of the TABLES_NAMES table.
-#define COLUMNS_TIDX 3 ///< The address of the COLUMNS_TIDX table.
+/**
+ * @def TABLES
+ * @brief The id, and the address of the TABLES table.
+ */
+#define TABLES 0
+
+/**
+ * @def COLUMNS
+ * @brief The id, and the address of the COLUMNS table.
+ */
+#define COLUMNS 1
+
+/**
+ * @def TABLES_NAMES
+ * @brief The address of the TABLES_NAMES table.
+ */
+#define TABLES_NAMES 2
+
+/**
+ * @def COLUMNS_TIDX
+ * @brief The address of the COLUMNS_NAMES table.
+ */
+#define COLUMNS_TIDX 3
+
+/**
+ * @def COLUMNS_NAMES
+ * @brief The address of the COLUMNS_NAMES table.
+ */
 #define COLUMNS_NAMES 4
-
-typedef unsigned short col_num_t;
-
-enum field_type
-{
-    FIELD_TYPE_CHAR,
-    FIELD_TYPE_SHORT,
-    FIELD_TYPE_INT,
-    FIELD_TYPE_LONG,
-    FIELD_TYPE_FLOAT,
-    FIELD_TYPE_BOOL,
-    FIELD_TYPE_STRING,
-};
 
 /**
  * @brief Create initial tables
