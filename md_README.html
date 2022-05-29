@@ -68,19 +68,27 @@ $(function() {
 <div class="contents">
 <div class="textblock"><p >Yet Another C DataBase is a database built from scratch in C.</p>
 <h1>Installation</h1>
+<p >CMake is requiered</p>
 <ol type="1">
 <li>Clone the repositiory <div class="fragment"><div class="line">git clone https://github.com/Garfield1002/yacdb.git</div>
+<div class="line">cd yacdb</div>
 </div><!-- fragment --></li>
-<li>Setup &amp; Build <div class="fragment"><div class="line">sh yacdb/server-side/setup.sh &amp;&amp; sh yacdb/server-side/build.sh</div>
+<li>Setup &amp; Build (server-side) <div class="fragment"><div class="line">sh server-side/setup.sh &amp;&amp; sh server-side/build.sh</div>
+</div><!-- fragment --></li>
+<li>Build (client-side) <div class="fragment"><div class="line">make -C client-side all</div>
 </div><!-- fragment --></li>
 </ol>
-<h1>Usage</h1>
+<h1>Console usage</h1>
 <ol type="1">
-<li>Server side <div class="fragment"><div class="line">yacdb/server-side/server</div>
+<li>Launch the server <div class="fragment"><div class="line">server-side/server</div>
 </div><!-- fragment --></li>
-<li>Client side <div class="fragment"><div class="line">yacdb/server-side/console</div>
+<li>Launch any number of clients <div class="fragment"><div class="line">client-side/client</div>
 </div><!-- fragment --></li>
 </ol>
+<h1>Queries in file</h1>
+<p >It is possible to execute a series of query stored in a file :</p>
+<div class="fragment"><div class="line">client-side/client file_path</div>
+</div><!-- fragment --><p >If the server is running, this will send the instruction to the server and execute them.</p>
 <h1>Documentation</h1>
 <p ><a href="https://garfield1002.github.io/yacdb/">https://garfield1002.github.io/yacdb/</a> </p>
 </div></div><!-- contents -->
