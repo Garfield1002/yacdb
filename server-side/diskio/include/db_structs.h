@@ -1,7 +1,28 @@
+/**
+ * @file db_structs.h
+ * @author Jack Royer
+ * @brief Structures for interacting with the database.
+ *
+ * @date 2022-05-29
+ */
+
 #pragma once
 #include <stdio.h>
 
+/**
+ * @brief @typedef Page
+ * @brief A address to a page.
+ *
+ * This type is mainly used for auto-documentation, in order to better destinguish keys from addresses.
+ */
 typedef size_t Page;
+
+/**
+ * @typedef Key
+ * @brief A key to a record.
+ *
+ * This type is mainly used for auto-documentation, in order to better destinguish keys from addresses.
+ */
 
 #define YACDB_FILE_NAME "yac.db"
 #define YACDB_SIGNATURE "YACDB format"

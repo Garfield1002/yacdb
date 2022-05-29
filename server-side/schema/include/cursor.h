@@ -1,12 +1,37 @@
+/**
+ * @file cursor.h
+ * @author Jack Royer
+ * @brief Operations on b-plus-trees using a cursor.
+ *
+ * @date 2022-05-29
+ */
 #pragma once
 
 #include "../../diskio/include/diskio.h"
 #include "../../diskio/include/db_structs.h"
 
+/**
+ * @struct Cursor
+ * @typedef Cursor
+ * @brief A cursor for navigating a tree.
+ */
 typedef struct
 {
+    /**
+     * @brief The page the cursor is on
+     */
     Page page;
+
+    /**
+     * @brief The node associated with the page that the cursor is on
+     *
+     * At all time we have #node = read_node()(#page)
+     */
     struct node *node;
+
+    /**
+     * @brief The current cell the cursor is on
+     */
     unsigned short cell;
 } Cursor;
 

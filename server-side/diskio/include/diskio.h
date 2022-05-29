@@ -1,3 +1,11 @@
+/**
+ * @file diskio.h
+ * @author Jack Royer
+ * @brief Interactions with the disk and cache.
+ *
+ * @date 2022-05-29
+ */
+
 #pragma once
 #include <assert.h>
 #include <stdio.h>
@@ -11,6 +19,12 @@
 // #define ORDER 4
 #define ORDER 4
 
+/**
+ * @typedef Key
+ * @brief A key to a record.
+ *
+ * This type is mainly used for auto-documentation, in order to better destinguish keys from addresses.
+ */
 typedef unsigned long Key;
 
 struct linked_overflow
@@ -50,26 +64,26 @@ struct yacdb db;
 bool is_leaf(struct node *node);
 
 /**
- * @brief Reads a node from disk at a given address
+ * @brief Reads a node from disk at a given address.
  *
  * @param addr The page number of the node
- *
- * @return The node, will return NULL if an error occurred
+ * @return a pointer to the node.
+ * @throw Returns NULL if an error occurred
  */
 // TODO: Finish this
-struct node *read_node(size_t addr);
+struct node *read_node(Page addr);
 
 /**
  * @brief Writes a node to disk (or cache) at a given address. If an error occurs returns -1
  */
 // TODO: Finish this
-int write_node(struct node *node, size_t addr);
+int write_node(struct node *node, Page addr);
 
 /**
  * @brief Removes a node from disk at a given address. If an error occurs returns -1
  */
 // TODO: Finish this
-int remove_node(size_t addr);
+int remove_node(Page addr);
 
 /**
  * @brief Creates an address for a new node. If an error occurs returns -1
