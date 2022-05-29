@@ -3,6 +3,7 @@
  * @author Mateo
  * @brief Small parser include to only add some generic function
  */
+#ifndef PARSER_H
 #define PARSER_H
 
 #include <stdio.h>

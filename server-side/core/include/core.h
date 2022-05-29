@@ -27,5 +27,11 @@ void db_handle(FILE* f, char* line);
  */
 void init_database();
 
-
+/**
+ * @brief Debug function to test the parser
+ *
+ * @param f Output file (stdout)
+ * @param line User input
+ */
+void debug_parser(FILE* f, char* line);
 #endif
