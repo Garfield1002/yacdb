@@ -61,7 +61,7 @@ client-side/client
 
 The available commands can be found in the documentation under the [Query Format](https://garfield1002.github.io/yacdb/md_client_side_query_format.html) section.
 
-## Queries in file
+## 📄 Queries in file
 
 It is possible to execute a series of query stored in a file :
 
@@ -71,7 +71,7 @@ client-side/client file_path
 
 If the server is running, this will send the instruction to the server and execute them.
 
-## Documentation
+## 🌳 Documentation
 
 Detailed documentation is available on the [github page](https://garfield1002.github.io/yacdb/).
 
