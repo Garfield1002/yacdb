@@ -1,11 +1,10 @@
 <map id="server&#45;side/parser/include/instruction.h" name="server&#45;side/parser/include/instruction.h">
 <area shape="rect" id="node1" title="Structures for instruction management." alt="" coords="335,5,476,47"/>
 <area shape="rect" id="node2" href="$main__parser_8h.html" title="Small parser include to only add some generic function." alt="" coords="9,102,161,143"/>
-<area shape="rect" id="node5" href="$parser_8h.html" title="Main parsing file, transform a user input into instruction from instruction.h." alt="" coords="339,199,466,240"/>
-<area shape="rect" id="node6" href="$parser__dump_8h.html" title="Debug file to dump instructions." alt="" coords="237,102,393,143"/>
-<area shape="rect" id="node7" href="$parser__mallocs__frees_8h.html" title="Frees and mallocs helper for the structures in instruction.h." alt="" coords="417,95,575,151"/>
-<area shape="rect" id="node8" href="$instructions__to__tree_8h_source.html" title=" " alt="" coords="589,199,739,240"/>
-<area shape="rect" id="node9" href="$nodes_8h_source.html" title=" " alt="" coords="651,109,779,136"/>
+<area shape="rect" id="node4" href="$parser_8h.html" title="Main parsing file, transform a user input into instruction from instruction.h." alt="" coords="339,199,466,240"/>
+<area shape="rect" id="node5" href="$parser__dump_8h.html" title="Debug file to dump instructions." alt="" coords="237,102,393,143"/>
+<area shape="rect" id="node6" href="$parser__mallocs__frees_8h.html" title="Frees and mallocs helper for the structures in instruction.h." alt="" coords="417,95,575,151"/>
+<area shape="rect" id="node7" href="$instructions__to__tree_8h_source.html" title=" " alt="" coords="589,199,739,240"/>
+<area shape="rect" id="node8" href="$nodes_8h_source.html" title=" " alt="" coords="651,109,779,136"/>
 <area shape="rect" id="node3" href="$core_8h.html" title="Core YACDB managment, from user input to execution." alt="" coords="5,199,165,240"/>
-<area shape="rect" id="node4" href="$core_8c.html" title="Source file for core.h." alt="" coords="8,288,163,315"/>
 </map>

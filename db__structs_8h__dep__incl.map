@@ -2,9 +2,8 @@
 <area shape="rect" id="node1" title="Structures for interacting with the database." alt="" coords="218,5,361,47"/>
 <area shape="rect" id="node2" href="$diskio_8h.html" title="Interactions with the disk and cache." alt="" coords="176,95,300,136"/>
 <area shape="rect" id="node4" href="$db__ops_8h.html" title="High(ish) level instructions for general database operations." alt="" coords="64,273,200,315"/>
-<area shape="rect" id="node7" href="$cursor__bt_8h_source.html" title=" " alt="" coords="228,363,364,404"/>
-<area shape="rect" id="node8" href="$cursor_8h.html" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="275,184,411,225"/>
+<area shape="rect" id="node6" href="$cursor__bt_8h_source.html" title=" " alt="" coords="228,363,364,404"/>
+<area shape="rect" id="node7" href="$cursor_8h.html" title="Operations on b&#45;plus&#45;trees using a cursor." alt="" coords="275,184,411,225"/>
 <area shape="rect" id="node3" href="$diskiod_8h.html" title="Debug utils for disk and cache operations." alt="" coords="25,184,149,225"/>
 <area shape="rect" id="node5" href="$core_8h.html" title="Core YACDB managment, from user input to execution." alt="" coords="44,363,204,404"/>
-<area shape="rect" id="node6" href="$core_8c.html" title="Source file for core.h." alt="" coords="47,452,202,479"/>
 </map>

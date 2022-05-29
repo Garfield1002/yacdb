@@ -3,7 +3,7 @@ var searchData=
   ['data_0',['data',['../structdata.html',1,'']]],
   ['dataarray_1',['dataarray',['../structdataarray.html',1,'']]],
   ['db_2',['db',['../diskio_8h.html#a2ac3e70abd454ef970a8bb3944424a93',1,'diskio.h']]],
-  ['db_5fhandle_3',['db_handle',['../core_8c.html#a41ee8121259d22c83a6308cbcb660278',1,'db_handle(FILE *f, char *line):&#160;core.c'],['../core_8h.html#a41ee8121259d22c83a6308cbcb660278',1,'db_handle(FILE *f, char *line):&#160;core.c']]],
+  ['db_5fhandle_3',['db_handle',['../core_8h.html#a41ee8121259d22c83a6308cbcb660278',1,'core.c']]],
   ['db_5fops_2eh_4',['db_ops.h',['../db__ops_8h.html',1,'']]],
   ['db_5fstructs_2eh_5',['db_structs.h',['../db__structs_8h.html',1,'']]],
   ['dbtree_6',['dbtree',['../structdbtree.html',1,'']]],

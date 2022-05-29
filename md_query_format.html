@@ -66,30 +66,58 @@ $(function() {
   <div class="headertitle"><div class="title">yacDB Query format </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h3>EXIT</h3>
-<p >q;</p>
-<p >exit;</p>
-<h3>CREATE / DROP</h3>
+<div class="textblock"><h2>EXIT</h2>
+<p >Type any of the following instructions to exit the console :</p>
+<ul>
+<li>q</li>
+<li>exit</li>
+</ul>
+<p >This is a console instruction only and has nothing to do with the database, hence the absence of ';'. </p><h1>Instruction syntax</h1>
+<p >The yacdb keywords such as instruction types (sel, crt, add) and instruction keywords (where, with, in) need to be written in lowercase letter.</p>
+<p >Any identifier, either table or column, can be composed of any letter -upper and lower case- as well as digits.</p>
+<h2>CREATE</h2>
+<p >Instruction for table creation :</p>
 <p >crt IDENT_table with IDENT_col=type, ...;</p>
-<p >type:</p><ul>
+<p >type: (not implemented yet, everything is string)</p><ul>
 <li>"int"</li>
 <li>"string"</li>
 </ul>
-<p >drop IDENT_table;</p>
-<h3>INSERT</h3>
+<p >Exemple :</p><ul>
+<li>crt users with name=string, age=int, hobby=string;</li>
+</ul>
+<h2>INSERT</h2>
+<p >Instruction to insert a data in an existing table :</p>
 <p >add IDENT_col=VAL, ... in IDENT_table;</p>
-<p >VAL:</p><ul>
+<p >VAL :</p><ul>
 <li>int (ex: 48)</li>
 <li>string(ex: "a test string")</li>
 </ul>
-<h3>SELECT</h3>
-<p >sel IDENT_col,... from IDENT_table;</p>
-<p >sel * from IDENT_table;</p>
-<h3>WHERE</h3>
-<p >sel IDENT_col,... from IDENT_table cond CONDITION;</p>
+<p >Exemple :</p><ul>
+<li>add name="Joe", age=42, hobby="Volleyball" in users;</li>
+</ul>
+<h2>SELECT</h2>
+<p >Instruction to select data from the database :</p>
+<ul>
+<li>sel IDENT_col,... from IDENT_table;</li>
+<li>sel * from IDENT_table;</li>
+</ul>
+<p >Exemple :</p><ul>
+<li>sel hobby, age from users;</li>
+<li>sel * from users;</li>
+</ul>
+<h2>SELECT WHERE</h2>
+<p >Instruction select with a condition on a column :</p>
+<ul>
+<li>sel IDENT_col,... from IDENT_table cond CONDITION;</li>
+</ul>
+<p >Exemple :</p><ul>
+<li>sel hobby from users where name="Joe";</li>
+<li>sel * from users where age=30;</li>
+</ul>
+<h1>NOT IMPLEMENTED YET</h1>
+<p >drop IDENT_table;</p>
 <p >del from IDENT_table cond CONDITION;</p>
 <p >up IDENT_table with IDENT_col = VAL, ... cond CONDITION;</p>
-<h3>maybe:</h3>
 <p >&ndash; JOIN &ndash; LIKE &ndash; ORDER BY maybe: create database IDENT; maybe: drop database IDENT;</p>
 <p >sel IDENT_col,... from IDENT_table inner join IDENT_table on CONDITION; </p>
 </div></div><!-- contents -->
