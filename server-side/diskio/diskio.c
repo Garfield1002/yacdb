@@ -1,3 +1,4 @@
+// #define DEBUG
 #include "include/diskio.h"
 
 bool is_leaf(struct node *node)
@@ -9,7 +10,6 @@ bool is_leaf(struct node *node)
 /**
  * @brief Reads the content of a page and returns it
  */
-// TODO: Cache
 void *read_page(struct yacdb *db, size_t addr)
 {
     if (addr >= db->header->nb_pages)
@@ -285,17 +285,19 @@ int read_tlcell(struct key_value *kv, void *rpage)
 
 struct node *read_node(size_t addr)
 {
-    struct cached_node *c_node = get_from_cache(addr);
+    struct node *node = NULL;
+    // get_from_cache(addr);
 
-    if (c_node != NULL)
+    if (node != NULL)
     {
 #ifdef DEBUG
         printf("INFO read_node: Node %zu found in cache\n", addr);
 #endif
-        return c_node->node;
+
+        return node;
     }
 
-    struct node *node = (struct node *)malloc(sizeof(struct node));
+    node = (struct node *)malloc(sizeof(struct node));
 
     struct btree_page page;
 
@@ -384,7 +386,7 @@ struct node *read_node(size_t addr)
     free(page.data);
 
     // Add to cache
-    add_to_cache(node, addr);
+    // add_to_cache(node, addr);
 
     return node;
 }
@@ -773,7 +775,7 @@ int write_ti_node(struct node *node, size_t addr)
 
 int write_node(struct node *node, size_t addr)
 {
-    add_to_cache(node, addr);
+    // add_to_cache(node, addr);
 
     switch (node->type)
     {
@@ -785,6 +787,7 @@ int write_node(struct node *node, size_t addr)
         return write_tl_node(node, addr);
     default:
         printf("ERR write_node: Unknown node type\n");
+        printf("ERR write_node: Node type: %d\n", node->type);
         return -1;
     }
 }
@@ -793,6 +796,9 @@ int init_db()
 {
     FILE *file;
     FILE *temp;
+
+    db.cache = NULL;
+    db.cache_size = 0;
 
     // Checks if the database file exists
     if ((file = fopen(YACDB_FILE_NAME, "r+")))
@@ -895,6 +901,50 @@ struct node *create_node()
     return node;
 }
 
+struct node *cpy_node(struct node *node)
+{
+    struct node *new_node = (struct node *)calloc(sizeof(struct node), 1);
+
+    if (new_node == NULL)
+    {
+        printf("ERR cpy_node: Failed to allocate memory\n");
+        return NULL;
+    }
+
+    new_node->parent_addr = node->parent_addr;
+    new_node->type = node->type;
+    new_node->nb_keys = node->nb_keys;
+
+    for (size_t i = 0; i < node->nb_keys + 1; i++)
+    {
+        new_node->child_addrs[i] = node->child_addrs[i];
+    }
+
+    // copy the data
+    for (size_t i = 0; i < new_node->nb_keys; i++)
+    {
+        new_node->key_vals[i] = (struct key_value *)calloc(sizeof(struct key_value), 1);
+
+        if (new_node->key_vals[i] == NULL)
+        {
+            printf("ERR add_to_cache: Failed to allocate memory\n");
+            return NULL;
+        }
+
+        new_node->key_vals[i]->key = node->key_vals[i]->key;
+        new_node->key_vals[i]->size = node->key_vals[i]->size;
+        new_node->key_vals[i]->overflow = node->key_vals[i]->overflow;
+        new_node->key_vals[i]->value = calloc(node->key_vals[i]->size, 1);
+        if (memcpy(new_node->key_vals[i]->value, node->key_vals[i]->value, node->key_vals[i]->size) == NULL)
+        {
+            printf("ERR add_to_cache: Failed to copy node\n");
+            return NULL;
+        }
+    }
+
+    return new_node;
+}
+
 int remove_node_from_cache(struct cached_node *last_node)
 {
     // Free all the data
@@ -907,7 +957,7 @@ int remove_node_from_cache(struct cached_node *last_node)
     free(last_node->node);
     free(last_node);
 
-    cache_size--;
+    db.cache_size--;
 
     return 0;
 }
@@ -918,39 +968,30 @@ int remove_node_from_cache(struct cached_node *last_node)
  */
 int add_to_cache(struct node *node, Page addr)
 {
-    struct node *new_node = (struct node *)realloc(node, sizeof(struct node));
-
-    if (new_node == NULL)
-    {
-        printf("ERR add_to_cache: Failed to allocate memory\n");
-        return -1;
-    }
-
-    // copy the data
-    for (size_t i = 0; i < new_node->nb_keys; i++)
-    {
-        new_node->key_vals[i] = (struct key_value *)calloc(sizeof(struct key_value), 1);
-
-        if (new_node->key_vals[i] == NULL)
-        {
-            printf("ERR add_to_cache: Failed to allocate memory\n");
-            return -1;
-        }
-
-        new_node->key_vals[i]->key = node->key_vals[i]->key;
-        new_node->key_vals[i]->size = node->key_vals[i]->size;
-        new_node->key_vals[i]->overflow = node->key_vals[i]->overflow;
-        new_node->key_vals[i]->value = realloc(node->key_vals[i]->value, node->key_vals[i]->size);
-    }
+    struct node *new_node = cpy_node(node);
 
     // if the node is already in the cache, remove it
-    struct cached_node *last_node = NULL;
-    while (last_node != NULL)
+    if (db.cache != NULL)
     {
-        if (last_node->addr == addr)
+        struct cached_node *parent = db.cache, *last_node = db.cache->next;
+
+        if (parent->addr == addr)
         {
-            remove_node_from_cache(last_node);
-            break;
+            db.cache = parent->next;
+            remove_node_from_cache(parent);
+            parent = NULL;
+        }
+
+        while (last_node != NULL)
+        {
+            if (last_node->addr == addr)
+            {
+                parent->next = last_node->next;
+                remove_node_from_cache(last_node);
+                break;
+            }
+            parent = last_node;
+            last_node = last_node->next;
         }
     }
 
@@ -965,17 +1006,17 @@ int add_to_cache(struct node *node, Page addr)
 
     new_cache_node->node = new_node;
     new_cache_node->addr = addr;
-    new_cache_node->next = cache;
+    new_cache_node->next = db.cache;
 
-    cache = new_cache_node;
+    db.cache = new_cache_node;
 
-    cache_size++;
+    db.cache_size++;
 
     // if the cache is too big, remove the last node
-    if (cache_size > db.header->default_cache_size)
+    if (db.cache_size > db.header->default_cache_size)
     {
-        struct cached_node *parent = cache;
-        struct cached_node *last_node = cache->next;
+        struct cached_node *parent = db.cache;
+        struct cached_node *last_node = db.cache->next;
 
         while (last_node->next != NULL)
         {
@@ -994,37 +1035,37 @@ int add_to_cache(struct node *node, Page addr)
 /**
  * @brief Get from cache, if the node is not in cache returns NULL
  */
-struct cached_node *get_from_cache(Page addr)
+struct node *get_from_cache(Page addr)
 {
-    struct cached_node *c_node, *parent = cache;
+    struct cached_node *c_node, *parent = db.cache;
+
+    if (parent == NULL)
+    {
+        return NULL;
+    }
 
     if (parent->addr == addr)
     {
-        return parent;
+        return cpy_node(parent->node);
     }
 
     c_node = parent->next;
 
-    while (c_node->addr != addr)
+    while (c_node != NULL)
     {
-        if (c_node->next == NULL)
+        if (c_node->addr == addr)
         {
-            break;
+            // move the node to the top
+            parent->next = c_node->next;
+            c_node->next = db.cache;
+
+            db.cache = c_node;
+
+            return cpy_node(c_node->node);
         }
 
         c_node = c_node->next;
         parent = parent->next;
-    }
-
-    if (c_node->addr == addr)
-    {
-        // move the node to the top
-        parent->next = c_node->next;
-        c_node->next = cache;
-
-        cache = c_node;
-
-        return c_node;
     }
 
     return NULL;

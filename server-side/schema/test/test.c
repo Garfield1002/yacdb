@@ -1,3 +1,4 @@
+#define DEBUG
 #include "../include/db_ops.h"
 #include "../include/cursor.h"
 #include "../include/cursor_bt.h"
@@ -67,6 +68,8 @@ void bank_db()
 {
     // Use the database as a database for bank data
     initialize_tables();
+
+    printf("Creating tables\n");
 
     // Create a table for the customers
     Key customer_table = create_table("Customers", (char *[]){"first_name", "last_name", "account_id"}, 3);

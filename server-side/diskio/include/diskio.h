@@ -68,10 +68,6 @@ struct cached_node
  * @brief The database
  */
 struct yacdb db;
-
-struct cached_node *cache;
-size_t cache_size;
-
 /**
  * @brief Verifies if the node is a leaf
  */
@@ -117,4 +113,4 @@ int add_to_cache(struct node *node, Page addr);
 /**
  * @brief Get from cache, if the node is not in cache returns NULL
  */
-struct cached_node *get_from_cache(Page addr);
+struct node *get_from_cache(Page addr);
