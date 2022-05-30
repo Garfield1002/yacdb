@@ -43,21 +43,35 @@ struct key_value
     struct linked_overflow *overflow;
 };
 
+/**
+ * @struct node
+ * @brief The basic structure stored in memory.
+ */
 struct node
 {
     Page parent_addr;
 
     enum page_type type;
     size_t nb_keys;
-    struct key_value *key_vals[ORDER + 1]; // +1 for when handling splits
+    struct key_value *key_vals[ORDER + 1]; ///< +1 for when handling splits
     Page child_addrs[ORDER + 2];
+};
+
+/**
+ * @struct cached_node
+ * @brief A struct for holding cached nodes
+ */
+struct cached_node
+{
+    struct cached_node *next;
+    struct node *node;
+    Page addr;
 };
 
 /**
  * @brief The database
  */
 struct yacdb db;
-
 /**
  * @brief Verifies if the node is a leaf
  */
@@ -70,19 +84,16 @@ bool is_leaf(struct node *node);
  * @return a pointer to the node.
  * @throw Returns NULL if an error occurred
  */
-// TODO: Finish this
 struct node *read_node(Page addr);
 
 /**
  * @brief Writes a node to disk (or cache) at a given address. If an error occurs returns -1
  */
-// TODO: Finish this
 int write_node(struct node *node, Page addr);
 
 /**
  * @brief Removes a node from disk at a given address. If an error occurs returns -1
  */
-// TODO: Finish this
 int remove_node(Page addr);
 
 /**
@@ -96,3 +107,17 @@ Page create_addr();
 int init_db();
 
 struct node *create_node();
+
+/**
+ * @brief Adds a node to the beginning of the linked list that is cache.
+ * If the size of cache is greater than the max cache size, the last node of the list is removed.
+ */
+int add_to_cache(struct node *node, Page addr);
+
+/**
+ * @brief Get a node from the cache.
+ * This node will be a copy of the node in the cache.
+ *
+ * If no node is found or an error occurs, returns NULL.
+ */
+struct node *get_from_cache(Page addr);

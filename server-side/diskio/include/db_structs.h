@@ -48,6 +48,9 @@ struct yacdb
     FILE *file;
     struct yacdb_header *header;
 
+    struct cached_node *cache;
+    size_t cache_size;
+
     // Page *cache;
     // int cache_size;
     // int cache_index;
