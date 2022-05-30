@@ -84,19 +84,16 @@ bool is_leaf(struct node *node);
  * @return a pointer to the node.
  * @throw Returns NULL if an error occurred
  */
-// TODO: Finish this
 struct node *read_node(Page addr);
 
 /**
  * @brief Writes a node to disk (or cache) at a given address. If an error occurs returns -1
  */
-// TODO: Finish this
 int write_node(struct node *node, Page addr);
 
 /**
  * @brief Removes a node from disk at a given address. If an error occurs returns -1
  */
-// TODO: Finish this
 int remove_node(Page addr);
 
 /**
@@ -121,9 +118,3 @@ int add_to_cache(struct node *node, Page addr);
  * @brief Get from cache, if the node is not in cache returns NULL
  */
 struct cached_node *get_from_cache(Page addr);
-
-/**
- * @brief Writes all the modifications to disk
- * @return int
- */
-int write_cache();
