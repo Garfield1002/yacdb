@@ -6,6 +6,7 @@ var db__ops_8h =
     [ "TABLES", "db__ops_8h.html#ad2c96b9296896ead1d2f8f1f8dfa5890", null ],
     [ "TABLES_NAMES", "db__ops_8h.html#acdfeafd0eae277011a61191f05d89ab7", null ],
     [ "create_table", "db__ops_8h.html#ae185cd77e506bffb07502e829fc86581", null ],
+    [ "exit_db", "db__ops_8h.html#ab8471d0eeabb4deadb48ef69ea606045", null ],
     [ "get_column_offsets", "db__ops_8h.html#aa47cd7bea86ee683fd82c26e68dde303", null ],
     [ "get_n_record", "db__ops_8h.html#aabc2567fdbde96fa68676277aac146b5", null ],
     [ "get_next_id", "db__ops_8h.html#a363e828adc7b2fb2732dc0394755db80", null ],

@@ -7,5 +7,6 @@ var searchData=
   ['free_5fcrtinstr_4',['free_crtinstr',['../parser__mallocs__frees_8h.html#afc39ccc7485f0a187fe15afa7832c719',1,'parser_mallocs_frees.c']]],
   ['free_5finstr_5',['free_instr',['../parser__mallocs__frees_8h.html#a7aa205fd52213bcd979c9af5d633f0f8',1,'parser_mallocs_frees.c']]],
   ['free_5finstrarray_6',['free_instrarray',['../parser__mallocs__frees_8h.html#a5caf6f2639189884dbf13764b921eee2',1,'parser_mallocs_frees.c']]],
-  ['free_5fselinstr_7',['free_selinstr',['../parser__mallocs__frees_8h.html#a1a8b9ffd491b23f71f7b0899f5d5f923',1,'parser_mallocs_frees.c']]]
+  ['free_5fnode_7',['free_node',['../diskio_8h.html#a1a2c7a3d631a327ce72a45845860f225',1,'diskio.c']]],
+  ['free_5fselinstr_8',['free_selinstr',['../parser__mallocs__frees_8h.html#a1a8b9ffd491b23f71f7b0899f5d5f923',1,'parser_mallocs_frees.c']]]
 ];

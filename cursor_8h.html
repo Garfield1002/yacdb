@@ -202,9 +202,8 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a382037a585c0a98f6c1afcaefd5284d8"><td class="memItemLeft" align="right" valign="top"><a id="a382037a585c0a98f6c1afcaefd5284d8" name="a382037a585c0a98f6c1afcaefd5284d8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (<a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a> root, struct <a class="el" href="structkey__value.html">key_value</a> *kv)</td></tr>
-<tr class="memdesc:a382037a585c0a98f6c1afcaefd5284d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a key value pair into the tree. <br /></td></tr>
+<tr class="memitem:a382037a585c0a98f6c1afcaefd5284d8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cursor_8h.html#a382037a585c0a98f6c1afcaefd5284d8">insert</a> (<a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a> root, struct <a class="el" href="structkey__value.html">key_value</a> *kv)</td></tr>
+<tr class="memdesc:a382037a585c0a98f6c1afcaefd5284d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a key value pair inside the tree. The key value will be freed.  <a href="cursor_8h.html#a382037a585c0a98f6c1afcaefd5284d8">More...</a><br /></td></tr>
 <tr class="separator:a382037a585c0a98f6c1afcaefd5284d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a347b4993af51c2b3e87ad2773e54a66e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structCursor.html">Cursor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cursor_8h.html#a347b4993af51c2b3e87ad2773e54a66e">find_leaf</a> (<a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a> root, <a class="el" href="diskio_8h.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key)</td></tr>
 <tr class="memdesc:a347b4993af51c2b3e87ad2773e54a66e"><td class="mdescLeft">&#160;</td><td class="mdescRight">find the correct leaf node for a given key  <a href="cursor_8h.html#a347b4993af51c2b3e87ad2773e54a66e">More...</a><br /></td></tr>
@@ -228,6 +227,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>insert_in_arr_Page</b
 <tr class="memitem:a92e545c9f886a6c3e5ad921f2ed599ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cursor_8h.html#a92e545c9f886a6c3e5ad921f2ed599ba">insert_in_arr_kv</a> (struct <a class="el" href="structkey__value.html">key_value</a> *key_vals[], size_t size, struct <a class="el" href="structkey__value.html">key_value</a> *val, size_t offset)</td></tr>
 <tr class="memdesc:a92e545c9f886a6c3e5ad921f2ed599ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts the value into the array at a given index.  <a href="cursor_8h.html#a92e545c9f886a6c3e5ad921f2ed599ba">More...</a><br /></td></tr>
 <tr class="separator:a92e545c9f886a6c3e5ad921f2ed599ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a318bbe091440c1dc1f792d045a98336b"><td class="memItemLeft" align="right" valign="top"><a id="a318bbe091440c1dc1f792d045a98336b" name="a318bbe091440c1dc1f792d045a98336b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>free_cursor</b> (<a class="el" href="structCursor.html">Cursor</a> *cursor)</td></tr>
+<tr class="separator:a318bbe091440c1dc1f792d045a98336b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Operations on b-plus-trees using a cursor. </p>
@@ -262,6 +264,37 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>insert_in_arr_Page</b
 
 <p>find the correct leaf node for a given key </p>
 <p >find the correct leaf node for a given key </p>
+
+</div>
+</div>
+<a id="a382037a585c0a98f6c1afcaefd5284d8" name="a382037a585c0a98f6c1afcaefd5284d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a382037a585c0a98f6c1afcaefd5284d8">&#9670;&nbsp;</a></span>insert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int insert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a>&#160;</td>
+          <td class="paramname"><em>root</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structkey__value.html">key_value</a> *&#160;</td>
+          <td class="paramname"><em>kv</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Inserts a key value pair inside the tree. The key value will be freed. </p>
+<p >Inserts a key value pair inside the tree. The key value will be freed. </p>
 
 </div>
 </div>

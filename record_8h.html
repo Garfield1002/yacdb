@@ -229,6 +229,9 @@ Functions</h2></td></tr>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>record_size</b> (struct <a class="el" href="structrecord.html">record</a> *<a class="el" href="structrecord.html">record</a>)</td></tr>
 <tr class="memdesc:abe9a0cc65fd64a97fc4d5bfb7b526a65"><td class="mdescLeft">&#160;</td><td class="mdescRight">The size of the data stored in the record in bytes. <br /></td></tr>
 <tr class="separator:abe9a0cc65fd64a97fc4d5bfb7b526a65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60462409a157fb6c9d40bee0631be428"><td class="memItemLeft" align="right" valign="top"><a id="a60462409a157fb6c9d40bee0631be428" name="a60462409a157fb6c9d40bee0631be428"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>record_type_size</b> (char type)</td></tr>
+<tr class="separator:a60462409a157fb6c9d40bee0631be428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1221c78759962b55bffc5bf32fd56b03"><td class="memItemLeft" align="right" valign="top"><a id="a1221c78759962b55bffc5bf32fd56b03" name="a1221c78759962b55bffc5bf32fd56b03"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>record_get_char</b> (struct <a class="el" href="structrecord.html">record</a> *<a class="el" href="structrecord.html">record</a>, char **buffer)</td></tr>
 <tr class="separator:a1221c78759962b55bffc5bf32fd56b03"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -275,6 +278,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>record_get_long</b> (s
 <tr class="memitem:a7992ae7893747792853b6c6d1c0ceee7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="record_8h.html#a7992ae7893747792853b6c6d1c0ceee7">compare_r</a> (struct <a class="el" href="structrecord.html">record</a> *r1, struct <a class="el" href="structrecord.html">record</a> *r2)</td></tr>
 <tr class="memdesc:a7992ae7893747792853b6c6d1c0ceee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares 2 records r1 r2.  <a href="record_8h.html#a7992ae7893747792853b6c6d1c0ceee7">More...</a><br /></td></tr>
 <tr class="separator:a7992ae7893747792853b6c6d1c0ceee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21d04ed447a5eb18d24df601506be929"><td class="memItemLeft" align="right" valign="top"><a id="a21d04ed447a5eb18d24df601506be929" name="a21d04ed447a5eb18d24df601506be929"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>free_record</b> (struct <a class="el" href="structrecord.html">record</a> *<a class="el" href="structrecord.html">record</a>)</td></tr>
+<tr class="separator:a21d04ed447a5eb18d24df601506be929"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A structure for handling data of unknown type. </p>
@@ -320,9 +326,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>record_get_long</b> (s
 </ul>
 <p >A string is stored with any record type greater than LAST_RECORD_TYPE. The value of the type determines the size of the string. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a393986e23103348f07699f24dcb7f238a112d2659d7f77e7060bc38515e772fcd" name="a393986e23103348f07699f24dcb7f238a112d2659d7f77e7060bc38515e772fcd"></a>RECORD_TYPE_0&#160;</td><td class="fielddoc"><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated:</a></b></dt><dd>causes issues with comparisons </dd></dl>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a393986e23103348f07699f24dcb7f238a112d2659d7f77e7060bc38515e772fcd" name="a393986e23103348f07699f24dcb7f238a112d2659d7f77e7060bc38515e772fcd"></a>RECORD_TYPE_0&#160;</td><td class="fielddoc"><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated:</a></b></dt><dd>causes issues with comparisons </dd></dl>
 </td></tr>
-<tr><td class="fieldname"><a id="a393986e23103348f07699f24dcb7f238a3884c9dd5434fe93aac4b4446c023e6e" name="a393986e23103348f07699f24dcb7f238a3884c9dd5434fe93aac4b4446c023e6e"></a>RECORD_TYPE_1&#160;</td><td class="fielddoc"><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd>causes issues with comparisons </dd></dl>
+<tr><td class="fieldname"><a id="a393986e23103348f07699f24dcb7f238a3884c9dd5434fe93aac4b4446c023e6e" name="a393986e23103348f07699f24dcb7f238a3884c9dd5434fe93aac4b4446c023e6e"></a>RECORD_TYPE_1&#160;</td><td class="fielddoc"><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated:</a></b></dt><dd>causes issues with comparisons </dd></dl>
 </td></tr>
 </table>
 
