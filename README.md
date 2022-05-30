@@ -5,7 +5,7 @@
 <a href="https://garfield1002.github.io/yacdb/files.html" rel="nofollow"><img src="https://img.shields.io/badge/Doxygen-HTML-success?style=flat"></a>
 <a href="https://github.com/Garfield1002/yacdb/actions?query=workflow%3A%22Doxygen+Action%22"><img src="https://img.shields.io/github/workflow/status/Garfield1002/yacdb/Doxygen%20Action?label=Documentation&logo=Github%20Actions&logoColor=fff"></a>
 
-**Yet Another C(rappy) DataBase** is a database **built from scratch** in C. It is heavely inspired by [SQLite](https://www.sqlite.org/) and would not be possible without their documentation.
+**Yet Another C(rappy) DataBase** is a database **built from scratch** in C. It is heavily inspired by [SQLite](https://www.sqlite.org/) and would not have been possible without their documentation.
 
 ## ⭐ Features
 
@@ -27,7 +27,7 @@ YACDB also implements a limited cache system to speed up the database access.
 
 YACDB can be built using CMake.
 
-We have provided some utility scriots to help you with the build process.
+We have provided some utility scripts to help you with the build process.
 
 1. Clone the repositiory
 
