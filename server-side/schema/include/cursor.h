@@ -35,6 +35,10 @@ typedef struct
     unsigned short cell;
 } Cursor;
 
+/**
+ * @brief Inserts a key value pair inside the tree. The key value will be
+ * freed.
+ */
 int insert(Page root, struct key_value *kv);
 
 /**
@@ -53,3 +57,5 @@ struct key_value *create_kv(Key key, void *value, size_t size);
 void insert_in_arr_Page(Page pages[], size_t size, Page val, size_t offset);
 
 void insert_in_arr_kv(struct key_value *key_vals[], size_t size, struct key_value *val, size_t offset);
+
+void free_cursor(Cursor *cursor);

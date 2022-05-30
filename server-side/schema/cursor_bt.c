@@ -35,8 +35,7 @@ Cursor *find_bt(Page root, struct record *key, size_t n, Page table)
                 n);
 
             int cmp = compare_r(key, node_key);
-
-            free(node_key);
+            free_record(node_key);
 
             if (cmp == 0)
             {
@@ -53,7 +52,7 @@ Cursor *find_bt(Page root, struct record *key, size_t n, Page table)
                     table);
                 if (child != NULL)
                 {
-                    free(cursor);
+                    free_cursor(cursor);
                     return child;
                 }
                 return cursor;
@@ -67,7 +66,7 @@ Cursor *find_bt(Page root, struct record *key, size_t n, Page table)
 
         if (is_leaf(cursor->node))
         {
-            free(cursor);
+            free_cursor(cursor);
             return NULL;
         }
 
@@ -90,22 +89,22 @@ Cursor *find_bt_leaf(Page root, Key key, size_t n, Page table)
 
     if (cursor == NULL)
     {
-        free(key_r);
+        free_record(key_r);
         printf("Err find: Failed to allocate buffer.\n");
         return NULL;
     }
 
+    cursor->cell = 0;
+    cursor->page = root;
     cursor->node = read_node(root);
 
     if (cursor->node == NULL)
     {
-        free(key_r);
+        free_record(key_r);
         free(cursor);
         printf("Err find: Failed to read node.\n");
         return NULL;
     }
-    cursor->page = root;
-    cursor->cell = 0;
 
     while (!is_leaf(cursor->node))
     {
@@ -118,7 +117,7 @@ Cursor *find_bt_leaf(Page root, Key key, size_t n, Page table)
 
             int cmp = compare_r(key_r, node_key);
 
-            free(node_key);
+            free_record(node_key);
 
             if (cmp < 0)
             {
@@ -129,6 +128,8 @@ Cursor *find_bt_leaf(Page root, Key key, size_t n, Page table)
         }
         step_in(cursor);
     }
+
+    free_record(key_r);
 
     return cursor;
 }
@@ -169,6 +170,11 @@ int cursor_next_bt(Cursor *cursor)
             return 1;
         }
 
+        if (cursor->node != NULL)
+        {
+            free_node(cursor->node);
+        }
+
         cursor->node = read_node(cursor->page);
 
         // find the right cell
@@ -196,8 +202,8 @@ int find_all(Page root, struct record *key_r, size_t n, Page table, Key **keys, 
     if (cursor == NULL)
     {
         printf("Err find_all: Failed to find leaf.\n");
+        free_node(cursor->node);
         free(cursor);
-        free(key_r);
         return 0;
     }
 
@@ -214,7 +220,7 @@ int find_all(Page root, struct record *key_r, size_t n, Page table, Key **keys, 
 
         int cmp = compare_r(key_r, node_key);
 
-        free(node_key);
+        free_record(node_key);
 
         if (cmp != 0)
         {
@@ -226,6 +232,7 @@ int find_all(Page root, struct record *key_r, size_t n, Page table, Key **keys, 
         (*size)++;
     }
 
+    free_cursor(cursor);
     return 0;
 }
 
@@ -247,6 +254,7 @@ int split_bt_node(struct node *node, Key *key, Page *page)
     new_node->type = node->type;
 
     *key = node->key_vals[ORDER / 2]->key;
+    free(node->key_vals[ORDER / 2]);
 
     // Copy the keys original node to the new node and remove them from the original node.
     for (size_t i = ORDER / 2 + 1; i < ORDER; i++)
@@ -275,7 +283,11 @@ int split_bt_node(struct node *node, Key *key, Page *page)
         printf("Err split_bt_node: Failed to create a new page.\n");
         return -1;
     }
-    return write_node(new_node, *page);
+    int ret = write_node(new_node, *page);
+
+    free_node(new_node);
+
+    return ret;
 }
 
 int create_root_bt(Cursor *cursor, Page sibling_page)
@@ -313,6 +325,9 @@ int create_root_bt(Cursor *cursor, Page sibling_page)
             return -1;
         };
 
+        free_node(new_root);
+        new_root = NULL;
+
         // update the cursor and move the page
         node->parent_addr = cursor->page;
         if (write_node(node, new_page) == -1)
@@ -334,6 +349,8 @@ int create_root_bt(Cursor *cursor, Page sibling_page)
             printf("Err insert_internal: Failed to write the new page.\n");
             return -1;
         }
+        free_node(sibling);
+        sibling = NULL;
 
         cursor->page = new_page;
 
@@ -345,6 +362,7 @@ int create_root_bt(Cursor *cursor, Page sibling_page)
                 struct node *child = read_node(node->child_addrs[i]);
                 child->parent_addr = new_page;
                 write_node(child, node->child_addrs[i]);
+                free_node(child);
             }
         }
     }
@@ -374,7 +392,7 @@ size_t find_offset(Cursor *cursor, Key key, size_t n, Page table)
             return -1;
         }
         int cmp = compare_r(key_r, node_r);
-        free(node_r);
+        free_record(node_r);
 
         if (cmp <= 0)
             break;
@@ -382,6 +400,7 @@ size_t find_offset(Cursor *cursor, Key key, size_t n, Page table)
         offset++;
     }
 
+    free_record(key_r);
     return offset;
 }
 
@@ -402,12 +421,14 @@ int insert_internal_bt(Page addr, Key key, Page value, size_t n, Page table)
     // find the correct offset for the key
     size_t offset = find_offset(&cursor, key, n, table);
 
+    struct key_value *kv = create_kv(key, NULL, 0);
     // insert the key and the pointer
     insert_in_arr_kv(
         cursor.node->key_vals,
         cursor.node->nb_keys,
-        create_kv(key, NULL, 0),
+        kv,
         offset);
+    free(kv);
 
     insert_in_arr_Page(cursor.node->child_addrs, cursor.node->nb_keys + 1, value, offset + 1);
 
@@ -439,7 +460,10 @@ int insert_internal_bt(Page addr, Key key, Page value, size_t n, Page table)
             return -1;
         }
     }
-    return write_node(cursor.node, cursor.page);
+    int ret = write_node(cursor.node, cursor.page);
+
+    free_node(cursor.node);
+    return ret;
 }
 
 /**
@@ -458,12 +482,16 @@ int insert_bt(Page root, Key key, size_t n, Page table)
     // find the correct offset for the key
     size_t offset = find_offset(cursor, key, n, table);
 
+    struct key_value *kv = create_kv(key, NULL, 0);
+
     // insert the key
     insert_in_arr_kv(
         cursor->node->key_vals,
         cursor->node->nb_keys,
-        create_kv(key, NULL, 0),
+        kv,
         offset);
+
+    free(kv);
 
     // updates the number of keys
     cursor->node->nb_keys++;
@@ -491,5 +519,9 @@ int insert_bt(Page root, Key key, size_t n, Page table)
             return -1;
         }
     }
-    return write_node(cursor->node, cursor->page);
+    int ret = write_node(cursor->node, cursor->page);
+
+    free_cursor(cursor);
+
+    return ret;
 }

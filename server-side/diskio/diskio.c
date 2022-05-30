@@ -80,33 +80,6 @@ struct btree_header *get_btree_header(void *rpage)
 }
 
 /**
- * @brief Get the offsets of the different cells
- * @deprecated
- */
-int get_offsets(struct btree_page *page)
-{
-    size_t size = sizeof(unsigned short) * page->btree_h->nb_cells;
-
-    page->offsets = (unsigned short *)malloc(size);
-
-    if (page->offsets == NULL)
-    {
-        free(page->offsets);
-        printf("ERR get_offsets: Failed to allocate buffer\n");
-        return -1;
-    }
-
-    if (memcpy(page->offsets, (char *)page->data + sizeof(struct btree_header), size) == NULL)
-    {
-        free(page->offsets);
-        printf("ERR get_offsets: Failed to copy data\n");
-        return -1;
-    }
-
-    return 0;
-}
-
-/**
  * @brief Gets data out of overflow pages recursively.
  */
 int get_overflow_data(Page page, struct overflow_data *data, struct linked_overflow *history)
@@ -296,7 +269,7 @@ struct node *read_node(size_t addr)
         return node;
     }
 
-    node = (struct node *)malloc(sizeof(struct node));
+    node = (struct node *)calloc(sizeof(struct node), 1);
 
     struct btree_page page;
 
@@ -304,7 +277,7 @@ struct node *read_node(size_t addr)
 
     if (page.data == NULL)
     {
-        free(node);
+        free_node(node);
         printf("ERR read_node: Failed to read page\n");
         return NULL;
     }
@@ -451,8 +424,6 @@ Page create_addr()
         // If not, we need to allocate a new page
         page = db.header->nb_pages++;
 
-        // TODO: CACHE
-
         if (ftruncate(fileno(db.file), db.header->page_size * db.header->nb_pages) == -1)
         {
             printf("ERR find_page: Failed to resize file\n");
@@ -461,7 +432,6 @@ Page create_addr()
     }
 
     // Save the changes
-    // TODO: CACHE
     if (save_header() == -1)
     {
         printf("ERR find_page: Failed to save header\n");
@@ -805,7 +775,7 @@ int init_db()
         db.file = file;
 
         // Reads the header
-        db.header = (struct yacdb_header *)malloc(sizeof(struct yacdb_header));
+        db.header = (struct yacdb_header *)calloc(sizeof(struct yacdb_header), 1);
 
         if (db.header == NULL)
         {
@@ -845,7 +815,7 @@ int init_db()
             return -1;
         }
 
-        db.header = (struct yacdb_header *)malloc(sizeof(struct yacdb_header));
+        db.header = (struct yacdb_header *)calloc(sizeof(struct yacdb_header), 1);
 
         if (db.header == NULL)
         {
@@ -882,7 +852,7 @@ int init_db()
 
 struct node *create_node()
 {
-    struct node *node = (struct node *)malloc(sizeof(struct node));
+    struct node *node = (struct node *)calloc(sizeof(struct node), 1);
 
     if (node == NULL)
     {
@@ -933,11 +903,15 @@ struct node *cpy_node(struct node *node)
         new_node->key_vals[i]->key = node->key_vals[i]->key;
         new_node->key_vals[i]->size = node->key_vals[i]->size;
         new_node->key_vals[i]->overflow = node->key_vals[i]->overflow;
-        new_node->key_vals[i]->value = calloc(node->key_vals[i]->size, 1);
-        if (memcpy(new_node->key_vals[i]->value, node->key_vals[i]->value, node->key_vals[i]->size) == NULL)
+
+        if (new_node->key_vals[i]->size > 0)
         {
-            printf("ERR add_to_cache: Failed to copy node\n");
-            return NULL;
+            new_node->key_vals[i]->value = calloc(node->key_vals[i]->size, 1);
+            if (memcpy(new_node->key_vals[i]->value, node->key_vals[i]->value, node->key_vals[i]->size) == NULL)
+            {
+                printf("ERR add_to_cache: Failed to copy node\n");
+                return NULL;
+            }
         }
     }
 
@@ -946,14 +920,7 @@ struct node *cpy_node(struct node *node)
 
 int remove_node_from_cache(struct cached_node *last_node)
 {
-    // Free all the data
-    for (size_t i = 0; i < last_node->node->nb_keys; i++)
-    {
-        free(last_node->node->key_vals[i]->value);
-        free(last_node->node->key_vals[i]);
-    }
-
-    free(last_node->node);
+    free_node(last_node->node);
     free(last_node);
 
     db.cache_size--;
@@ -1068,4 +1035,18 @@ struct node *get_from_cache(Page addr)
     }
 
     return NULL;
+}
+
+void free_node(struct node *node)
+{
+    for (size_t i = 0; i < node->nb_keys; i++)
+    {
+        if (node->key_vals[i]->size > 0)
+            free(node->key_vals[i]->value);
+        node->key_vals[i]->value = NULL;
+
+        free(node->key_vals[i]);
+        node->key_vals[i] = NULL;
+    }
+    free(node);
 }

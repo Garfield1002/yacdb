@@ -25,7 +25,8 @@ Cursor *create_at_start(Page root)
     while (!is_leaf(cursor->node))
     {
         cursor->page = cursor->node->child_addrs[0];
-        cursor->node = read_node(cursor->node->child_addrs[0]);
+        free_node(cursor->node);
+        cursor->node = read_node(cursor->page);
     }
 
     return cursor;
@@ -34,7 +35,13 @@ Cursor *create_at_start(Page root)
 void step_in(Cursor *cursor)
 {
     cursor->page = cursor->node->child_addrs[cursor->cell];
+
+    if (cursor->node != NULL)
+    {
+        free_node(cursor->node);
+    }
     cursor->node = read_node(cursor->page);
+
     if (cursor->node == NULL)
     {
         printf("Err step_in: Failed to read node.\n");
@@ -56,6 +63,8 @@ Cursor *find_leaf(Page root, Key key)
         return NULL;
     }
 
+    cursor->cell = 0;
+    cursor->page = root;
     cursor->node = read_node(root);
 
     if (cursor->node == NULL)
@@ -63,8 +72,6 @@ Cursor *find_leaf(Page root, Key key)
         printf("Err find: Failed to read node.\n");
         return NULL;
     }
-    cursor->page = root;
-    cursor->cell = 0;
 
     while (!is_leaf(cursor->node))
     {
@@ -99,7 +106,12 @@ int cursor_next(Cursor *cursor)
 
     cursor->cell = 0;
     cursor->page = cursor->node->child_addrs[0];
-    cursor->node = read_node(cursor->node->child_addrs[0]);
+
+    if (cursor->node != NULL)
+    {
+        free_node(cursor->node);
+    }
+    cursor->node = read_node(cursor->page);
 
     return 0;
 }
@@ -115,7 +127,7 @@ void insert_in_arr_kv(struct key_value *key_vals[], size_t size, struct key_valu
         key_vals[i] = key_vals[i - 1];
     }
 
-    key_vals[offset] = val;
+    key_vals[offset] = create_kv(val->key, val->value, val->size);
 }
 
 void insert_in_arr_Page(Page pages[], size_t size, Page val, size_t offset)
@@ -144,6 +156,7 @@ int split_internal_node(struct node *node, Key *key, Page *page)
     new_node->type = NODE_TYPE_TABLE_INTERIOR;
 
     *key = node->key_vals[ORDER / 2]->key;
+    free(node->key_vals[ORDER / 2]);
 
     // Copy the keys original node to the new node and remove them from the original node.
     for (size_t i = ORDER / 2 + 1; i < ORDER; i++)
@@ -172,7 +185,9 @@ int split_internal_node(struct node *node, Key *key, Page *page)
         printf("Err split_internal_node: Failed to create a new page.\n");
         return -1;
     }
-    return write_node(new_node, *page);
+    int ret = write_node(new_node, *page);
+    free_node(new_node);
+    return ret;
 }
 
 int split_leaf_node(struct node *node, Key *key, Page *page)
@@ -197,13 +212,6 @@ int split_leaf_node(struct node *node, Key *key, Page *page)
         node->key_vals[i] = NULL;
     }
 
-    // // Copy the child addresses original node to the new node and remove them from the original node.
-    // for (size_t i = ORDER / 2; i < ORDER + 1; i++)
-    // {
-    //     new_node->child_addrs[i - ORDER / 2] = node->child_addrs[i];
-    //     node->child_addrs[i] = 0;
-    // }
-
     // sets the number of keys in both nodes.
     node->nb_keys = ORDER / 2;
     new_node->nb_keys = ORDER - ORDER / 2;
@@ -226,6 +234,8 @@ int split_leaf_node(struct node *node, Key *key, Page *page)
         return -1;
     }
 
+    free_node(new_node);
+
     return 0;
 }
 
@@ -240,8 +250,22 @@ struct key_value *create_kv(Key key, void *value, size_t size)
     }
 
     kv->key = key;
-    kv->value = value;
     kv->size = size;
+
+    if (size > 0)
+    {
+        kv->value = malloc(size);
+        if (kv->value == NULL)
+        {
+            printf("Err create_kv: Failed to allocate buffer.\n");
+            return NULL;
+        }
+        memcpy(kv->value, value, size);
+    }
+    else
+    {
+        kv->value = NULL;
+    }
     kv->overflow = NULL;
 
     return kv;
@@ -282,6 +306,8 @@ int create_root(Cursor *cursor, Page sibling_page)
             return -1;
         };
 
+        free_node(new_root);
+
         // update the cursor and move the page
         node->parent_addr = cursor->page;
         if (write_node(node, new_page) == -1)
@@ -303,6 +329,7 @@ int create_root(Cursor *cursor, Page sibling_page)
             printf("Err insert_internal: Failed to write the new page.\n");
             return -1;
         }
+        free_node(sibling);
 
         cursor->page = new_page;
 
@@ -314,6 +341,7 @@ int create_root(Cursor *cursor, Page sibling_page)
                 struct node *child = read_node(node->child_addrs[i]);
                 child->parent_addr = new_page;
                 write_node(child, node->child_addrs[i]);
+                free_node(child);
             }
         }
     }
@@ -343,14 +371,17 @@ int insert_internal(Page addr, Key key, Page value)
     }
 
     // insert the key and the pointer
-    insert_in_arr_kv(cursor.node->key_vals, cursor.node->nb_keys, create_kv(key, NULL, 0), offset);
+    struct key_value *kv = create_kv(key, NULL, 0);
+    insert_in_arr_kv(cursor.node->key_vals, cursor.node->nb_keys, kv, offset);
+    free(kv);
+
     insert_in_arr_Page(cursor.node->child_addrs, cursor.node->nb_keys + 1, value, offset + 1);
 
     // updates the number of keys
     cursor.node->nb_keys++;
 
     // is the node saturated?
-    if (cursor.node->nb_keys == ORDER)
+    if (cursor.node->nb_keys >= ORDER)
     {
         // split the node and insert the key in the parent node.
         Key new_key;
@@ -373,7 +404,11 @@ int insert_internal(Page addr, Key key, Page value)
             return -1;
         }
     }
-    return write_node(cursor.node, cursor.page);
+    int ret = write_node(cursor.node, cursor.page);
+
+    free_node(cursor.node);
+
+    return ret;
 }
 
 /**
@@ -427,5 +462,25 @@ int insert(Page root, struct key_value *kv)
         }
     }
 
-    return write_node(cursor->node, cursor->page);
+    int ret = write_node(cursor->node, cursor->page);
+
+    free_cursor(cursor);
+
+    return ret;
+}
+
+void free_cursor(Cursor *cursor)
+{
+    if (cursor == NULL)
+    {
+        return;
+    }
+
+    if (cursor->node != NULL)
+    {
+        free_node(cursor->node);
+        cursor->node = NULL;
+    }
+
+    free(cursor);
 }

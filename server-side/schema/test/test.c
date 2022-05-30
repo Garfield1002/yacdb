@@ -89,303 +89,44 @@ void bank_db()
     create_user("Customers", "Fred", "Johnson", 98765);
 
     printf("Selecting data...\n");
+    char *s1 = select_all("COLUMNS", (char *[]){"TABLE_IDX", "NAMES", "NAMES"}, 3);
     printf("\n\nSELECT * FROM COLUMNS\n\n%s\n",
-           select_all("COLUMNS", (char *[]){"TABLE_IDX", "NAMES", "NAMES"}, 3));
+           s1);
+    free(s1);
 
+    char *s2 = select_row_columns("Customers", 5, (char *[]){"first_name", "last_name"}, 0);
     printf("\n\nSELECT first_name, last_name FROM customers WHERE id = 5\n\n%s\n",
-           select_row_columns("Customers", 5, (char *[]){"first_name", "last_name"}, 0));
+           s2);
+    free(s2);
 
+    char *s3 = select_all("Customers", (char *[]){"last_name", "first_name"}, 0);
     printf("\n\nSELECT last_name, first_name FROM customers\n\n%s",
-           select_all("Customers", (char *[]){"last_name", "first_name"}, 0));
+           s3);
+    free(s3);
 
+    char *s4 = select_all("Customers", (char *[]){"first_name", "last_name"}, 0);
     create_user("Customers", "Jack", "Royer", 67294);
     printf("\n\nINSERT INTO customers VALUES (Jack, Royer);\nSELECT first_name, last_name FROM customers\n\n%s\n\n",
-           select_all("Customers", (char *[]){"first_name", "last_name"}, 0));
+           s4);
+    free(s4);
 
     char *s = "Doe";
+    struct record *r = record_from_string(&s);
 
+    char *s5 = select_where("Customers", (char *[]){"first_name", "last_name"}, 2, "last_name", r);
     printf("\n\nSELECT first_name, last_name FROM customers WHERE last_name = Doe\n\n%s\n",
-           select_where(
-               "Customers", (char *[]){"first_name", "last_name"}, 0, "last_name", record_from_string(&s)));
-}
+           s5);
+    free(s5);
 
-int record_test()
-{
-
-    char *s1 = "Hello";
-    char *s2 = "World";
-    char *s3 = "!";
-
-    // create a compressed record with 3 strings
-    struct record *r1 = record_from_string(&s1);
-    struct record *r2 = record_from_string(&s2);
-    struct record *r3 = record_from_string(&s3);
-
-    // dump the records
-    dump_record(r1);
-    dump_record(r2);
-    dump_record(r3);
-
-    struct record *entry[3] = {
-        r1,
-        r2,
-        r3};
-
-    // compress the record
-    size_t size;
-    void *buffer;
-    compress_records(entry, 3, &size, &buffer);
-
-    // decompress the record
-    struct record *r = extract_record(buffer, 2);
-
-    // dump the decompressed record
-    dump_record(r);
-
-    // replace the second string with a different string
-
-    char *s4 = "Hello World!";
-    replace_record(&buffer, &size, 1, record_from_string(&s4));
-
-    // dump the records
-    dump_record(extract_record(buffer, 0));
-    dump_record(extract_record(buffer, 1));
-    dump_record(extract_record(buffer, 2));
-}
-
-int btree_test()
-{
-    init_db();
-
-    create_addr();
-    create_addr();
-
-    struct node root;
-
-    root.parent_addr = (Page)-1;
-    root.type = NODE_TYPE_TABLE_LEAF;
-    root.nb_keys = 1;
-    root.key_vals[0] = (struct key_value *)malloc(sizeof(struct key_value));
-    root.key_vals[0]->key = 1;
-    root.key_vals[0]->size = 0;
-
-    Page page = create_addr();
-    write_node(&root, page);
-
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    // struct key_value kv15 =
-    //     {
-    //         .key = 15,
-    //         .size = 0,
-    //     };
-
-    // struct key_value kv25 =
-    //     {
-    //         .key = 25,
-    //         .size = 0,
-    //     };
-
-    // struct key_value kv35 =
-    //     {
-    //         .key = 35,
-    //         .size = 0,
-    //     };
-
-    // struct key_value kv45 =
-    //     {
-    //         .key = 45,
-    //         .size = 0,
-    //     };
-
-    // insert(page, &kv15);
-    // dump_tree(page);
-
-    // printf("\n\n\n\n\n");
-
-    // insert(page, &kv25);
-    // dump_tree(page);
-
-    // printf("\n\n\n\n\n");
-
-    // printf("Inserting 35\n");
-    // insert(page, &kv35);
-    // dump_tree(page);
-
-    // printf("\n\n\n\n\n");
-
-    // insert(page, &kv45);
-    // dump_tree(page);
-
-    // return 0;
-
-    struct key_value kv4 =
-        {
-            .key = 4,
-            .size = 0,
-        };
-    insert(page, &kv4);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    struct key_value kv16 =
-        {
-            .key = 16,
-            .size = 0,
-        };
-    insert(page, &kv16);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    struct key_value kv25 =
-        {
-            .key = 25,
-            .size = 0,
-        };
-    insert(page, &kv25);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    // exit(-1);
-
-    struct key_value kv9 =
-        {
-            .key = 9,
-            .size = 0,
-        };
-    insert(page, &kv9);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    struct key_value kv20 =
-        {
-            .key = 20,
-            .size = 0,
-        };
-    insert(page, &kv20);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    struct key_value kv13 =
-        {
-            .key = 13,
-            .size = 0,
-        };
-    insert(page, &kv13);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    struct key_value kv15 =
-        {
-            .key = 15,
-            .size = 0,
-        };
-    insert(page, &kv15);
-    dump_tree(page);
-
-    printf("\n\n\n\n\n");
-
-    struct key_value kv10 =
-        {
-            .key = 10,
-            .size = 0,
-        };
-    insert(page, &kv10);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    struct key_value kv11 =
-        {
-            .key = 11,
-            .size = 0,
-        };
-    insert(page, &kv11);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    struct key_value kv12 =
-        {
-            .key = 12,
-            .size = 0,
-        };
-    insert(page, &kv12);
-    dump_tree(page);
-
-    return 0;
-}
-
-void bt()
-{
-    init_db();
-
-    create_addr();
-    create_addr();
-
-    struct node root;
-
-    root.parent_addr = (Page)-1;
-    root.type = NODE_TYPE_INDEX_LEAF;
-    root.nb_keys = 1;
-    root.key_vals[0] = (struct key_value *)malloc(sizeof(struct key_value));
-    root.key_vals[0]->key = 8;
-    root.key_vals[0]->size = 0;
-
-    Page page = create_addr();
-    write_node(&root, page);
-
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    insert_bt(page, 9, 0, 0);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    insert_bt(page, 10, 0, 0);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    insert_bt(page, 11, 0, 0);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    insert_bt(page, 15, 0, 0);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    insert_bt(page, 20, 0, 0);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    insert_bt(page, 17, 0, 0);
-    dump_tree(page);
-    printf("\n\n\n\n\n");
-
-    long nine = 9;
-
-    Cursor *crs = find_bt(page, record_from_long(&nine), 0, 0);
-
-    // print the key at the cursor position
-    printf("Cursor key: %ld\n", crs->node->key_vals[crs->cell]->key);
+    free(r->data);
+    free(r);
 }
 
 int main()
 {
     // record_test();
     bank_db();
-    // initialize_tables();
-
-    // char *s = "Doe";
-
-    // printf("\n\nSELECT first_name, last_name FROM customers WHERE last_name = Doe\n\n%s\n",
-    //        select_where(
-    //            "Customers", (char *[]){"first_name", "last_name"}, 2, "last_name", record_from_string(&s)));
+    exit_db();
 
     return 0;
 }
