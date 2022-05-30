@@ -121,3 +121,13 @@ int add_to_cache(struct node *node, Page addr);
  * If no node is found or an error occurs, returns NULL.
  */
 struct node *get_from_cache(Page addr);
+
+/**
+ * @brief Removes a node from cache, erasing it permanently.
+ */
+int remove_node_from_cache(struct cached_node *last_node);
+
+/**
+ * @brief Free's a node
+ */
+void free_node(struct node *node);

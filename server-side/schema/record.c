@@ -1,10 +1,8 @@
 #include "include/record.h"
 
-size_t record_size(struct record *record)
+size_t record_type_size(char type)
 {
-    int t = record->type;
-
-    switch (t)
+    switch (type)
     {
     case RECORD_TYPE_NULL:
         return 0;
@@ -24,12 +22,17 @@ size_t record_size(struct record *record)
         return 0;
 
     default:
-        if (t < 0)
+        if (type < 0)
             return -1;
 
         // otherwise, it's a string
-        return t - LAST_RECORD_TYPE - 1;
+        return type - LAST_RECORD_TYPE - 1;
     }
+}
+
+size_t record_size(struct record *record)
+{
+    return record_type_size(record->type);
 }
 
 int record_get_char(struct record *record, char **buffer)
@@ -412,6 +415,7 @@ int compress_records(struct record *records[], size_t nb_records, size_t *size, 
             printf("Err compress_records: Failed to allocate buffer\n");
             return -1;
         }
+
         *buffer = temp;
 
         char *r_type = (char *)*buffer;
@@ -456,7 +460,22 @@ struct record *extract_record(void *buffer, size_t n)
     }
 
     record->type = ((char *)buffer)[offs];
-    record->data = (void *)((char *)buffer + offs + 1);
+    record->data = malloc(record_type_size(record->type));
+
+    if (record->data == NULL)
+    {
+        printf("Err extract_record: Failed to allocate data\n");
+        return NULL;
+    }
+
+    if (record_type_size(record->type) > 0)
+    {
+        if (memcpy(record->data, (char *)buffer + offs + 1, record_type_size(record->type)) == NULL)
+        {
+            printf("Err extract_record: Failed to copy data\n");
+            return NULL;
+        }
+    }
 
     return record;
 }
@@ -575,4 +594,14 @@ int compare_r(struct record *r1, struct record *r2)
         // the record is a string
         return strcmp((char *)r1->data, (char *)r2->data);
     }
+}
+
+void free_record(struct record *record)
+{
+    if (record->data != NULL && record_size(record) > 0)
+    {
+        free(record->data);
+        record->data = NULL;
+    }
+    free(record);
 }

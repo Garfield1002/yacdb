@@ -65,6 +65,8 @@ enum record_type
  */
 size_t record_size(struct record *record);
 
+size_t record_type_size(char type);
+
 int record_get_char(struct record *record, char **buffer);
 int record_get_string(struct record *record, char **buffer);
 int record_get_short(struct record *record, short *buffer);
@@ -151,3 +153,5 @@ int replace_record(void **buffer, size_t *size, size_t n, struct record *record)
  * @throw returns 2 if r1 and r2 are of different types
  */
 int compare_r(struct record *r1, struct record *r2);
+
+void free_record(struct record *record);

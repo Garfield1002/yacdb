@@ -12,9 +12,10 @@ int init_TABLES_table()
     if (write_node(root_node, root_page) == -1)
     {
         printf("Error: Could not write node to disk.\n");
-        free(root_node);
+        free_node(root_node);
         return -1;
     }
+    free_node(root_node);
 
     Key row_id = 0;
 
@@ -33,8 +34,7 @@ int init_TABLES_table()
     {
         for (size_t i = 0; i < 3; i++)
         {
-            free(records[i]->data);
-            free(records[i]);
+            free_record(records[i]);
         }
         printf("Err insert_row: Failed to compress records\n");
         return -1;
@@ -42,14 +42,12 @@ int init_TABLES_table()
 
     for (size_t i = 0; i < 3; i++)
     {
-        free(records[i]->data);
-        free(records[i]);
+        free_record(records[i]);
     }
 
     if (insert(root_page, &kv) == -1)
     {
         printf("Err insert_row: Failed to insert row\n");
-        free(kv.value);
         return -1;
     }
 
@@ -80,6 +78,7 @@ int init_TABLES_NAME_table()
         free(root_node);
         return -1;
     }
+    free(root_node->key_vals[0]);
     free(root_node);
     return 0;
 }
@@ -114,19 +113,19 @@ int init_COLUMNS_table()
 
         for (size_t i = 0; i < 3; i++)
         {
-            free(rec[i]);
+            free_record(rec[i]);
         }
 
         struct node *root_node = create_node();
 
         if (write_node(root_node, root_page) == -1)
         {
-            free(root_node);
+            free_node(root_node);
             printf("Err init_COLUMNS_table: Failed to write node\n");
             return -1;
         }
 
-        free(root_node);
+        free_node(root_node);
 
         // add the table name to the TABLES_NAMES index tree
         insert_bt(TABLES_NAMES, COLUMNS, 0, TABLES);
@@ -156,7 +155,7 @@ int init_COLUMNS_table()
 
         for (size_t i = 0; i < 4; i++)
         {
-            free(rec[i]);
+            free_record(rec[i]);
         }
     }
 
@@ -184,7 +183,7 @@ int init_COLUMNS_table()
 
         for (size_t i = 0; i < 4; i++)
         {
-            free(rec[i]);
+            free_record(rec[i]);
         }
     }
 
@@ -212,7 +211,7 @@ int init_COLUMNS_table()
 
         for (size_t i = 0; i < 4; i++)
         {
-            free(rec[i]);
+            free_record(rec[i]);
         }
     }
 }
@@ -230,10 +229,10 @@ int init_COLUMNS_TIDX_table()
     if (write_node(root_node, root_page) == -1)
     {
         printf("Error: Could not write node to disk.\n");
-        free(root_node);
+        free_node(root_node);
         return -1;
     }
-    free(root_node);
+    free_node(root_node);
 
     insert_bt(COLUMNS_TIDX, 0, 0, COLUMNS);
     insert_bt(COLUMNS_TIDX, 1, 0, COLUMNS);
@@ -254,10 +253,10 @@ int init_COLUMNS_NAME_table()
     if (write_node(root_node, root_page) == -1)
     {
         printf("Error: Could not write node to disk.\n");
-        free(root_node);
+        free_node(root_node);
         return -1;
     }
-    free(root_node);
+    free_node(root_node);
 
     insert_bt(COLUMNS_NAMES, 0, 1, COLUMNS);
     insert_bt(COLUMNS_NAMES, 1, 1, COLUMNS);
@@ -365,7 +364,22 @@ void *get_row(Page root, Key key, Cursor **cursor)
         return NULL;
     }
 
-    return (*cursor)->node->key_vals[(*cursor)->cell]->value;
+    void *buffer = malloc((*cursor)->node->key_vals[(*cursor)->cell]->size);
+
+    if (buffer == NULL)
+    {
+        printf("Err get_row: Failed to allocate buffer\n");
+        return NULL;
+    }
+
+    if (memcpy(buffer, (*cursor)->node->key_vals[(*cursor)->cell]->value, (*cursor)->node->key_vals[(*cursor)->cell]->size) == NULL)
+    {
+        printf("Err get_row: Failed to copy buffer\n");
+        free(buffer);
+        return NULL;
+    }
+
+    return buffer;
 }
 
 /**
@@ -374,10 +388,8 @@ void *get_row(Page root, Key key, Cursor **cursor)
 struct record *get_n_record(Page root, Key key, size_t n)
 {
     Cursor *cursor;
-
     void *buffer = get_row(root, key, &cursor);
-
-    free(cursor);
+    free_cursor(cursor);
 
     if (buffer == NULL)
     {
@@ -385,15 +397,18 @@ struct record *get_n_record(Page root, Key key, size_t n)
         return NULL;
     }
 
-    struct record *records = extract_record(buffer, n);
+    struct record *record = extract_record(buffer, n);
 
-    if (records == NULL)
+    if (record == NULL)
     {
+        free(buffer);
         printf("Err get_n_record: Failed to decompress records\n");
         return NULL;
     }
 
-    return records;
+    free(buffer);
+
+    return record;
 }
 
 /**
@@ -407,10 +422,12 @@ int set_n_record(Page root, Key key, size_t n, struct record *new_record)
 
     if (buffer == NULL)
     {
-        free(cursor);
+        free_cursor(cursor);
         printf("Err get_n_record: Failed to get row\n");
         return -1;
     }
+
+    free(buffer);
 
     if (replace_record(
             &cursor->node->key_vals[cursor->cell]->value,
@@ -418,15 +435,15 @@ int set_n_record(Page root, Key key, size_t n, struct record *new_record)
             n,
             new_record) == -1)
     {
-        free(cursor);
+        free_cursor(cursor);
         printf("Err get_n_record: Failed to replace record\n");
         return -1;
     }
 
-    write_node(cursor->node, cursor->page);
+    int ret = write_node(cursor->node, cursor->page);
 
-    free(cursor);
-    return 0;
+    free_cursor(cursor);
+    return ret;
 }
 
 /**
@@ -450,7 +467,7 @@ Page get_table_addr(Key root_id)
         return -1;
     }
 
-    free(rec);
+    free_record(rec);
 
     return next_id;
 }
@@ -464,7 +481,7 @@ Key get_table_id(char *table_name)
 
     find_all(TABLES_NAMES, r, 0, TABLES, &keys, &size);
 
-    free(r);
+    free_record(r);
 
     if (size == 0)
     {
@@ -478,7 +495,11 @@ Key get_table_id(char *table_name)
         return -1;
     }
 
-    return keys[0];
+    Key id = keys[0];
+
+    free(keys);
+
+    return id;
 }
 
 /**
@@ -503,11 +524,13 @@ Key get_next_id(Key root_id)
         return -1;
     }
 
-    free(rec);
+    free_record(rec);
 
     long new_id = next_id + 1;
 
-    set_n_record(TABLES, root_id, 2, record_from_long(&new_id));
+    rec = record_from_long(&new_id);
+    set_n_record(TABLES, root_id, 2, rec);
+    free_record(rec);
 
     return next_id;
 }
@@ -535,7 +558,6 @@ Key insert_row(Key root_id, struct record **records, size_t size)
     if (insert(root_page, &kv) == -1)
     {
         printf("Err insert_row: Failed to insert row\n");
-        free(kv.value);
         return -1;
     }
 
@@ -557,14 +579,14 @@ Key advanced_insert_row(Key tidx, struct record **records, size_t size)
 
     find_all(COLUMNS_TIDX, tidx_r, 0, COLUMNS, &cols, &nb_cols);
 
-    free(tidx_r);
+    free_record(tidx_r);
 
     for (size_t i = 0; i < nb_cols; i++)
     {
         // get the column info from the COLUMNS table
         Cursor *cursor;
         void *buffer = get_row(COLUMNS, cols[i], &cursor);
-        free(cursor);
+        free_cursor(cursor);
 
         struct record *offs_r = extract_record(buffer, 2);
         struct record *page_r = extract_record(buffer, 3);
@@ -585,13 +607,18 @@ Key advanced_insert_row(Key tidx, struct record **records, size_t size)
             return -1;
         }
 
-        free(offs_r);
-        free(page_r);
+        free_record(offs_r);
+        free_record(page_r);
 
-        insert_bt(page, id, offs, root_page);
+        if (insert_bt(page, id, offs, root_page) == -1)
+        {
+            printf("Err advanced_insert_row: Failed to insert row\n");
+            return -1;
+        }
 
         free(buffer);
     }
+    free(cols);
 
     return id;
 }
@@ -610,11 +637,11 @@ short *get_column_offsets(Key table_id, char *column_names[], size_t nb_cols)
     {
         printf("Err get_column_offsets: Failed to find columns\n");
         free(my_offsets);
-        free(table_id_r);
+        free_record(table_id_r);
         return NULL;
     }
 
-    free(table_id_r);
+    free_record(table_id_r);
 
     short *offsets = (short *)calloc(sizeof(short), nb_cols_t);
     char **names = (char **)calloc(sizeof(char *), nb_cols_t);
@@ -640,7 +667,7 @@ short *get_column_offsets(Key table_id, char *column_names[], size_t nb_cols)
             return NULL;
         }
 
-        free(name_r);
+        free_record(name_r);
 
         names[i] = name;
     }
@@ -666,7 +693,7 @@ short *get_column_offsets(Key table_id, char *column_names[], size_t nb_cols)
             return NULL;
         }
 
-        free(offs_r);
+        free_record(offs_r);
 
         offsets[i] = offs;
     }
@@ -730,7 +757,7 @@ Page create_table(char *table_name, char **column_names, short nb_cols)
 
     for (size_t i = 0; i < 3; i++)
     {
-        free(rec[i]);
+        free_record(rec[i]);
     }
 
     // Creates the columns
@@ -747,7 +774,7 @@ Page create_table(char *table_name, char **column_names, short nb_cols)
 
         if (write_node(col_node, col_page) == -1)
         {
-            free(col_node);
+            free_node(col_node);
             printf("Err create_table: Failed to write node\n");
             return (Page)-1;
         }
@@ -769,22 +796,22 @@ Page create_table(char *table_name, char **column_names, short nb_cols)
 
         for (size_t j = 0; j < 4; j++)
         {
-            free(rec[j]);
+            free_record(rec[j]);
         }
 
-        free(col_node);
+        free_node(col_node);
     }
 
     struct node *root_node = create_node();
 
     if (write_node(root_node, root_page) == -1)
     {
-        free(root_node);
+        free_node(root_node);
         printf("Err create_table: Failed to write node\n");
         return (Page)-1;
     }
 
-    free(root_node);
+    free_node(root_node);
 
     return id;
 }
@@ -842,7 +869,7 @@ int print_row(char *buffer, void *row, short columns[],
         sprintf(buffer, "%s %10s |", buffer, s);
 
         free(s);
-        free(record);
+        free_record(record);
     }
 
     return 0;
@@ -869,11 +896,11 @@ int get_all_columns(Key table_id, char ***col_names, size_t *nb_cols)
                  &cols, nb_cols) == -1)
     {
         printf("Err get_column_offsets: Failed to find columns\n");
-        free(table_id_r);
+        free_record(table_id_r);
         return -1;
     }
 
-    free(table_id_r);
+    free_record(table_id_r);
 
     // Gets the names of the columns
     *col_names = (char **)calloc(sizeof(char *), *nb_cols);
@@ -896,6 +923,8 @@ int get_all_columns(Key table_id, char ***col_names, size_t *nb_cols)
         }
 
         (*col_names)[i] = col_name;
+
+        free_record(col_name_r);
     }
 
     free(cols);
@@ -917,8 +946,7 @@ char *select_row_columns(char *table_name, Key key, char *col_names[],
     Cursor *cursor;
 
     void *buffer = get_row(root, key, &cursor);
-
-    free(cursor);
+    free_cursor(cursor);
 
     if (buffer == NULL)
     {
@@ -934,9 +962,11 @@ char *select_row_columns(char *table_name, Key key, char *col_names[],
         return NULL;
     }
 
+    char free_col_names = 0;
     if (num_columns == 0)
     {
         // Get all columns
+        free_col_names = 1;
         get_all_columns(table_id, &col_names, &num_columns);
     }
 
@@ -972,6 +1002,17 @@ char *select_row_columns(char *table_name, Key key, char *col_names[],
 
     print_footer(result, num_columns);
 
+    if (free_col_names)
+    {
+        for (size_t i = 0; i < num_columns; i++)
+        {
+            free(col_names[i]);
+        }
+        free(col_names);
+    }
+
+    free(columns);
+
     free(buffer);
 
     return result;
@@ -1000,9 +1041,11 @@ char *select_all(char *table_name, char *col_names[],
 
     char *result = (char *)malloc(sizeof(char) * 8192);
 
+    char free_col_names = 0;
     if (num_columns == 0)
     {
         // Get all columns
+        free_col_names = 1;
         get_all_columns(table_id, &col_names, &num_columns);
     }
 
@@ -1015,7 +1058,7 @@ char *select_all(char *table_name, char *col_names[],
     {
         printf("Err select_all: Failed to get column offsets\n");
         free(result);
-        free(cursor);
+        free_cursor(cursor);
         return NULL;
     }
 
@@ -1030,15 +1073,24 @@ char *select_all(char *table_name, char *col_names[],
         {
             printf("Err select_all: Failed to print row\n");
             free(result);
-            free(cursor);
+            free_cursor(cursor);
             return NULL;
         }
     } while (cursor_next(cursor) == 0);
 
     print_footer(result, num_columns);
 
+    if (free_col_names)
+    {
+        for (size_t i = 0; i < num_columns; i++)
+        {
+            free(col_names[i]);
+        }
+        free(col_names);
+    }
+
     free(columns);
-    free(cursor);
+    free_cursor(cursor);
     return result;
 }
 
@@ -1061,10 +1113,10 @@ char *select_where(
                  &cols, &nb_cols_t) == -1)
     {
         printf("Err select_where: Failed to find columns\n");
-        free(table_id_r);
+        free_record(table_id_r);
         return NULL;
     }
-    free(table_id_r);
+    free_record(table_id_r);
 
     short where_col_offset = -1;
     Page where_col_root = (Page)-1;
@@ -1073,7 +1125,7 @@ char *select_where(
     {
         Cursor *cursor;
         void *buffer = get_row(COLUMNS, cols[i], &cursor);
-        free(cursor);
+        free_cursor(cursor);
 
         if (buffer == NULL)
         {
@@ -1097,16 +1149,19 @@ char *select_where(
         if (record_get_string(r, &col_name) == -1)
         {
             printf("Err select_where: Failed to get string\n");
-            free(r);
+            free_record(r);
             free(buffer);
             free(cols);
+            char *col_name;
             return NULL;
         }
 
-        free(r);
+        free_record(r);
 
         if (strcmp(col_name, where_col_name) == 0)
         {
+            free(col_name);
+
             r = extract_record(buffer, 2);
             if (r == NULL)
             {
@@ -1116,7 +1171,7 @@ char *select_where(
                 return NULL;
             }
             where_col_offset = *(short *)r->data;
-            free(r);
+            free_record(r);
 
             r = extract_record(buffer, 3);
             if (r == NULL)
@@ -1127,10 +1182,11 @@ char *select_where(
                 return NULL;
             }
             where_col_root = *(Page *)r->data;
-            free(r);
+            free_record(r);
             free(buffer);
             break;
         }
+        free(col_name);
         free(buffer);
     }
 
@@ -1166,9 +1222,11 @@ char *select_where(
         return NULL;
     }
 
+    char free_col_names = 0;
     if (num_columns == 0)
     {
         // Get all columns
+        free_col_names = 1;
         get_all_columns(table_id, &col_names, &num_columns);
     }
 
@@ -1194,7 +1252,7 @@ char *select_where(
 
         Cursor *cursor;
         void *buffer = get_row(root, key, &cursor);
-        free(cursor);
+        free_cursor(cursor);
 
         if (buffer == NULL)
         {
@@ -1216,8 +1274,39 @@ char *select_where(
 
     print_footer(result, num_columns);
 
+    if (free_col_names)
+    {
+        for (size_t i = 0; i < num_columns; i++)
+        {
+            free(col_names[i]);
+        }
+        free(col_names);
+    }
+
     free(columns);
     free(keys);
 
     return result;
+}
+
+void exit_db()
+{
+    // free all the cached data
+
+    struct cached_node *c_node = db.cache;
+
+    while (c_node != NULL)
+    {
+        struct cached_node *next = c_node->next;
+        free_node(c_node->node);
+        free(c_node);
+        c_node = next;
+    }
+
+    db.cache_size = 0;
+
+    fclose(db.file);
+
+    free(db.header);
+    db.header = NULL;
 }

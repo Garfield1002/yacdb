@@ -160,3 +160,9 @@ char *select_where(
     size_t nb_cols,
     char *where_col_name,
     struct record *where_record);
+
+/**
+ * @brief Exits and closes the database properly
+ */
+
+void exit_db();
