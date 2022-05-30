@@ -886,7 +886,65 @@ struct node *create_node()
  * @brief Adds a node to the beginning of the linked list that is cache.
  * If the size of cache is greater than the max cache size, the last node is removed.
  */
-int add_to_cache(struct node *node, Page addr);
+int add_to_cache(struct node *node, Page addr)
+{
+    struct node *new_node = (struct node *)realloc(node, sizeof(struct node));
+
+    if (new_node == NULL)
+    {
+        printf("ERR add_to_cache: Failed to allocate memory\n");
+        return -1;
+    }
+
+    // copy the data
+    for (size_t i = 0; i < new_node->nb_keys; i++)
+    {
+        new_node->key_vals[i] = (struct key_value *)calloc(sizeof(struct key_value), 1);
+
+        if (new_node->key_vals[i] == NULL)
+        {
+            printf("ERR add_to_cache: Failed to allocate memory\n");
+            return -1;
+        }
+
+        new_node->key_vals[i]->key = node->key_vals[i]->key;
+        new_node->key_vals[i]->size = node->key_vals[i]->size;
+        new_node->key_vals[i]->overflow = node->key_vals[i]->overflow;
+        new_node->key_vals[i]->value = realloc(node->key_vals[i]->value, node->key_vals[i]->size);
+    }
+
+    // add to the beginning of the list
+    struct cached_node *new_cache_node = (struct cached_node *)calloc(sizeof(struct cached_node), 1);
+
+    if (new_cache_node == NULL)
+    {
+        printf("ERR add_to_cache: Failed to allocate memory\n");
+        return -1;
+    }
+
+    new_cache_node->node = new_node;
+    new_cache_node->addr = addr;
+    new_cache_node->next = cache;
+
+    cache = new_cache_node;
+
+    cache_size++;
+
+    // if the cache is too big, remove the last node
+    if (cache_size > YACDB_MAX_CACHE_SIZE)
+    {
+        struct cached_node *last_node = cache;
+
+        while (last_node->next->next != NULL)
+        {
+            last_node = last_node->next;
+        }
+
+        cache = last_node->next;
+        last_node->next = NULL;
+        cache_size--;
+    }
+}
 
 /**
  * @brief Get from cache, if the node is not in cache returns NULL

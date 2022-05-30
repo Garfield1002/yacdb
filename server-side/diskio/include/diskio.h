@@ -59,9 +59,9 @@ struct node
  */
 struct cached_node
 {
+    struct cached_node *next;
     struct node *node;
     Page addr;
-    char dirty; ///< if this is > 0 the node needs to be written to disk before being freed.
 };
 
 /**
@@ -70,6 +70,7 @@ struct cached_node
 struct yacdb db;
 
 struct cached_node *cache;
+size_t cache_size;
 
 /**
  * @brief Verifies if the node is a leaf
