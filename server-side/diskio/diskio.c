@@ -994,27 +994,38 @@ int add_to_cache(struct node *node, Page addr)
 /**
  * @brief Get from cache, if the node is not in cache returns NULL
  */
-struct cached_node *get_from_cache(Page addr);
-  struct cached_node *current_cache_node;
+struct cached_node *get_from_cache(Page addr)
+{
+    struct cached_node *c_node, *parent = cache;
 
-  current_cache_node = cache;
-  
-  while(current_cache_node->addr != addr){
-    if (current_cache_node->next == 0){
-      break;
+    if (parent->addr == addr)
+    {
+        return parent;
     }
-    current_cache_node = current_cache_node->next
-  }
-  if (current_cache_node->addr == addr){
-    return current_cache_node;
-  }
-  return 0;
-  
 
+    c_node = parent->next;
 
-/**
- * @brief Writes all the modifications to disk
- * @return int
- */
-int write_cache();
+    while (c_node->addr != addr)
+    {
+        if (c_node->next == NULL)
+        {
+            break;
+        }
 
+        c_node = c_node->next;
+        parent = parent->next;
+    }
+
+    if (c_node->addr == addr)
+    {
+        // move the node to the top
+        parent->next = c_node->next;
+        c_node->next = cache;
+
+        cache = c_node;
+
+        return c_node;
+    }
+
+    return NULL;
+}
