@@ -1,9 +1,9 @@
-crt users with id=int,name=string;
-add id=1,name="Jack" in users;
-add id=2,name="Sharu" in users;
-add id=3,name="Mateo" in users;
+crt users with age=int, name=string;
+add age=21,name="Jack" in users;
+add age=25,name="Sharu" in users;
+add age=21,name="Mateo" in users;
+add age=35,name="Jack" in users;
 
 sel name from users;
-sel id,name from users where name="Jack";
-sel name from users where id=0;
-
+sel age,name from users where name="Jack";
+sel name from users where age=25;
