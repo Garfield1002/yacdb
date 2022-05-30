@@ -54,9 +54,22 @@ struct node
 };
 
 /**
+ * @struct cached_node
+ * @brief A struct for holding cached nodes
+ */
+struct cached_node
+{
+    struct node *node;
+    Page addr;
+    char dirty; ///< if this is > 0 the node needs to be written to disk before being freed.
+};
+
+/**
  * @brief The database
  */
 struct yacdb db;
+
+struct cached_node *cache;
 
 /**
  * @brief Verifies if the node is a leaf
@@ -96,3 +109,20 @@ Page create_addr();
 int init_db();
 
 struct node *create_node();
+
+/**
+ * @brief Adds a node to the beginning of the linked list that is cache.
+ * If the size of cache is greater than the max cache size, the last node is removed.
+ */
+int add_to_cache(struct node *node, Page addr);
+
+/**
+ * @brief Get from cache, if the node is not in cache returns NULL
+ */
+struct cached_node *get_from_cache(Page addr);
+
+/**
+ * @brief Writes all the modifications to disk
+ * @return int
+ */
+int write_cache();

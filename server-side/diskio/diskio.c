@@ -881,3 +881,20 @@ struct node *create_node()
 
     return node;
 }
+
+/**
+ * @brief Adds a node to the beginning of the linked list that is cache.
+ * If the size of cache is greater than the max cache size, the last node is removed.
+ */
+int add_to_cache(struct node *node, Page addr);
+
+/**
+ * @brief Get from cache, if the node is not in cache returns NULL
+ */
+struct cached_node *get_from_cache(Page addr);
+
+/**
+ * @brief Writes all the modifications to disk
+ * @return int
+ */
+int write_cache();

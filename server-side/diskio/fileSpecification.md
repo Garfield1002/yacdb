@@ -1,4 +1,4 @@
-# `yac.db` File Specification
+# File Specification
 
 ## Pages
 
