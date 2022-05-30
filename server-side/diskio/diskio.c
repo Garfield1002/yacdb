@@ -285,8 +285,7 @@ int read_tlcell(struct key_value *kv, void *rpage)
 
 struct node *read_node(size_t addr)
 {
-    struct node *node = NULL;
-    // get_from_cache(addr);
+    struct node *node = get_from_cache(addr);
 
     if (node != NULL)
     {
@@ -386,7 +385,7 @@ struct node *read_node(size_t addr)
     free(page.data);
 
     // Add to cache
-    // add_to_cache(node, addr);
+    add_to_cache(node, addr);
 
     return node;
 }
@@ -775,7 +774,7 @@ int write_ti_node(struct node *node, size_t addr)
 
 int write_node(struct node *node, size_t addr)
 {
-    // add_to_cache(node, addr);
+    add_to_cache(node, addr);
 
     switch (node->type)
     {

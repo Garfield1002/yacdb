@@ -43,13 +43,17 @@ struct key_value
     struct linked_overflow *overflow;
 };
 
+/**
+ * @struct node
+ * @brief The basic structure stored in memory.
+ */
 struct node
 {
     Page parent_addr;
 
     enum page_type type;
     size_t nb_keys;
-    struct key_value *key_vals[ORDER + 1]; // +1 for when handling splits
+    struct key_value *key_vals[ORDER + 1]; ///< +1 for when handling splits
     Page child_addrs[ORDER + 2];
 };
 
@@ -106,11 +110,14 @@ struct node *create_node();
 
 /**
  * @brief Adds a node to the beginning of the linked list that is cache.
- * If the size of cache is greater than the max cache size, the last node is removed.
+ * If the size of cache is greater than the max cache size, the last node of the list is removed.
  */
 int add_to_cache(struct node *node, Page addr);
 
 /**
- * @brief Get from cache, if the node is not in cache returns NULL
+ * @brief Get a node from the cache.
+ * This node will be a copy of the node in the cache.
+ *
+ * If no node is found or an error occurs, returns NULL.
  */
 struct node *get_from_cache(Page addr);
