@@ -1,6 +1,10 @@
 <map id="btree_page" name="btree_page">
-<area shape="rect" id="node1" title=" " alt="" coords="64,184,151,211"/>
-<area shape="rect" id="node2" href="$structyacdb.html" title=" " alt="" coords="29,95,85,121"/>
-<area shape="rect" id="node3" href="$structyacdb__header.html" title=" " alt="" coords="5,5,108,32"/>
-<area shape="rect" id="node4" href="$structbtree__header.html" title=" " alt="" coords="109,95,207,121"/>
+<area shape="rect" id="node1" title=" " alt="" coords="100,452,187,479"/>
+<area shape="rect" id="node2" href="$structyacdb.html" title=" " alt="" coords="65,363,121,389"/>
+<area shape="rect" id="node3" href="$structyacdb__header.html" title=" " alt="" coords="5,273,108,300"/>
+<area shape="rect" id="node4" href="$structcached__node.html" title="A struct for holding cached nodes." alt="" coords="133,273,231,300"/>
+<area shape="rect" id="node5" href="$structnode.html" title="The basic structure stored in memory." alt="" coords="157,184,207,211"/>
+<area shape="rect" id="node6" href="$structkey__value.html" title=" " alt="" coords="142,95,222,121"/>
+<area shape="rect" id="node7" href="$structlinked__overflow.html" title=" " alt="" coords="127,5,237,32"/>
+<area shape="rect" id="node8" href="$structbtree__header.html" title=" " alt="" coords="145,363,243,389"/>
 </map>

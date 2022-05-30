@@ -212,6 +212,10 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structkey__value.html">key_value</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnode.html">node</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The basic structure stored in memory.  <a href="structnode.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcached__node.html">cached_node</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A struct for holding cached nodes.  <a href="structcached__node.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -253,6 +257,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>init_db</b> ()</td></t
 <tr class="memitem:aec3c2507cef19b19dce89071580cf8e6"><td class="memItemLeft" align="right" valign="top"><a id="aec3c2507cef19b19dce89071580cf8e6" name="aec3c2507cef19b19dce89071580cf8e6"></a>
 struct <a class="el" href="structnode.html">node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>create_node</b> ()</td></tr>
 <tr class="separator:aec3c2507cef19b19dce89071580cf8e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a056198752f9cdb0396b2b0be8f685555"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="diskio_8h.html#a056198752f9cdb0396b2b0be8f685555">add_to_cache</a> (struct <a class="el" href="structnode.html">node</a> *<a class="el" href="structnode.html">node</a>, <a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a> addr)</td></tr>
+<tr class="memdesc:a056198752f9cdb0396b2b0be8f685555"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a node to the beginning of the linked list that is cache. If the size of cache is greater than the max cache size, the last node of the list is removed.  <a href="diskio_8h.html#a056198752f9cdb0396b2b0be8f685555">More...</a><br /></td></tr>
+<tr class="separator:a056198752f9cdb0396b2b0be8f685555"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00dec83b8cb99a581ce501d7c9343abb"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structnode.html">node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="diskio_8h.html#a00dec83b8cb99a581ce501d7c9343abb">get_from_cache</a> (<a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a> addr)</td></tr>
+<tr class="memdesc:a00dec83b8cb99a581ce501d7c9343abb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a node from the cache. This node will be a copy of the node in the cache.  <a href="diskio_8h.html#a00dec83b8cb99a581ce501d7c9343abb">More...</a><br /></td></tr>
+<tr class="separator:a00dec83b8cb99a581ce501d7c9343abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -284,6 +294,37 @@ struct <a class="el" href="structyacdb.html">yacdb</a>&#160;</td><td class="memI
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a056198752f9cdb0396b2b0be8f685555" name="a056198752f9cdb0396b2b0be8f685555"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a056198752f9cdb0396b2b0be8f685555">&#9670;&nbsp;</a></span>add_to_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int add_to_cache </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structnode.html">node</a> *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a>&#160;</td>
+          <td class="paramname"><em>addr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds a node to the beginning of the linked list that is cache. If the size of cache is greater than the max cache size, the last node of the list is removed. </p>
+<p >Adds a node to the beginning of the linked list that is cache. If the size of cache is greater than the max cache size, the last node of the list is removed. </p>
+
+</div>
+</div>
 <a id="a8780d3440e29edde912cb6b9be964b51" name="a8780d3440e29edde912cb6b9be964b51"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8780d3440e29edde912cb6b9be964b51">&#9670;&nbsp;</a></span>create_addr()</h2>
 
@@ -302,6 +343,28 @@ struct <a class="el" href="structyacdb.html">yacdb</a>&#160;</td><td class="memI
 <p>Creates an address for a new node. If an error occurs returns -1. </p>
 <p >Creates an address for a new node. If an error occurs returns -1.</p>
 <p >TODO: Cache optimization </p><dl class="section return"><dt>Returns</dt><dd>the page number or -1 if an error occurred. </dd></dl>
+
+</div>
+</div>
+<a id="a00dec83b8cb99a581ce501d7c9343abb" name="a00dec83b8cb99a581ce501d7c9343abb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00dec83b8cb99a581ce501d7c9343abb">&#9670;&nbsp;</a></span>get_from_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structnode.html">node</a> * get_from_cache </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc">Page</a>&#160;</td>
+          <td class="paramname"><em>addr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a node from the cache. This node will be a copy of the node in the cache. </p>
+<p >If no node is found or an error occurs, returns NULL.</p>
+<p >Get a node from the cache. This node will be a copy of the node in the cache. </p>
 
 </div>
 </div>

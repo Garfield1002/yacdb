@@ -1,5 +1,5 @@
-<map id="Cursor" name="Cursor">
-<area shape="rect" id="node1" title=" " alt="" coords="31,273,91,300"/>
+<map id="cached_node" name="cached_node">
+<area shape="rect" id="node1" title="A struct for holding cached nodes." alt="" coords="11,273,110,300"/>
 <area shape="rect" id="node2" href="$structnode.html" title="The basic structure stored in memory." alt="" coords="35,184,86,211"/>
 <area shape="rect" id="node3" href="$structkey__value.html" title=" " alt="" coords="21,95,101,121"/>
 <area shape="rect" id="node4" href="$structlinked__overflow.html" title=" " alt="" coords="5,5,116,32"/>

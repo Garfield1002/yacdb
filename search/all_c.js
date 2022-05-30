@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['main_5fparser_2eh_0',['main_parser.h',['../main__parser_8h.html',1,'']]]
+  ['node_0',['node',['../structnode.html',1,'node'],['../structCursor.html#ae7b594f817822456c0c71f19c1f28dd1',1,'Cursor::node()']]]
 ];

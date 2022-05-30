@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['node_0',['node',['../structnode.html',1,'node'],['../structCursor.html#ae7b594f817822456c0c71f19c1f28dd1',1,'Cursor::node()']]]
+  ['overflow_5fdata_0',['overflow_data',['../structoverflow__data.html',1,'']]],
+  ['overflow_5fheader_1',['overflow_header',['../structoverflow__header.html',1,'']]]
 ];

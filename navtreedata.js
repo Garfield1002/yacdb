@@ -32,7 +32,7 @@ var NAVTREE =
       [ "📄 Queries in file", "index.html#autotoc_md24", null ],
       [ "🌳 Documentation", "index.html#autotoc_md25", null ]
     ] ],
-    [ "<tt>yac.db</tt> File Specification", "md_server_side_diskio_fileSpecification.html", [
+    [ "File Specification", "md_server_side_diskio_fileSpecification.html", [
       [ "Pages", "md_server_side_diskio_fileSpecification.html#autotoc_md1", null ],
       [ "Database Header", "md_server_side_diskio_fileSpecification.html#autotoc_md2", [
         [ "Magic Header string", "md_server_side_diskio_fileSpecification.html#autotoc_md3", null ],

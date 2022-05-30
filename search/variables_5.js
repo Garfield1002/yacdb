@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['page_0',['page',['../structCursor.html#a565efe7a581d3f7849477b86ef33068b',1,'Cursor']]]
+  ['node_0',['node',['../structCursor.html#ae7b594f817822456c0c71f19c1f28dd1',1,'Cursor']]]
 ];
