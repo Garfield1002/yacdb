@@ -391,8 +391,9 @@ struct <a class="el" href="structrecord.html">record</a> *&#160;</td><td class="
 <li><code>TABLES</code>: a table of all tables in the database.</li>
 <li><code>COLUMNS</code>: a table of all columns in the database.</li>
 </ul>
+<p >These trees have "hidden" columns: they are marked with an underscore.</p>
 <h2><a class="anchor" id="autotoc_md11"></a>
-&lt;tt&gt;TABLES&lt;/tt&gt; table</h2>
+TABLES table</h2>
 <p >It's root is on page TABLES, it has index TABLES.</p>
 <p >The table has the following columns: </p><table class="markdownTable">
 <tr class="markdownTableHead">
@@ -407,15 +408,22 @@ struct <a class="el" href="structrecord.html">record</a> *&#160;</td><td class="
 <td class="markdownTableBodyCenter"><code>_next_id</code>   </td><td class="markdownTableBodyCenter">2   </td><td class="markdownTableBodyCenter"><code><a class="el" href="diskio_8h.html#ab3c7af4820830f9166ede9e5623c4e73" title="A key to a record.">Key</a></code>   </td><td class="markdownTableBodyCenter">the next available id for a row in the table   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md12"></a>
-&lt;tt&gt;COLUMNS&lt;/tt&gt; table</h2>
-<p >It's root is on page 1, it has index 1. It points to the index trees associated with each column.</p>
-<p >The table has the following columns:</p><ul>
-<li><code>_idx</code>: the index of the column</li>
-<li><code>table_idx</code>: the index of the tablet</li>
-<li><code>name</code>: the name of the column</li>
-<li><code>_offset</code>: the offset of the column in the table (short)</li>
-<li><code>_root</code>: the root page of the index tree associated with he column </li>
-</ul>
+COLUMNS table</h2>
+<p >It's root is on page COLUMNS, it has index COLUMNS. It points to the index trees associated with each column.</p>
+<p >The table has the following columns: </p><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadCenter">Column   </th><th class="markdownTableHeadCenter">Offset   </th><th class="markdownTableHeadCenter">Type   </th><th class="markdownTableHeadCenter">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter"><code>_idx</code>   </td><td class="markdownTableBodyCenter">-   </td><td class="markdownTableBodyCenter"><code><a class="el" href="diskio_8h.html#ab3c7af4820830f9166ede9e5623c4e73" title="A key to a record.">Key</a></code>   </td><td class="markdownTableBodyCenter">The index of the column in the database    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyCenter"><code>table_idx</code>   </td><td class="markdownTableBodyCenter">0   </td><td class="markdownTableBodyCenter"><code><a class="el" href="diskio_8h.html#ab3c7af4820830f9166ede9e5623c4e73" title="A key to a record.">Key</a></code>   </td><td class="markdownTableBodyCenter">The index of the table    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter"><code>name</code>   </td><td class="markdownTableBodyCenter">1   </td><td class="markdownTableBodyCenter"><code>char *</code>   </td><td class="markdownTableBodyCenter">The name of the column    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyCenter"><code>_offset</code>   </td><td class="markdownTableBodyCenter">2   </td><td class="markdownTableBodyCenter"><code>short</code>   </td><td class="markdownTableBodyCenter">The offset of the column in the table    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyCenter"><code>_root</code>   </td><td class="markdownTableBodyCenter">3   </td><td class="markdownTableBodyCenter"><code><a class="el" href="db__structs_8h.html#a6c30dc926b00e05c4ab97a164de2c0bc" title="A address to a page.">Page</a></code>   </td><td class="markdownTableBodyCenter">The root page of the index tree   </td></tr>
+</table>
 
 </div>
 </div>
