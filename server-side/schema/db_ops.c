@@ -808,7 +808,7 @@ int print_header(char *buffer, char *columns[], size_t nb_cols)
 
     for (size_t i = 0; i < nb_cols; i++)
     {
-        sprintf(buffer, "%s------------+", buffer, columns[i]);
+        sprintf(buffer, "%s------------+", buffer);
     }
     return 0;
 }

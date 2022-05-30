@@ -9,7 +9,7 @@ const char *SERVER_IP = "127.0.0.1";
 #define REPLY_SIZE 2000
 #define LINE_SIZE 100
 #define SERVER_PORT 4000
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_PRINT(stuff...) \
   if (DEBUG)                  \
     printf(stuff);

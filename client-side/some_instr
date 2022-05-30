@@ -1,9 +1,9 @@
-crt table with id=int,nom=string;
-add id=1,name="Jack" in table;
-add id=2,name="Sharu" in table;
-add id=3,name="Mateo" in table;
+crt users with id=int,name=string;
+add id=1,name="Jack" in users;
+add id=2,name="Sharu" in users;
+add id=3,name="Mateo" in users;
 
-sel name from table;
-sel id,name from table where name="Jack";
-sel name from table where id=0;
+sel name from users;
+sel id,name from users where name="Jack";
+sel name from users where id=0;
 

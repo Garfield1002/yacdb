@@ -366,7 +366,7 @@ struct node *read_node(size_t addr)
 
     default:
         printf("ERR read_node: Unknown node type\n");
-        printf("%zu\n", page.btree_h->page_type);
+        printf("%u\n", page.btree_h->page_type);
         printf("addr: %zu\n", addr);
         return NULL;
     }
