@@ -285,6 +285,16 @@ int read_tlcell(struct key_value *kv, void *rpage)
 
 struct node *read_node(size_t addr)
 {
+    struct cached_node *c_node = get_from_cache(addr);
+
+    if (c_node != NULL)
+    {
+#ifdef DEBUG
+        printf("INFO read_node: Node %zu found in cache\n", addr);
+#endif
+        return c_node->node;
+    }
+
     struct node *node = (struct node *)malloc(sizeof(struct node));
 
     struct btree_page page;
@@ -372,6 +382,9 @@ struct node *read_node(size_t addr)
     }
 
     free(page.data);
+
+    // Add to cache
+    add_to_cache(node, addr);
 
     return node;
 }
@@ -465,10 +478,8 @@ Page create_addr()
  * @brief Writes a page to the file.
  * @param rpage The page to write. This needs to be 512bytes long.
  */
-// TODO: Cache
 int write_page(size_t addr, void *rpage)
 {
-
     size_t offset = addr * db.header->page_size;
     size_t size = db.header->page_size;
 
@@ -762,6 +773,8 @@ int write_ti_node(struct node *node, size_t addr)
 
 int write_node(struct node *node, size_t addr)
 {
+    add_to_cache(node, addr);
+
     switch (node->type)
     {
     case NODE_TYPE_INDEX_LEAF:
@@ -882,6 +895,23 @@ struct node *create_node()
     return node;
 }
 
+int remove_node_from_cache(struct cached_node *last_node)
+{
+    // Free all the data
+    for (size_t i = 0; i < last_node->node->nb_keys; i++)
+    {
+        free(last_node->node->key_vals[i]->value);
+        free(last_node->node->key_vals[i]);
+    }
+
+    free(last_node->node);
+    free(last_node);
+
+    cache_size--;
+
+    return 0;
+}
+
 /**
  * @brief Adds a node to the beginning of the linked list that is cache.
  * If the size of cache is greater than the max cache size, the last node is removed.
@@ -913,7 +943,18 @@ int add_to_cache(struct node *node, Page addr)
         new_node->key_vals[i]->value = realloc(node->key_vals[i]->value, node->key_vals[i]->size);
     }
 
-    // add to the beginning of the list
+    // if the node is already in the cache, remove it
+    struct cached_node *last_node = NULL;
+    while (last_node != NULL)
+    {
+        if (last_node->addr == addr)
+        {
+            remove_node_from_cache(last_node);
+            break;
+        }
+    }
+
+    // add the new node to the beginning of the list
     struct cached_node *new_cache_node = (struct cached_node *)calloc(sizeof(struct cached_node), 1);
 
     if (new_cache_node == NULL)
@@ -931,19 +972,23 @@ int add_to_cache(struct node *node, Page addr)
     cache_size++;
 
     // if the cache is too big, remove the last node
-    if (cache_size > YACDB_MAX_CACHE_SIZE)
+    if (cache_size > db.header->default_cache_size)
     {
-        struct cached_node *last_node = cache;
+        struct cached_node *parent = cache;
+        struct cached_node *last_node = cache->next;
 
-        while (last_node->next->next != NULL)
+        while (last_node->next != NULL)
         {
+            parent = last_node;
             last_node = last_node->next;
         }
 
-        cache = last_node->next;
-        last_node->next = NULL;
-        cache_size--;
+        remove_node_from_cache(last_node);
+        last_node = NULL;
+        parent->next = NULL;
     }
+
+    return 0;
 }
 
 /**
@@ -972,3 +1017,4 @@ struct cached_node *get_from_cache(Page addr);
  * @return int
  */
 int write_cache();
+
