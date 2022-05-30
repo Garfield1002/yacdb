@@ -272,7 +272,9 @@ int init_COLUMNS_NAME_table()
  * - `TABLES`: a table of all tables in the database.
  * - `COLUMNS`: a table of all columns in the database.
  *
- * ## `TABLES` table
+ * These trees have "hidden" columns: they are marked with an underscore.
+ *
+ * ## TABLES table
  *
  * It's root is on page TABLES, it has index TABLES.
  *
@@ -284,17 +286,20 @@ int init_COLUMNS_NAME_table()
  * | `_root` | 1 | `::Page` | the root page of the table |
  * | `_next_id`| 2|  `::Key` | the next available id for a row in the table|
 
- * ## `COLUMNS` table
+ * ## COLUMNS table
  *
- * It's root is on page 1, it has index 1.
+ * It's root is on page COLUMNS, it has index COLUMNS.
  * It points to the index trees associated with each column.
  *
  * The table has the following columns:
- * - `_idx`: the index of the column
- * - `table_idx`: the index of the tablet
- * - `name`: the name of the column
- * - `_offset`: the offset of the column in the table (short)
- * - `_root`: the root page of the index tree associated with he column
+ * | Column | Offset | Type |  Description |
+ * | :-: | :-: | :-: | :-: |
+ * | `_idx` | - | `::Key` | The index of the column in the database |
+ * | `table_idx` | 0 | `::Key` | The index of the table |
+ * | `name` | 1 | `char *`| The name of the column |
+ * | `_offset` | 2 | `short` | The offset of the column in the table |
+ * | `_root` | 3 | `::Page` | The root page of the index tree |
+ *
  */
 int initialize_tables()
 {
